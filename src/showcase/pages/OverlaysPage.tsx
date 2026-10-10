@@ -6,20 +6,9 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+  Modal,
+  ActionMenu,
+  Input,
   Tabs,
   TabsList,
   TabsTrigger,
@@ -35,37 +24,161 @@ import {
 } from '@one/web-ui';
 
 export const OverlaysPage: React.FC = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  // Modal with cancel action (cross hidden on desktop, drawer on mobile)
+  const [modalWithCancel, setModalWithCancel] = useState(false);
+
+  // Modal without cancel action (cross shown on desktop, drawer on mobile)
+  const [modalWithoutCancel, setModalWithoutCancel] = useState(false);
+
+  // Dialog & Tabs states
   const [switchState, setSwitchState] = useState(true);
   const [activeTab, setActiveTab] = useState('server');
-  const [searchAlert, setSearchAlert] = useState(false);
+  const [modalInputVal, setModalInputVal] = useState('');
+
+  // Dropdown action items
+  const menuItems = [
+    {
+      id: 'profile',
+      label: 'Профиль пользователя',
+      icon: 'person',
+      onClick: () => alert('Выбран Профиль'),
+    },
+    {
+      id: 'settings',
+      label: 'Настройки инстанса',
+      icon: 'settings',
+      onClick: () => alert('Выбраны Настройки'),
+    },
+    {
+      id: 'logs',
+      label: 'Журнал событий',
+      icon: 'receipt_long',
+      badge: 'Live',
+      onClick: () => alert('Выбран Журнал'),
+    },
+    {
+      separator: true,
+      label: '',
+    },
+    {
+      id: 'delete',
+      label: 'Остановить ноду',
+      icon: 'power_settings_new',
+      danger: true,
+      onClick: () => alert('Остановка ноды...'),
+    },
+  ];
 
   return (
     <TooltipProvider>
       <div className="space-y-10 animate-fade-in">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="lime">Sliding Capsule (300ms)</Badge>
-            <Badge variant="neutral">One Lime (#c0ff00)</Badge>
-            <Badge variant="neutral">Action Slot</Badge>
+            <Badge variant="lime">Adaptive Desktop / Mobile</Badge>
+            <Badge variant="neutral">Bottom Sheet / Drawer</Badge>
+            <Badge variant="neutral">ActionMenu</Badge>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-            Вкладки (Tabs) и Radix UI Оверлеи
+            Оверлеи (Modal & ActionMenu)
           </h1>
           <p className="text-oneweb-text-secondary text-sm sm:text-base">
-            Фирменный переключатель вкладок по референсу экосистемы One: капсульная форма,
-            плавное перемещение активной плашки, счетчики и слот дополнительного действия.
+            Адаптивная оверлей-система на базе Radix UI и Framer Motion со строгим разделением для Desktop и Mobile.
+            На десктопе — центрированные модальные окна и контекстные меню; на мобильных устройствах — плавные шторки (Bottom Sheet) с жестовым свайпом вниз и безопасным клиренсом над плавающим навбаром.
           </p>
         </div>
 
-        {/* 1. Interactive Tabs Section (Reference Implementation) */}
+        {/* 1. Modal & Drawer Showcases */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Modal с кнопкой отмены (без крестика на десктопе) */}
+          <Card variant="default">
+            <CardHeader>
+              <CardTitle>1. Модалка с кнопкой отмены</CardTitle>
+              <CardDescription>
+                Desktop: крестик строго скрыт (есть кнопка отмены в футере). Mobile: шторка со свайпом вниз.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                variant="primary"
+                leftIcon={<OneIcon name="check_circle" size={18} />}
+                onClick={() => setModalWithCancel(true)}
+              >
+                Открыть с кнопкой отмены
+              </Button>
+              <p className="text-xs text-[#8e8e93]">
+                Правило дизайн-системы: если в футере есть действия закрытия/отмены, крестик в правом верхнем углу не дублируется.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Modal без кнопок отмены (с крестиком на десктопе) */}
+          <Card variant="default">
+            <CardHeader>
+              <CardTitle>2. Модалка без кнопок отмены</CardTitle>
+              <CardDescription>
+                Desktop: крестик отображается в углу (top-6 right-6). Mobile: шторка без крестика со свайпом вниз.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                variant="secondary"
+                leftIcon={<OneIcon name="info" size={18} />}
+                onClick={() => setModalWithoutCancel(true)}
+              >
+                Открыть без кнопок отмены
+              </Button>
+              <p className="text-xs text-[#8e8e93]">
+                На десктопе появляется круглая кнопка закрытия с иконкой <code className="text-white">close</code>. На мобилке крестика нет никогда.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* 2. ActionMenu (Три точки: Дропдаун vs Шторка) */}
+        <Card variant="default">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>3. Меню «три точки» (ActionMenu)</CardTitle>
+                <CardDescription>
+                  Desktop: классический выпадающий список у триггера. Mobile: мобильная шторка под палец.
+                </CardDescription>
+              </div>
+              <ActionMenu items={menuItems} title="Параметры инстанса" />
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 rounded-[24px] bg-[#090b0e] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-white">Кастомный триггер для ActionMenu</h4>
+                <p className="text-xs text-[#8e8e93] mt-0.5">
+                  Нажмите на кнопку справа, чтобы открыть меню опций
+                </p>
+              </div>
+              <ActionMenu
+                items={menuItems}
+                title="Опции сервиса"
+                trigger={
+                  <Button variant="outline" rightIcon={<OneIcon name="more_horiz" size={18} />}>
+                    Управление
+                  </Button>
+                }
+              />
+            </div>
+            <p className="text-xs text-[#8e8e93]">
+              На экранах смартфонов дропдаунов не существует в принципе: меню автоматически трансформируется в крупный Bottom Sheet со свайпом вниз.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* 3. Interactive Tabs Section */}
         <Card variant="default">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <CardTitle>Переключатель вкладок (Tabs по референсу)</CardTitle>
+                <CardTitle>4. Переключатель вкладок (Tabs по референсу)</CardTitle>
                 <CardDescription>
-                  Капсульный контейнер #14171c, скользящая активная плашка #1c222b, счетчики и кнопка «Поиск»
+                  Капсульный контейнер #14171c, скользящая активная плашка #1c222b, счетчики и слот действия
                 </CardDescription>
               </div>
               <Badge variant="lime">Активна: {activeTab === 'server' ? 'Сервер' : 'Клиент'}</Badge>
@@ -74,12 +187,11 @@ export const OverlaysPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="p-4 sm:p-6 rounded-[24px] bg-[#090b0e] flex flex-col items-start gap-4">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                {/* Reference Tabs Layout */}
                 <TabsList
                   rightAction={
                     <button
                       type="button"
-                      onClick={() => setSearchAlert(true)}
+                      onClick={() => alert('Поиск активирован')}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#8e8e93] hover:text-white bg-white/5 hover:bg-white/10 transition-colors cursor-pointer select-none sf-tap"
                     >
                       <OneIcon name="search" size={16} />
@@ -95,169 +207,28 @@ export const OverlaysPage: React.FC = () => {
                   </TabsTrigger>
                 </TabsList>
 
-                {/* Tab Contents */}
                 <TabsContent value="server" className="mt-4">
-                  <div className="p-5 rounded-[22px] bg-[#14171c] border-none text-left space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-[12px] bg-[#1c222b] flex items-center justify-center text-[#c0ff00]">
-                          <OneIcon name="dns" size={18} />
-                        </div>
-                        <div>
-                          <h4 className="text-white font-bold text-sm">Серверная инфраструктура</h4>
-                          <p className="text-[#8e8e93] text-xs">19 активных нод и кластеров OneHouse</p>
-                        </div>
-                      </div>
-                      <Badge variant="lime">19 Онлайн</Badge>
-                    </div>
-                    <p className="text-xs text-[#8e8e93] leading-relaxed">
-                      Управление вычислительными ресурсами, контейнерами Docker, логами сборки и сетевыми портами.
-                    </p>
+                  <div className="p-5 rounded-[22px] bg-[#14171c] text-left space-y-2">
+                    <h4 className="text-white font-bold text-sm">Серверная инфраструктура</h4>
+                    <p className="text-xs text-[#8e8e93]">19 активных нод и вычислительных кластеров.</p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="client" className="mt-4">
-                  <div className="p-5 rounded-[22px] bg-[#14171c] border-none text-left space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-[12px] bg-[#1c222b] flex items-center justify-center text-[#c0ff00]">
-                          <OneIcon name="computer" size={18} />
-                        </div>
-                        <div>
-                          <h4 className="text-white font-bold text-sm">Клиентские приложения</h4>
-                          <p className="text-[#8e8e93] text-xs">20 подключенных клиентов и сессий</p>
-                        </div>
-                      </div>
-                      <Badge variant="neutral">20 Сессий</Badge>
-                    </div>
-                    <p className="text-xs text-[#8e8e93] leading-relaxed">
-                      Клиентские рабочие места, веб-интерфейсы, сессии авторизации OneID и мобильные клиенты.
-                    </p>
+                  <div className="p-5 rounded-[22px] bg-[#14171c] text-left space-y-2">
+                    <h4 className="text-white font-bold text-sm">Клиентские приложения</h4>
+                    <p className="text-xs text-[#8e8e93]">20 активных сессий пользователей OneID.</p>
                   </div>
                 </TabsContent>
               </Tabs>
-
-              {searchAlert && (
-                <div className="w-full p-3 rounded-full bg-[#1c222b] text-xs text-white flex items-center justify-between animate-fade-in">
-                  <div className="flex items-center gap-2 px-2">
-                    <OneIcon name="search" size={16} className="text-[#c0ff00]" />
-                    <span>Поисковая строка или шорткат активирован из слота действия Tabs.</span>
-                  </div>
-                  <button
-                    onClick={() => setSearchAlert(false)}
-                    className="text-[#8e8e93] hover:text-white px-3 py-1 rounded-full text-xs font-semibold cursor-pointer"
-                  >
-                    Закрыть
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Code Specification */}
-            <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
-              <pre>
-                <span className="text-oneweb-accent">import</span> &#123; Tabs, TabsList, TabsTrigger, TabsContent, OneIcon &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
-                &lt;<span className="text-blue-400">Tabs</span> defaultValue=<span className="text-emerald-400">"server"</span>&gt;{'\n'}
-                {'  '}&lt;<span className="text-blue-400">TabsList</span>{'\n'}
-                {'    '}rightAction=&#123;&lt;<span className="text-blue-400">button</span>&gt;&lt;<span className="text-blue-400">OneIcon</span> name=<span className="text-emerald-400">"search"</span> /&gt; Поиск&lt;/<span className="text-blue-400">button</span>&gt;&#125;{'\n'}
-                {'  '}&gt;{'\n'}
-                {'    '}&lt;<span className="text-blue-400">TabsTrigger</span> value=<span className="text-emerald-400">"server"</span> icon=<span className="text-emerald-400">"dns"</span> count=&#123;<span className="text-amber-400">19</span>&#125;&gt;Сервер&lt;/<span className="text-blue-400">TabsTrigger</span>&gt;{'\n'}
-                {'    '}&lt;<span className="text-blue-400">TabsTrigger</span> value=<span className="text-emerald-400">"client"</span> icon=<span className="text-emerald-400">"computer"</span> count=&#123;<span className="text-amber-400">20</span>&#125;&gt;Клиент&lt;/<span className="text-blue-400">TabsTrigger</span>&gt;{'\n'}
-                {'  '}&lt;/<span className="text-blue-400">TabsList</span>&gt;{'\n\n'}
-                {'  '}&lt;<span className="text-blue-400">TabsContent</span> value=<span className="text-emerald-400">"server"</span>&gt;...&lt;/<span className="text-blue-400">TabsContent</span>&gt;{'\n'}
-                {'  '}&lt;<span className="text-blue-400">TabsContent</span> value=<span className="text-emerald-400">"client"</span>&gt;...&lt;/<span className="text-blue-400">TabsContent</span>&gt;{'\n'}
-                &lt;/<span className="text-blue-400">Tabs</span>&gt;
-              </pre>
             </div>
           </CardContent>
         </Card>
 
-        {/* Dialog & Dropdown Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Dialog Modal */}
-          <Card variant="default">
-            <CardHeader>
-              <CardTitle>Диалоговое окно (Dialog)</CardTitle>
-              <CardDescription>
-                Модальное окно с затемнением бэкдропа и плавной анимацией
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="primary" leftIcon={<Icon name="open_in_new" size={18} />}>
-                    Открыть диалог
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <div>
-                      <DialogTitle>Подтверждение действия</DialogTitle>
-                      <DialogDescription className="mt-1">
-                        Вы собираетесь применить новые настройки дизайн-системы для проекта.
-                      </DialogDescription>
-                    </div>
-                    <DialogClose onClose={() => setDialogOpen(false)} />
-                  </DialogHeader>
-
-                  <div className="py-2 text-sm text-oneweb-text-secondary">
-                    Все компоненты автоматически обновят свои токены стилей в соответствии со спецификацией OneHouse.
-                  </div>
-
-                  <DialogFooter>
-                    <Button variant="ghost" onClick={() => setDialogOpen(false)}>
-                      Отмена
-                    </Button>
-                    <Button variant="primary" onClick={() => setDialogOpen(false)}>
-                      Применить
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
-
-          {/* Dropdown Menu */}
-          <Card variant="default">
-            <CardHeader>
-              <CardTitle>Выпадающее меню (Dropdown)</CardTitle>
-              <CardDescription>
-                Всплывающее меню с пунктами, разделителями и иконками
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" rightIcon={<Icon name="expand_more" size={18} />}>
-                    Опции пользователя
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Icon name="person" size={16} className="mr-2" /> Профиль
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Icon name="settings" size={16} className="mr-2" /> Настройки
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Icon name="palette" size={16} className="mr-2" /> Дизайн-токены
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem danger>
-                    <Icon name="logout" size={16} className="mr-2" /> Выйти
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Switch & Tooltips */}
+        {/* 4. Switch & Tooltips */}
         <Card variant="default">
           <CardHeader>
-            <CardTitle>Переключатель & Тултип</CardTitle>
+            <CardTitle>5. Переключатель & Тултип</CardTitle>
             <CardDescription>Микро-контролы взаимодействия</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -294,6 +265,72 @@ export const OverlaysPage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* MODAL 1: С кнопкой отмены (hasCancelAction = true) */}
+        <Modal
+          open={modalWithCancel}
+          onClose={() => setModalWithCancel(false)}
+          title="Подтверждение изменений"
+          description="Вы собираетесь обновить параметры развертывания экосистемы OneHouse."
+          hasCancelAction={true}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setModalWithCancel(false)}>
+                Отмена
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  alert('Параметры успешно сохранены');
+                  setModalWithCancel(false);
+                }}
+              >
+                Сохранить
+              </Button>
+            </>
+          }
+        >
+          <div className="space-y-4">
+            <p className="text-xs leading-relaxed text-[#8e8e93]">
+              На десктопе в правом верхнем углу крестик <strong className="text-white">отсутствует</strong>, так как в футере предусмотрена кнопка «Отмена».
+            </p>
+            {/* Input inside modal: using contrasting surface="modal" (#181c23) */}
+            <Input
+              surface="modal"
+              label="Имя конфигурации"
+              placeholder="Введите имя ноды..."
+              value={modalInputVal}
+              onChange={(e) => setModalInputVal(e.target.value)}
+              icon="tune"
+              clearable
+              onClear={() => setModalInputVal('')}
+              helperText="Подложка #181c23 не сливается с модальным окном #14171c"
+            />
+          </div>
+        </Modal>
+
+        {/* MODAL 2: Без кнопки отмены (hasCancelAction = false) */}
+        <Modal
+          open={modalWithoutCancel}
+          onClose={() => setModalWithoutCancel(false)}
+          title="Справка дизайн-системы"
+          description="Правила построения интерфейсов OneWebUI"
+          hasCancelAction={false}
+          footer={
+            <Button variant="primary" onClick={() => setModalWithoutCancel(false)} className="w-full sm:w-auto">
+              Понятно
+            </Button>
+          }
+        >
+          <div className="space-y-3 text-xs leading-relaxed text-[#8e8e93]">
+            <p>
+              В этом окне <strong className="text-white">нет кнопки отмены</strong> в футере, поэтому на десктопе автоматически отображается кнопка-крестик в правом верхнем углу.
+            </p>
+            <p>
+              На мобильном устройстве это окно открывается как Bottom Sheet и закрывается жестом смахивания вниз.
+            </p>
+          </div>
+        </Modal>
       </div>
     </TooltipProvider>
   );

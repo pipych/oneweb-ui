@@ -10,18 +10,24 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   rightAction?: React.ReactNode;
+  rightActionIcon?: string;
+  onRightAction?: () => void;
   clearable?: boolean;
   onClear?: () => void;
   size?: 'sm' | 'md' | 'lg';
+  surface?: 'base' | 'card' | 'elevated' | 'modal';
+  variant?: 'base' | 'card' | 'elevated';
 }
 
 /**
  * OneWebUI Input
  * - Strict Pill Shape (rounded-full)
- * - Solid surface background (#14171c)
- * - Zero borders, zero rings (border-none outline-none ring-0 focus:ring-0 focus:outline-none)
- * - Perfectly centered icons (absolute left-4 top-1/2 -translate-y-1/2) with fixed pl-11 padding
- * - Prevents text and icon overlap
+ * - Contrasting underlay:
+ *   * On base canvas (#090b0e) -> surface="base" -> bg-[#14171c]
+ *   * Inside cards / modals (#14171c) -> surface="card" | "elevated" -> bg-[#181c23]
+ * - Strictly zero borders, zero rings (border-none outline-none ring-0 focus:ring-0 focus:outline-none)
+ * - Right actions are STRICTLY round icon buttons (w-8 h-8 rounded-full aspect-square) at absolute right-2
+ * - Fixed padding: pl-11 with left icon, pr-12 with right action (prevents text overlap)
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
@@ -35,11 +41,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       rightIcon,
       rightAction,
+      rightActionIcon,
+      onRightAction,
       clearable,
       onClear,
       disabled,
       id,
       size = 'md',
+      surface,
+      variant,
       ...props
     },
     ref
@@ -55,9 +65,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       lg: 'h-13 md:h-14 text-base font-medium',
     };
 
+    // Determine surface contrast underlay
+    const activeSurface = surface || variant || 'base';
+    const surfaceStyles = {
+      base: 'bg-[#14171c]',
+      card: 'bg-[#181c23]',
+      elevated: 'bg-[#181c23]',
+      modal: 'bg-[#181c23]',
+    };
+    const bgClass = surfaceStyles[activeSurface] || 'bg-[#14171c]';
+
     const effectiveLeftIcon = icon || leftIcon;
     const hasLeftIcon = Boolean(effectiveLeftIcon);
-    const hasRightElement = Boolean(rightIcon || rightAction || (clearable && Boolean(props.value)) || isPassword);
+
+    const hasClearAction = Boolean(clearable && Boolean(props.value) && onClear);
+    const hasCustomAction = Boolean(rightActionIcon || rightAction);
+    const hasRightElement = Boolean(hasCustomAction || hasClearAction || rightIcon || isPassword);
 
     return (
       <div className="w-full flex flex-col space-y-1.5 text-left">
@@ -71,72 +94,104 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
 
         <div className="relative flex items-center w-full">
+          {/* Centered Left Icon */}
           {hasLeftIcon && (
             <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-[#8e8e93] z-10">
               {typeof effectiveLeftIcon === 'string' ? (
                 <OneIcon name={effectiveLeftIcon} size={20} />
               ) : React.isValidElement(effectiveLeftIcon) ? (
-                React.cloneElement(effectiveLeftIcon as React.ReactElement<{ size?: number; className?: string }>, {
-                  size: 20,
-                  className: cn('text-[#8e8e93]', (effectiveLeftIcon as React.ReactElement<{ className?: string }>).props?.className),
-                })
+                React.cloneElement(
+                  effectiveLeftIcon as React.ReactElement<{ size?: number; className?: string }>,
+                  {
+                    size: 20,
+                    className: cn(
+                      'text-[#8e8e93]',
+                      (effectiveLeftIcon as React.ReactElement<{ className?: string }>).props?.className
+                    ),
+                  }
+                )
               ) : (
                 effectiveLeftIcon
               )}
             </div>
           )}
 
+          {/* Capsule Text Input */}
           <input
             id={inputId}
             ref={ref}
             type={computedType}
             disabled={disabled}
             className={cn(
-              'w-full rounded-full bg-[#14171c] text-white',
+              'w-full rounded-full text-white font-medium',
+              bgClass,
               'placeholder:text-[#8e8e93] border-none outline-none focus:outline-none focus:ring-0 ring-0',
               'transition-colors duration-150',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               hasLeftIcon ? 'pl-11' : 'pl-4',
-              rightAction ? 'pr-24' : hasRightElement ? 'pr-11' : 'pr-4',
+              hasRightElement ? 'pr-12' : 'pr-4',
               sizeStyles[size],
               className
             )}
             {...props}
           />
 
+          {/* Right Action: Strictly a round icon button (w-8 h-8 rounded-full aspect-square) */}
           {isPassword ? (
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-[#8e8e93] hover:text-white transition-colors focus:outline-none cursor-pointer z-10"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full aspect-square flex items-center justify-center text-[#8e8e93] hover:text-white hover:bg-white/10 active:scale-95 transition-all focus:outline-none cursor-pointer z-10"
               aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
             >
-              <OneIcon name={showPassword ? 'visibility_off' : 'visibility'} size={20} />
+              <OneIcon name={showPassword ? 'visibility_off' : 'visibility'} size={18} />
             </button>
-          ) : rightAction ? (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center z-10">
-              {rightAction}
-            </div>
-          ) : clearable && Boolean(props.value) && onClear ? (
+          ) : rightActionIcon ? (
+            <button
+              type="button"
+              onClick={onRightAction}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full aspect-square flex items-center justify-center text-[#8e8e93] hover:text-white hover:bg-white/10 active:scale-95 transition-all focus:outline-none cursor-pointer z-10"
+              aria-label="Действие ввода"
+            >
+              <OneIcon name={rightActionIcon} size={18} />
+            </button>
+          ) : hasClearAction ? (
             <button
               type="button"
               tabIndex={-1}
               onClick={onClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-[#8e8e93] hover:text-white transition-colors focus:outline-none cursor-pointer z-10"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full aspect-square flex items-center justify-center text-[#8e8e93] hover:text-white hover:bg-white/10 active:scale-95 transition-all focus:outline-none cursor-pointer z-10"
               aria-label="Очистить поле"
             >
-              <OneIcon name="cancel" size={18} />
+              <OneIcon name="close" size={18} />
             </button>
+          ) : rightAction ? (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center z-10">
+              {React.isValidElement(rightAction) &&
+              (rightAction.props as { className?: string })?.className?.includes('rounded-full') ? (
+                rightAction
+              ) : (
+                <div className="w-8 h-8 rounded-full aspect-square flex items-center justify-center">
+                  {rightAction}
+                </div>
+              )}
+            </div>
           ) : rightIcon ? (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-[#8e8e93] z-10">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-[#8e8e93] z-10">
               {typeof rightIcon === 'string' ? (
-                <OneIcon name={rightIcon} size={20} />
+                <OneIcon name={rightIcon} size={18} />
               ) : React.isValidElement(rightIcon) ? (
-                React.cloneElement(rightIcon as React.ReactElement<{ size?: number; className?: string }>, {
-                  size: 20,
-                  className: cn('text-[#8e8e93]', (rightIcon as React.ReactElement<{ className?: string }>).props?.className),
-                })
+                React.cloneElement(
+                  rightIcon as React.ReactElement<{ size?: number; className?: string }>,
+                  {
+                    size: 18,
+                    className: cn(
+                      'text-[#8e8e93]',
+                      (rightIcon as React.ReactElement<{ className?: string }>).props?.className
+                    ),
+                  }
+                )
               ) : (
                 rightIcon
               )}
@@ -159,15 +214,29 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = 'Input';
 
-export interface SearchInputProps extends Omit<InputProps, 'type' | 'leftIcon'> {
+export interface SearchInputProps
+  extends Omit<InputProps, 'type' | 'leftIcon' | 'icon' | 'rightActionIcon'> {
   onClear?: () => void;
+  onSubmit?: () => void;
 }
 
 /**
- * SearchInput - Specialized pill search field with centered 20px search icon and optional clear button
+ * SearchInput - Specialized pill search field with centered 20px search icon and round right actions
  */
 export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ placeholder = 'Поиск...', value, onClear, rightIcon, rightAction, icon = 'search', ...props }, ref) => {
+  (
+    {
+      placeholder = 'Поиск...',
+      value,
+      onClear,
+      onSubmit,
+      rightAction,
+      rightIcon,
+      surface = 'base',
+      ...props
+    },
+    ref
+  ) => {
     const hasValue = Boolean(value);
 
     return (
@@ -176,18 +245,29 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         type="text"
         placeholder={placeholder}
         value={value}
-        icon={icon}
-        rightAction={rightAction}
-        rightIcon={
-          !rightAction && hasValue && onClear ? (
+        icon="search"
+        surface={surface}
+        rightAction={
+          rightAction ? (
+            rightAction
+          ) : hasValue && onClear ? (
             <button
               type="button"
               tabIndex={-1}
               onClick={onClear}
-              className="flex items-center justify-center text-[#8e8e93] hover:text-white transition-colors focus:outline-none cursor-pointer pointer-events-auto"
+              className="w-8 h-8 rounded-full aspect-square flex items-center justify-center text-[#8e8e93] hover:text-white hover:bg-white/10 active:scale-95 transition-all focus:outline-none cursor-pointer"
               aria-label="Очистить поиск"
             >
-              <Icon name="cancel" size={18} />
+              <OneIcon name="close" size={18} />
+            </button>
+          ) : onSubmit ? (
+            <button
+              type="button"
+              onClick={onSubmit}
+              className="w-8 h-8 rounded-full aspect-square flex items-center justify-center text-[#8e8e93] hover:text-white hover:bg-white/10 active:scale-95 transition-all focus:outline-none cursor-pointer"
+              aria-label="Найти"
+            >
+              <OneIcon name="arrow_forward" size={18} />
             </button>
           ) : (
             rightIcon
