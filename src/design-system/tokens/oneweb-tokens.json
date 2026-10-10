@@ -1,0 +1,203 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "version": "1.0.0",
+  "name": "OneWebUI Design Tokens",
+  "description": "Design tokens for the One ecosystem web design system (OneWebUI)",
+  "tokens": {
+    "color": {
+      "oneweb-bg": {
+        "value": "#090b0e",
+        "type": "color",
+        "description": "Primary dark canvas background"
+      },
+      "oneweb-bg-subtle": {
+        "value": "#050709",
+        "type": "color",
+        "description": "Deep contrast canvas variant"
+      },
+      "oneweb-surface": {
+        "value": "#14171c",
+        "type": "color",
+        "description": "Primary card and panel surface"
+      },
+      "oneweb-surface-elevated": {
+        "value": "#181c23",
+        "type": "color",
+        "description": "Elevated card and floating modal surface"
+      },
+      "oneweb-surface-subtle": {
+        "value": "#252c37",
+        "type": "color",
+        "description": "Control fill and secondary item surface"
+      },
+      "oneweb-surface-glass": {
+        "value": "rgba(20, 23, 28, 0.94)",
+        "type": "color",
+        "description": "Translucent glass surface"
+      },
+      "oneweb-accent": {
+        "value": "#c0ff00",
+        "type": "color",
+        "description": "Signature One ecosystem lime accent"
+      },
+      "oneweb-accent-hover": {
+        "value": "#aee600",
+        "type": "color",
+        "description": "Accent hover state"
+      },
+      "oneweb-accent-subtle": {
+        "value": "rgba(192, 255, 0, 0.15)",
+        "type": "color",
+        "description": "Accent tint for chips and badges"
+      },
+      "oneweb-border": {
+        "value": "rgba(255, 255, 255, 0.10)",
+        "type": "color",
+        "description": "Default container outline and separator"
+      },
+      "oneweb-border-subtle": {
+        "value": "rgba(255, 255, 255, 0.05)",
+        "type": "color",
+        "description": "Subtle border for low-contrast divisions"
+      },
+      "oneweb-border-strong": {
+        "value": "rgba(255, 255, 255, 0.15)",
+        "type": "color",
+        "description": "Strong border for emphasized elements"
+      },
+      "oneweb-border-accent": {
+        "value": "rgba(192, 255, 0, 0.25)",
+        "type": "color",
+        "description": "Accent border for active states"
+      },
+      "oneweb-text-primary": {
+        "value": "#ffffff",
+        "type": "color",
+        "description": "High-emphasis primary text"
+      },
+      "oneweb-text-secondary": {
+        "value": "#8e8e93",
+        "type": "color",
+        "description": "Medium-emphasis secondary text"
+      },
+      "oneweb-text-muted": {
+        "value": "rgba(255, 255, 255, 0.40)",
+        "type": "color",
+        "description": "Low-emphasis muted text and placeholders"
+      },
+      "oneweb-text-accent": {
+        "value": "#c0ff00",
+        "type": "color",
+        "description": "Accent text"
+      },
+      "oneweb-text-inverse": {
+        "value": "#090b0e",
+        "type": "color",
+        "description": "Dark text for high-contrast accent backgrounds"
+      },
+      "oneweb-status-success": {
+        "value": "#1bd96a",
+        "type": "color",
+        "description": "Success indicators and operational status"
+      },
+      "oneweb-status-warning": {
+        "value": "#fbbf24",
+        "type": "color",
+        "description": "Warning indicators and pending states"
+      },
+      "oneweb-status-danger": {
+        "value": "#ef4444",
+        "type": "color",
+        "description": "Destructive actions and critical errors"
+      }
+    },
+    "radius": {
+      "oneweb-radius-none": {
+        "value": "0px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-sm": {
+        "value": "4px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-md": {
+        "value": "8px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-lg": {
+        "value": "12px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-xl": {
+        "value": "16px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-2xl": {
+        "value": "20px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-3xl": {
+        "value": "24px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-sheet": {
+        "value": "32px",
+        "type": "borderRadius"
+      },
+      "oneweb-radius-full": {
+        "value": "9999px",
+        "type": "borderRadius"
+      }
+    },
+    "shadow": {
+      "oneweb-shadow-sm": {
+        "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-md": {
+        "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-lg": {
+        "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-xl": {
+        "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-2xl": {
+        "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-inner": {
+        "value": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-accent-glow": {
+        "value": "0 0 6px #c0ff00",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-sheet": {
+        "value": "0 -12px 48px rgba(0, 0, 0, 0.85)",
+        "type": "boxShadow"
+      },
+      "oneweb-shadow-modal": {
+        "value": "0 12px 40px rgba(0, 0, 0, 0.80)",
+        "type": "boxShadow"
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "oneweb-font-sans": {
+          "value": "'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          "type": "fontFamily"
+        },
+        "oneweb-font-mono": {
+          "value": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+          "type": "fontFamily"
+        }
+      }
+    }
+  }
+}
