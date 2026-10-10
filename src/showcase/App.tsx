@@ -9,6 +9,7 @@ import { CardsPage } from './pages/CardsPage';
 import { FabPage } from './pages/FabPage';
 import { OverlaysPage } from './pages/OverlaysPage';
 import { BadgesPage } from './pages/BadgesPage';
+import { NavigationPage } from './pages/NavigationPage';
 import { MobileActionBtn } from '@one/web-ui';
 
 export const App: React.FC = () => {
@@ -28,10 +29,12 @@ export const App: React.FC = () => {
         return <FabPage />;
       case 'cards':
         return <CardsPage />;
-      case 'overlays':
-        return <OverlaysPage />;
       case 'badges':
         return <BadgesPage />;
+      case 'navigation':
+        return <NavigationPage />;
+      case 'overlays':
+        return <OverlaysPage />;
       default:
         return <OverviewPage onNavigate={(p) => setActivePage(p)} />;
     }
@@ -42,7 +45,7 @@ export const App: React.FC = () => {
       {renderPage()}
 
       {/* Global mobile floating action button (FAB) for the showcase app */}
-      {activePage !== 'fab' && (
+      {activePage !== 'fab' && activePage !== 'navigation' && (
         <MobileActionBtn
           icon="touch_app"
           variant="primary"
