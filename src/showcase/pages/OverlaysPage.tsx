@@ -8,6 +8,7 @@ import {
   CardContent,
   Modal,
   ActionMenu,
+  Select,
   Input,
   Tabs,
   TabsList,
@@ -34,6 +35,15 @@ export const OverlaysPage: React.FC = () => {
   const [switchState, setSwitchState] = useState(true);
   const [activeTab, setActiveTab] = useState('server');
   const [modalInputVal, setModalInputVal] = useState('');
+
+  // Adaptive Season Selector state
+  const [selectedSeason, setSelectedSeason] = useState('season-4');
+  const seasonOptions = [
+    { value: 'season-4', label: 'Сезон 4: Genesis (Текущий)', icon: 'auto_awesome', badge: 'Active' },
+    { value: 'season-3', label: 'Сезон 3: Quantum Leap', icon: 'history' },
+    { value: 'season-2', label: 'Сезон 2: Cyber City', icon: 'history' },
+    { value: 'season-1', label: 'Сезон 1: Origins', icon: 'history' },
+  ];
 
   // Dropdown action items
   const menuItems = [
@@ -171,12 +181,54 @@ export const OverlaysPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* 3. Interactive Tabs Section */}
+        {/* 4. Adaptive Select / Season Selector */}
         <Card variant="default">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <CardTitle>4. Переключатель вкладок (Tabs по референсу)</CardTitle>
+                <CardTitle>4. Адаптивный селект (Выбор сезона)</CardTitle>
+                <CardDescription>
+                  Desktop: выпадающее меню у капсулы. Mobile: крупная шторка (Bottom Sheet) с строками min-h-[52px], иконками 24px, галочками и подсветкой #c0ff00.
+                </CardDescription>
+              </div>
+              <Badge variant="lime">
+                {seasonOptions.find((s) => s.value === selectedSeason)?.label}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 rounded-[24px] bg-[#090b0e] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-white">Выбор сезона архива</h4>
+                <p className="text-xs text-[#8e8e93] mt-0.5">
+                  Нажмите на капсулу для открытия списка сезонов
+                </p>
+              </div>
+              <Select
+                value={selectedSeason}
+                onChange={setSelectedSeason}
+                options={seasonOptions}
+                title="Архив сезонов"
+                description="Выберите интересующий сезон для просмотра статистики"
+              />
+            </div>
+            <div className="text-xs text-[#8e8e93] space-y-1">
+              <p>
+                • <strong>Мобильное правило:</strong> Любые селекты и фильтры на мобильных устройствах СТРОГО раскрываются снизу в Bottom Sheet с крупными строками <code className="text-white">min-h-[52px]</code> / <code className="text-white">py-3.5 px-4</code> и шрифтом <code className="text-white">text-base font-semibold</code>.
+              </p>
+              <p>
+                • <strong>Активное состояние:</strong> Текущий выбранный пункт подсвечивается лаймовым акцентом <code className="text-[#c0ff00]">#c0ff00</code> и помечается иконкой <code className="text-white">check</code>.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 5. Interactive Tabs Section */}
+        <Card variant="default">
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <CardTitle>5. Переключатель вкладок (Tabs по референсу)</CardTitle>
                 <CardDescription>
                   Капсульный контейнер #14171c, скользящая активная плашка #1c222b, счетчики и слот действия
                 </CardDescription>
@@ -225,10 +277,10 @@ export const OverlaysPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* 4. Switch & Tooltips */}
+        {/* 6. Switch & Tooltips */}
         <Card variant="default">
           <CardHeader>
-            <CardTitle>5. Переключатель & Тултип</CardTitle>
+            <CardTitle>6. Переключатель & Тултип</CardTitle>
             <CardDescription>Микро-контролы взаимодействия</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">

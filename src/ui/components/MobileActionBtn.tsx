@@ -29,7 +29,7 @@ export const MobileActionBtn = React.forwardRef<HTMLButtonElement, MobileActionB
       icon,
       variant = 'primary',
       iconSize = 28,
-      bottomOffsetClass = 'bottom-24',
+      bottomOffsetClass = 'bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))]',
       forceVisible = false,
       disabled,
       type = 'button',
@@ -52,9 +52,9 @@ export const MobileActionBtn = React.forwardRef<HTMLButtonElement, MobileActionB
         disabled={disabled}
         aria-label={ariaLabel || icon}
         className={cn(
-          // Visibility & Positioning
+          // Visibility & Positioning (z-[90] above content, below MobileNavbar z-[100])
           !forceVisible && 'md:hidden',
-          'fixed right-4 z-40',
+          'fixed right-4 z-[90]',
           bottomOffsetClass,
           // Shape & Dimensions
           'w-14 h-14 rounded-full aspect-square',

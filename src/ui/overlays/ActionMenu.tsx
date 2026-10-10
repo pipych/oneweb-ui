@@ -15,6 +15,7 @@ export interface ActionMenuItem {
   disabled?: boolean;
   badge?: string | number;
   separator?: boolean;
+  isActive?: boolean;
 }
 
 export interface ActionMenuProps {
@@ -26,13 +27,15 @@ export interface ActionMenuProps {
   align?: 'start' | 'center' | 'end';
   sideOffset?: number;
   className?: string;
+  selectedId?: string;
+  onSelect?: (id: string) => void;
 }
 
 /**
  * ActionMenu - Adaptive dropdown / action sheet component
  * - Desktop: Classic floating dropdown anchored to trigger with rounded-[20px] bg-[#181c23]
  * - Mobile: Dropdowns do NOT exist. Automatically transforms into a native-feeling Bottom Sheet
- *   with large touch-friendly rows, swipe-down gesture, and clearance above the floating MobileNavbar.
+ *   with large touch-friendly rows (min-h-[52px], py-3.5 px-4), swipe-down gesture, and clearance above MobileNavbar.
  */
 export const ActionMenu: React.FC<ActionMenuProps> = ({
   items,
@@ -43,6 +46,8 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   align = 'end',
   sideOffset = 6,
   className,
+  selectedId,
+  onSelect,
 }) => {
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -138,6 +143,9 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                           return <div key={`sep-${idx}`} className="my-2 h-px bg-white/5" />;
                         }
 
+                        const isItemActive =
+                          item.isActive || (selectedId !== undefined && item.id === selectedId);
+
                         return (
                           <button
                             key={item.id || `item-${idx}`}
@@ -145,10 +153,13 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                             disabled={item.disabled}
                             onClick={() => {
                               setMobileOpen(false);
+                              if (item.id && onSelect) {
+                                onSelect(item.id);
+                              }
                               item.onClick?.();
                             }}
                             className={cn(
-                              'w-full h-13 px-4 rounded-[20px] bg-[#181c23] active:bg-[#1c222b] active:scale-[0.98] transition-all flex items-center justify-between text-left cursor-pointer border-none outline-none',
+                              'w-full min-h-[52px] py-3.5 px-4 rounded-2xl bg-[#181c23] active:bg-white/5 active:scale-[0.98] transition-colors flex items-center justify-between text-left cursor-pointer border-none outline-none',
                               item.disabled && 'opacity-40 pointer-events-none'
                             )}
                           >
@@ -156,33 +167,45 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                               {item.icon && (
                                 <div
                                   className={cn(
-                                    'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
+                                    'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors',
                                     item.danger
                                       ? 'bg-red-500/15 text-red-400'
+                                      : isItemActive
+                                      ? 'bg-[#c0ff00]/15 text-[#c0ff00]'
                                       : 'bg-[#1c222b] text-[#8e8e93]'
                                   )}
                                 >
-                                  <OneIcon name={item.icon} size={20} />
+                                  <OneIcon name={item.icon} size={24} />
                                 </div>
                               )}
                               <span
                                 className={cn(
-                                  'text-sm font-semibold truncate',
-                                  item.danger ? 'text-red-400' : 'text-white'
+                                  'text-base font-semibold truncate',
+                                  item.danger
+                                    ? 'text-red-400'
+                                    : isItemActive
+                                    ? 'text-[#c0ff00]'
+                                    : 'text-white'
                                 )}
                               >
                                 {item.label}
                               </span>
                             </div>
 
-                            {item.badge !== undefined ? (
-                              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93]">
+                            {isItemActive ? (
+                              <OneIcon
+                                name="check"
+                                size={24}
+                                className="text-[#c0ff00] shrink-0"
+                              />
+                            ) : item.badge !== undefined ? (
+                              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93]">
                                 {item.badge}
                               </span>
                             ) : (
                               <OneIcon
                                 name="chevron_right"
-                                size={18}
+                                size={20}
                                 className="text-white/20 shrink-0"
                               />
                             )}
@@ -226,15 +249,25 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
               );
             }
 
+            const isItemActive =
+              item.isActive || (selectedId !== undefined && item.id === selectedId);
+
             return (
               <DropdownMenuPrimitive.Item
                 key={item.id || `item-${idx}`}
                 disabled={item.disabled}
-                onClick={item.onClick}
+                onClick={() => {
+                  if (item.id && onSelect) {
+                    onSelect(item.id);
+                  }
+                  item.onClick?.();
+                }}
                 className={cn(
                   'relative flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium outline-none transition-colors cursor-pointer select-none',
                   item.danger
                     ? 'text-red-400 hover:bg-red-500/10 focus:bg-red-500/10'
+                    : isItemActive
+                    ? 'text-[#c0ff00] bg-[#1c222b]'
                     : 'text-[#8e8e93] hover:text-white hover:bg-[#1c222b] focus:text-white focus:bg-[#1c222b]',
                   item.disabled && 'pointer-events-none opacity-40'
                 )}
@@ -244,22 +277,101 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                     <OneIcon
                       name={item.icon}
                       size={18}
-                      className={item.danger ? 'text-red-400' : 'text-[#8e8e93]'}
+                      className={
+                        item.danger
+                          ? 'text-red-400'
+                          : isItemActive
+                          ? 'text-[#c0ff00]'
+                          : 'text-[#8e8e93]'
+                      }
                     />
                   )}
-                  <span className="truncate">{item.label}</span>
+                  <span className={cn('truncate', isItemActive && 'font-semibold text-white')}>
+                    {item.label}
+                  </span>
                 </div>
 
-                {item.badge !== undefined && (
+                {isItemActive ? (
+                  <OneIcon name="check" size={18} className="text-[#c0ff00] shrink-0" />
+                ) : item.badge !== undefined ? (
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93]">
                     {item.badge}
                   </span>
-                )}
+                ) : null}
               </DropdownMenuPrimitive.Item>
             );
           })}
         </DropdownMenuPrimitive.Content>
       </DropdownMenuPrimitive.Portal>
     </DropdownMenuPrimitive.Root>
+  );
+};
+
+export interface SelectOption {
+  value: string;
+  label: string;
+  icon?: string;
+  badge?: string | number;
+}
+
+export interface SelectProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: SelectOption[];
+  placeholder?: string;
+  title?: string;
+  description?: string;
+  className?: string;
+  triggerClassName?: string;
+}
+
+/**
+ * Select - Adaptive selector component
+ * - Mobile: opens Bottom Sheet with touch-friendly 52px rows and #c0ff00 checkmarks
+ * - Desktop: opens compact Radix dropdown menu anchored to pill trigger
+ */
+export const Select: React.FC<SelectProps> = ({
+  value,
+  onChange,
+  options,
+  placeholder = 'Выберите...',
+  title = 'Выбор',
+  description,
+  className,
+  triggerClassName,
+}) => {
+  const currentOption = options.find((opt) => opt.value === value);
+
+  return (
+    <ActionMenu
+      title={title}
+      description={description}
+      selectedId={value}
+      onSelect={onChange}
+      className={className}
+      items={options.map((opt) => ({
+        id: opt.value,
+        label: opt.label,
+        icon: opt.icon,
+        badge: opt.badge,
+        isActive: opt.value === value,
+        onClick: () => onChange(opt.value),
+      }))}
+      trigger={
+        <button
+          type="button"
+          className={cn(
+            'inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#14171c] hover:bg-[#181c23] active:scale-98 text-white font-medium text-sm transition-all border border-white/5 cursor-pointer select-none',
+            triggerClassName
+          )}
+        >
+          {currentOption?.icon && (
+            <OneIcon name={currentOption.icon} size={18} className="text-[#8e8e93]" />
+          )}
+          <span>{currentOption ? currentOption.label : placeholder}</span>
+          <OneIcon name="expand_more" size={18} className="text-[#8e8e93] ml-1" />
+        </button>
+      }
+    />
   );
 };

@@ -93,7 +93,7 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
       className={cn(
         isStatic
           ? 'w-full'
-          : 'fixed bottom-4 pb-[env(safe-area-inset-bottom,0px)] left-4 right-4 z-40 flex items-center justify-center pointer-events-none transition-all duration-300',
+          : 'fixed bottom-2.5 sm:bottom-3 pb-[env(safe-area-inset-bottom,0px)] left-4 right-4 z-[100] flex items-center justify-center pointer-events-none transition-all duration-300',
         className
       )}
     >
