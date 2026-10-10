@@ -5,53 +5,59 @@ export const CardsPage: React.FC = () => {
   return (
     <div className="space-y-10 animate-fade-in">
       <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="lime">rounded-[28px]</Badge>
+          <Badge variant="neutral">Solid = No Borders</Badge>
+          <Badge variant="warning">Glass = Subtle Border Edge</Badge>
+        </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
           Карточки (Card)
         </h1>
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
-          Контейнеры содержимого со строгим радиусом скругления 28px (<strong>rounded-[28px]</strong>) и разной степенью возвышения (elevation).
+          Контейнеры содержимого со строгим радиусом скругления 28px (<strong>rounded-[28px]</strong>). 
+          Сплошные карточки не имеют обводок, а стеклянная карточка использует тонкую световую грань <code className="text-white font-mono text-xs">border-white/[0.04]</code>.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Default Card */}
+        {/* Default Solid Card */}
         <Card variant="default">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <Badge variant="default">default</Badge>
-              <Icon name="check_circle" className="text-oneweb-text-secondary" />
+              <Badge variant="neutral">default (solid)</Badge>
+              <Icon name="check_circle" className="text-[#8e8e93]" />
             </div>
             <CardTitle>Стандартная карточка</CardTitle>
             <CardDescription>
-              Фон #14171c, тонкая граница 10% белого.
+              Сплошная поверхность #14171c, строго без обводки
             </CardDescription>
           </CardHeader>
           <CardContent>
             Используется для основных списков, параметров конфигурации и блоков панелей управления.
           </CardContent>
           <CardFooter className="justify-between">
-            <span className="text-xs text-oneweb-text-secondary">Статус: Активен</span>
+            <span className="text-xs text-[#8e8e93]">Статус: Готов</span>
             <Button variant="secondary" size="sm">Детали</Button>
           </CardFooter>
         </Card>
 
-        {/* Elevated Card */}
+        {/* Elevated Solid Card */}
         <Card variant="elevated">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <Badge variant="accent">elevated</Badge>
+              <Badge variant="lime">elevated (solid)</Badge>
               <Icon name="star" className="text-oneweb-accent" />
             </div>
             <CardTitle>Приподнятая панель</CardTitle>
             <CardDescription>
-              Фон #181c23, усиленная граница и тень.
+              Поверхность #181c23 без обводки с мягкой тенью
             </CardDescription>
           </CardHeader>
           <CardContent>
             Выделяет важные ключевые показатели (метрики, графики, активные сессии).
           </CardContent>
           <CardFooter className="justify-between">
-            <span className="text-xs text-oneweb-text-secondary">Приоритет: Высокий</span>
+            <span className="text-xs text-[#8e8e93]">Приоритет: Высокий</span>
             <Button variant="primary" size="sm">Действие</Button>
           </CardFooter>
         </Card>
@@ -60,19 +66,19 @@ export const CardsPage: React.FC = () => {
         <Card variant="glass">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <Badge variant="success">glass</Badge>
-              <Icon name="auto_awesome" className="text-emerald-400" />
+              <Badge variant="lime">glass (световая грань)</Badge>
+              <Icon name="auto_awesome" className="text-[#c0ff00]" />
             </div>
             <CardTitle>Стеклянная карточка</CardTitle>
             <CardDescription>
-              Полупрозрачность с фильтром backdrop-blur.
+              Единственное исключение: грань border-white/[0.04]
             </CardDescription>
           </CardHeader>
           <CardContent>
-            Отлично подходит для оверлеев поверх бэкграунда, карт или трехмерных сцен.
+            Полупрозрачный фон с фильтром backdrop-blur. Разрешена тонкая световая грань для эффекта объема стекла.
           </CardContent>
           <CardFooter className="justify-between">
-            <span className="text-xs text-oneweb-text-secondary">Эффект стекла</span>
+            <span className="text-xs text-[#8e8e93]">Glassmorphism</span>
             <Button variant="outline" size="sm">Подробнее</Button>
           </CardFooter>
         </Card>

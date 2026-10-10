@@ -10,20 +10,20 @@
    - Все цвета, отступы, скругления, тени и шрифты задаются **исключительно** через дизайн-токены OneWebUI.
    - Любое использование «магических» значений нарушает консистентность экосистемы One.
 
-2. **Правило скруглений (Никаких острых углов)**:
+2. **Жесткое правило обводок (No Borders)**:
+   - ❌ **СТРОГО ЗАПРЕЩЕНО**: использовать `border`, `border-*`, `ring-*` у всех стандартных и сплошных элементов (обычные кнопки, карточки с заливкой, бейджи, инпуты, дропдауны, оверлеи).
+   - ⚠️ **ЕДИНСТВЕННОЕ ИСКЛЮЧЕНИЕ**: полупрозрачные и стеклянные элементы (с `backdrop-blur` / `glassmorphism`). Только у них разрешена едва заметная обводка (`border border-white/[0.04]` или `border-white/[0.06]`) исключительно для эффекта световой грани стекла.
+
+3. **Правило скруглений (Никаких острых углов)**:
    - ❌ **ЗАПРЕЩЕНО**: использовать радиусы меньше 12px (`rounded-none`, `rounded-sm`, `rounded`, `rounded-md`).
    - ✅ **Минимальный радиус** в дизайн-системе — **12px** (`rounded-xl` / `rounded-oneweb-min`).
    - ✅ **Карточки, модалки и контейнеры**: строго `rounded-[28px]` или `rounded-[32px]`.
    - ✅ **Табы, бейджи, кнопки, инпуты**: строго `rounded-full` (Pill).
 
-3. **Форма Pill (Капсула) без исключений**:
+4. **Форма Pill (Капсула) без исключений**:
    - Все кнопки (`Button`, `IconButton`).
    - Все поля ввода и поиска (`Input`, `SearchInput`).
    - Применяй строго класс `rounded-full`. Прямоугольных инпутов или кнопок с небольшим скруглением быть не должно.
-
-4. **Строгий запрет на Arbitrary CSS и Hex-значения**:
-   - ❌ **ЗАПРЕЩЕНО**: писать в разметке произвольные hex-цвета, например: `bg-[#090b0e]`, `text-[#c0ff00]`, `border-[#14171c]`.
-   - ✅ **РАЗРЕШЕНО**: использовать утилитарные классы Tailwind с префиксом `oneweb-` либо переменные `var(--oneweb-*)`.
 
 5. **Обязательный импорт компонентов из `@one/web-ui`**:
    - Базовые элементы интерфейса импортируются из библиотеки:
@@ -33,119 +33,58 @@
 
 ---
 
-## 2. Справочник токенов и классов Tailwind
+## 2. Спецификация ключевых компонентов
 
-### Палитра цветов (`color`)
+### `Input` & `SearchInput` (Поля ввода)
+- **Форма**: строго `rounded-full`.
+- **Обводка**: отсутствует (`border-none outline-none ring-0 focus:ring-0 focus:outline-none`).
+- **Фон**: сплошная поверхность `#14171c`.
+- **Высота**: комфортная фиксированная высота `h-12`.
+- **Текст**: белый (`text-white`), нормальный `leading-none`, плейсхолдер приглушенный (`placeholder:text-[#8e8e93]`).
+- **Иконки**:
+  - Идеальное центрирование: `absolute top-1/2 -translate-y-1/2 left-4` (или `right-4`).
+  - Фиксированный размер `size={20}`, цвет `#8e8e93`.
+  - Внутренний паддинг инпута автоматически увеличивается (`pl-11` / `pr-11`), чтобы текст не налезал на иконку.
+- **Пример**:
+  ```tsx
+  <Input label="Имя" placeholder="Введите имя..." leftIcon={<Icon name="person" />} />
+  <Input type="password" label="Пароль" />
+  <SearchInput placeholder="Быстрый поиск..." value={query} onChange={e => setQuery(e.target.value)} onClear={() => setQuery('')} />
+  ```
 
-| Назначение | CSS-переменная | Класс Tailwind (Background) | Класс Tailwind (Text) | Класс Tailwind (Border) |
-|---|---|---|---|---|
-| Основной фон (Canvas) | `--oneweb-bg` | `bg-oneweb-bg` | `text-oneweb-bg` | `border-oneweb-bg` |
-| Глубокий фон (Contrast) | `--oneweb-bg-subtle` | `bg-oneweb-bg-subtle` | `text-oneweb-bg-subtle` | `border-oneweb-bg-subtle` |
-| Карточка / Поверхность | `--oneweb-surface` | `bg-oneweb-surface` | `text-oneweb-surface` | `border-oneweb-surface` |
-| Приподнятая поверхность | `--oneweb-surface-elevated` | `bg-oneweb-surface-elevated` | `text-oneweb-surface-elevated` | `border-oneweb-surface-elevated` |
-| Суб-поверхность / Контрол | `--oneweb-surface-subtle` | `bg-oneweb-surface-subtle` | `text-oneweb-surface-subtle` | `border-oneweb-surface-subtle` |
-| Стекло (Backdrop Blur) | `--oneweb-surface-glass` | `bg-oneweb-surface-glass` | - | - |
-| Фирменный акцент (One Lime) | `--oneweb-accent` | `bg-oneweb-accent` | `text-oneweb-accent` | `border-oneweb-accent` |
-| Акцент ховер | `--oneweb-accent-hover` | `hover:bg-oneweb-accent-hover` | - | - |
-| Тинт акцента (15%) | `--oneweb-accent-subtle` | `bg-oneweb-accent-subtle` | - | `border-oneweb-border-accent` |
-| Стандартная граница | `--oneweb-border` | - | - | `border-oneweb-border` |
-| Тонкая граница | `--oneweb-border-subtle` | - | - | `border-oneweb-border-subtle` |
-| Усиленная граница | `--oneweb-border-strong` | - | - | `border-oneweb-border-strong` |
-| Основной текст (White) | `--oneweb-text-primary` | - | `text-oneweb-text-primary` | - |
-| Вторичный текст (SF Gray) | `--oneweb-text-secondary` | - | `text-oneweb-text-secondary` | - |
-| Приглушенный текст | `--oneweb-text-muted` | - | `text-oneweb-text-muted` | - |
-| Инверсный текст | `--oneweb-text-inverse` | - | `text-oneweb-text-inverse` | - |
-| Статус: Успех | `--oneweb-status-success` | `bg-oneweb-status-success` | `text-oneweb-status-success` | `border-oneweb-status-success` |
-| Статус: Предупреждение | `--oneweb-status-warning` | `bg-oneweb-status-warning` | `text-oneweb-status-warning` | `border-oneweb-status-warning` |
-| Статус: Ошибка / Danger | `--oneweb-status-danger` | `bg-oneweb-status-danger` | `text-oneweb-status-danger` | `border-oneweb-status-danger` |
+### `Badge` (Информационные бейджи)
+- **Форма**: `rounded-full inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium`.
+- **Обводка**: **СТРОГО БЕЗ ОБВОДОК** (никаких `border` и `ring`).
+- **Фон**: темный полупрозрачный оттенок активного цвета (opacity ~10-15%).
+- **Структура**:
+  1. Индикаторная точка: `w-1.5 h-1.5 rounded-full` активного цвета.
+  2. Текст: ТОГО ЖЕ цвета, что и точка.
+- **Варианты (variants)**:
+  * `lime`: фон `bg-[#c0ff00]/10`, точка `bg-[#c0ff00]`, текст `text-[#c0ff00]`.
+  * `neutral`: фон `bg-white/5`, точка `bg-[#8e8e93]`, текст `text-[#8e8e93]`.
+  * `danger`: фон `bg-red-500/10`, точка `bg-red-500`, текст `text-red-500`.
+  * `warning`: фон `bg-amber-500/10`, точка `bg-amber-500`, текст `text-amber-500`.
 
----
+### `Button` & `IconButton` (Кнопки)
+- Форма: `rounded-full` (Pill для Button, Circle для IconButton).
+- Сплошные варианты (`primary`, `secondary`, `danger`): строго без обводок и колец фокуса (`border-none ring-0`).
 
-### Скругления углов (`borderRadius`)
-
-| Значение | CSS-переменная | Класс Tailwind | Назначение |
-|---|---|---|---|
-| **12px (Минимум)** | `--oneweb-radius-min` | `rounded-xl` / `rounded-oneweb-min` | Тултипы, мелкие меню |
-| **16px** | `--oneweb-radius-xl` | `rounded-2xl` / `rounded-oneweb-xl` | Выпадающие панели |
-| **20px** | `--oneweb-radius-2xl` | `rounded-oneweb-2xl` | Модальные меню |
-| **28px** | `--oneweb-radius-3xl` | `rounded-[28px]` / `rounded-oneweb-card` | **Карточки и контейнеры** |
-| **32px** | `--oneweb-radius-sheet` | `rounded-[32px]` / `rounded-oneweb-sheet` | **Диалоги и нижние шторки** |
-| **9999px (Pill)** | `--oneweb-radius-full` | `rounded-full` | **Кнопки, Инпуты, Табы, Бейджи, FAB** |
-
----
-
-### Тени и свечения (`boxShadow`)
-
-| Назначение | Класс Tailwind | Описание |
-|---|---|---|
-| Тонкая тень | `shadow-oneweb-sm` | Карточки в списке |
-| Средняя тень | `shadow-oneweb-md` | Стандартные панели |
-| Высокая тень | `shadow-oneweb-lg` | Выпадающие меню, поповеры |
-| Неоновый лайм | `shadow-oneweb-accent-glow` | Фирменное свечение `0 0 16px rgba(192, 255, 0, 0.35)` |
-| Модальное окно | `shadow-oneweb-modal` | Диалоги `0 12px 40px rgba(0,0,0,0.8)` |
-| Нижняя шторка | `shadow-oneweb-sheet` | Bottom sheets `0 -12px 48px rgba(0,0,0,0.85)` |
-
----
-
-## 3. Базовые примитивы библиотеки `@one/web-ui`
-
-### `Button` & `IconButton`
-```tsx
-import { Button, IconButton, Icon } from '@one/web-ui';
-
-// Кнопки всегда имеют форму Pill (rounded-full)
-<Button variant="primary" size="md">Кнопка</Button>
-<Button variant="secondary" size="sm">Действие</Button>
-<Button variant="outline" size="md">Контур</Button>
-
-// Круглая иконочная кнопка (rounded-full aspect-square)
-<IconButton variant="primary" size="md">
-  <Icon name="add" size={20} />
-</IconButton>
-```
-
-### `Input` & `SearchInput`
-```tsx
-import { Input, SearchInput } from '@one/web-ui';
-
-// Поля всегда имеют форму Pill (rounded-full)
-<Input label="Имя" placeholder="Введите..." />
-<Input type="password" label="Пароль" />
-
-// Поле поиска с иконкой
-<SearchInput placeholder="Быстрый поиск..." value={query} onChange={e => setQuery(e.target.value)} onClear={() => setQuery('')} />
-```
+### `Card` (Карточки)
+- Скругление: строго `rounded-[28px]`.
+- Сплошные карточки (`default`, `elevated`): без обводок (`border-none`).
+- Стеклянная карточка (`glass`): с эффектом `backdrop-blur-md` и разрешенной тонкой световой гранью `border border-white/[0.04]`.
 
 ### `MobileActionBtn` (FAB)
-```tsx
-import { MobileActionBtn } from '@one/web-ui';
-
-// Отображается ТОЛЬКО на мобильных устройствах (md:hidden)
-// Зафиксирован строго справа внизу НАД нижним баром (fixed right-4 bottom-24)
-<MobileActionBtn icon="add" variant="primary" onClick={() => handleCreate()} />
-<MobileActionBtn icon="tune" variant="surface" onClick={() => handleFilter()} />
-```
-
-### `Card`
-```tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@one/web-ui';
-
-// Карточки всегда имеют скругление 28px (rounded-[28px])
-<Card variant="default">
-  <CardHeader>
-    <CardTitle>Заголовок</CardTitle>
-  </CardHeader>
-  <CardContent>
-    Контент карточки
-  </CardContent>
-</Card>
-```
+- Отображение: ТОЛЬКО мобильная версия (`md:hidden`), скрыт на десктопе.
+- Позиционирование: `fixed right-4 bottom-24 z-40` НАД нижним навигационным баром.
+- Форма: круг `w-14 h-14 rounded-full aspect-square`.
+- Контент: ТОЛЬКО иконка (28px), никакого текста.
 
 ---
 
-## 4. Чеклист перед коммитом
-- [ ] Отсутствуют радиусы меньше 12px (`rounded-none`, `rounded-sm`, `rounded-md`).
-- [ ] Все кнопки (`Button`, `IconButton`) и инпуты (`Input`, `SearchInput`) имеют класс `rounded-full`.
-- [ ] Карточки имеют скругление 28px (`rounded-[28px]`), диалоги — 32px (`rounded-[32px]`).
-- [ ] `MobileActionBtn` скрыт на десктопе (`md:hidden`) и зафиксирован внизу справа.
+## 3. Чеклист перед коммитом
+- [ ] Отсутствуют обводки (`border`, `ring`) у сплошных элементов (инпуты, сплошные карточки, бейджи, кнопки).
+- [ ] Иконки в инпутах отцентрированы (`top-1/2 -translate-y-1/2 left-4`/`right-4`) и имеют размер 20px, а паддинг поля увеличивается до `pl-11` / `pr-11`.
+- [ ] Бейджи используют варианты `lime`, `neutral`, `danger`, `warning` с точкой того же цвета и без обводки.
+- [ ] Все кнопки и поля ввода имеют класс `rounded-full`.
 - [ ] Сборка `npm run build` проходит без ошибок.

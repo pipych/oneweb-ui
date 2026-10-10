@@ -40,9 +40,9 @@ export const MobileActionBtn = React.forwardRef<HTMLButtonElement, MobileActionB
   ) => {
     const variants = {
       primary:
-        'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover shadow-oneweb-accent-glow',
+        'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover shadow-oneweb-accent-glow border-none',
       surface:
-        'bg-oneweb-surface-elevated text-oneweb-accent hover:bg-oneweb-surface-subtle shadow-oneweb-lg',
+        'bg-oneweb-surface-elevated text-oneweb-accent hover:bg-oneweb-surface-subtle shadow-oneweb-lg border border-white/[0.04]',
     };
 
     return (
@@ -59,11 +59,8 @@ export const MobileActionBtn = React.forwardRef<HTMLButtonElement, MobileActionB
           // Shape & Dimensions
           'w-14 h-14 rounded-full aspect-square',
           'flex items-center justify-center shrink-0',
-          // Styling & Borders
-          'border border-white/[0.04]',
-          'transition-all duration-150 select-none outline-none cursor-pointer',
+          'transition-all duration-150 select-none outline-none ring-0 focus:outline-none focus:ring-0 cursor-pointer',
           'active:scale-95 disabled:opacity-50 disabled:pointer-events-none',
-          'focus-visible:ring-2 focus-visible:ring-oneweb-accent focus-visible:ring-offset-2 focus-visible:ring-offset-oneweb-bg',
           variants[variant],
           className
         )}

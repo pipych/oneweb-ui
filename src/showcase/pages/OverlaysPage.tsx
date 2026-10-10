@@ -147,13 +147,13 @@ export const OverlaysPage: React.FC = () => {
                   <TabsTrigger value="password">Пароль</TabsTrigger>
                   <TabsTrigger value="billing">Сервер</TabsTrigger>
                 </TabsList>
-                <TabsContent value="account" className="p-3 bg-oneweb-surface-subtle rounded-oneweb-lg border border-oneweb-border-subtle text-xs text-oneweb-text-secondary">
+                <TabsContent value="account" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
                   Контент вкладки учетной записи пользователя OneHouse.
                 </TabsContent>
-                <TabsContent value="password" className="p-3 bg-oneweb-surface-subtle rounded-oneweb-lg border border-oneweb-border-subtle text-xs text-oneweb-text-secondary">
+                <TabsContent value="password" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
                   Настройки безопасности и двухфакторной аутентификации.
                 </TabsContent>
-                <TabsContent value="billing" className="p-3 bg-oneweb-surface-subtle rounded-oneweb-lg border border-oneweb-border-subtle text-xs text-oneweb-text-secondary">
+                <TabsContent value="billing" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
                   Параметры инстанса и деплоя Cloudflare Pages.
                 </TabsContent>
               </Tabs>
@@ -169,7 +169,7 @@ export const OverlaysPage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-3 rounded-oneweb-lg bg-oneweb-surface-subtle border border-oneweb-border-subtle">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-oneweb-surface-subtle">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-white">Турбо-режим рендеринга</span>
                   <span className="text-xs text-oneweb-text-secondary">Оптимизация для мобильных устройств</span>

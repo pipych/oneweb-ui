@@ -62,7 +62,7 @@ export const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4',
-        'bg-oneweb-surface border border-oneweb-border-strong p-6 sm:p-7 shadow-oneweb-modal rounded-[32px]',
+        'bg-oneweb-surface p-6 sm:p-7 shadow-oneweb-modal rounded-[32px]',
         'duration-200 outline-none',
         className
       )}
@@ -91,7 +91,7 @@ export const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-2 border-t border-oneweb-border-subtle mt-2',
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-2 mt-2',
       className
     )}
     {...props}

@@ -8,9 +8,9 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', ...props }, ref) => {
     const variants = {
-      default: 'bg-oneweb-surface border border-oneweb-border shadow-oneweb-sm',
-      elevated: 'bg-oneweb-surface-elevated border border-oneweb-border-strong shadow-oneweb-md',
-      glass: 'bg-oneweb-surface-glass backdrop-blur-md border border-oneweb-border-subtle shadow-oneweb-lg',
+      default: 'bg-oneweb-surface shadow-oneweb-sm',
+      elevated: 'bg-oneweb-surface-elevated shadow-oneweb-md',
+      glass: 'bg-oneweb-surface-glass backdrop-blur-md border border-white/[0.04] shadow-oneweb-lg',
     };
 
     return (
@@ -65,7 +65,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex items-center p-5 pt-0 border-t border-oneweb-border-subtle mt-4', className)}
+      className={cn('flex items-center p-5 pt-0 mt-3', className)}
       {...props}
     />
   )

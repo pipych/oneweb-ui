@@ -12,8 +12,8 @@ export const FabPage: React.FC = () => {
     <div className="space-y-10 animate-fade-in">
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant="accent">Mobile Only</Badge>
-          <Badge variant="default">rounded-full (Circle)</Badge>
+          <Badge variant="lime">Mobile Only</Badge>
+          <Badge variant="neutral">rounded-full (Circle)</Badge>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
           Плавающая кнопка действия (MobileActionBtn / FAB)
@@ -89,7 +89,7 @@ export const FabPage: React.FC = () => {
               </div>
 
               {/* Click Counter Feedback */}
-              <div className="p-4 rounded-2xl bg-oneweb-surface-subtle border border-oneweb-border-subtle flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-oneweb-surface-subtle flex items-center justify-between">
                 <span className="text-xs text-oneweb-text-secondary">Счетчик нажатий:</span>
                 <span className="text-sm font-bold text-oneweb-accent">{clickCount}</span>
               </div>
@@ -153,7 +153,7 @@ export const FabPage: React.FC = () => {
             <div className="flex-1 p-4 space-y-3 overflow-hidden">
               <div className="flex items-center justify-between pb-2">
                 <span className="font-bold text-white text-base">OneHouse</span>
-                <Badge variant="accent" size="sm" dot>Online</Badge>
+                <Badge variant="lime" size="sm">Online</Badge>
               </div>
 
               <div className="p-3.5 rounded-[24px] bg-[#14171c] border border-white/[0.04] space-y-1.5">
@@ -208,7 +208,7 @@ export const FabPage: React.FC = () => {
           <CardTitle>Код подключения</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-xl bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
+          <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
             <pre>
               <span className="text-oneweb-accent">import</span> &#123; MobileActionBtn &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
               <span className="text-gray-500">// Автоматически скрыт на десктопе, закреплен НАД мобильным навбаром</span>{'\n'}

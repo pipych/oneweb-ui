@@ -26,17 +26,17 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const baseStyles =
-      'inline-flex items-center justify-center rounded-full aspect-square shrink-0 transition-all duration-150 select-none outline-none focus-visible:ring-2 focus-visible:ring-oneweb-accent focus-visible:ring-offset-2 focus-visible:ring-offset-oneweb-bg disabled:opacity-50 disabled:pointer-events-none active:scale-95 cursor-pointer';
+      'inline-flex items-center justify-center rounded-full aspect-square shrink-0 transition-all duration-150 select-none outline-none border-none ring-0 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:pointer-events-none active:scale-95 cursor-pointer';
 
     const variants = {
       primary:
         'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover shadow-oneweb-sm',
       secondary:
-        'bg-oneweb-surface-subtle text-oneweb-text-primary hover:bg-oneweb-surface-elevated border border-oneweb-border-subtle',
+        'bg-oneweb-surface-subtle text-oneweb-text-primary hover:bg-oneweb-surface-elevated',
       surface:
-        'bg-oneweb-surface-elevated text-oneweb-accent hover:bg-oneweb-surface-subtle border border-white/[0.04] shadow-oneweb-md',
+        'bg-oneweb-surface-elevated text-oneweb-accent hover:bg-oneweb-surface-subtle shadow-oneweb-md',
       outline:
-        'bg-transparent text-oneweb-text-primary border border-oneweb-border hover:bg-oneweb-surface-subtle hover:border-oneweb-border-strong',
+        'bg-transparent text-oneweb-text-primary border border-white/10 hover:bg-white/5 hover:border-white/20',
       ghost:
         'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle',
       danger:

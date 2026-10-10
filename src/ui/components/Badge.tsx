@@ -1,58 +1,80 @@
 import React from 'react';
 import { cn } from '../utils/cn';
 
+export type BadgeVariant =
+  | 'lime'
+  | 'neutral'
+  | 'danger'
+  | 'warning'
+  // Backward compatibility aliases
+  | 'accent'
+  | 'default'
+  | 'success';
+
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'accent' | 'success' | 'warning' | 'danger';
+  variant?: BadgeVariant;
+  /** Size variant */
   size?: 'sm' | 'md';
+  /** Whether to show the active indicator dot (defaults to true as per OneWebUI spec) */
   dot?: boolean;
 }
 
+/**
+ * OneWebUI Badge Component
+ * - Strict Pill Shape (rounded-full)
+ * - STRICTLY NO BORDERS (no border, no ring)
+ * - Translucent background (~10-15%) of the active color
+ * - Indicator dot (w-1.5 h-1.5 rounded-full) matching the text color
+ */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant = 'default', size = 'md', dot = false, children, ...props }, ref) => {
-    const variants = {
-      default:
-        'bg-oneweb-surface-subtle text-oneweb-text-secondary border border-oneweb-border-subtle',
-      accent:
-        'bg-oneweb-accent-subtle text-oneweb-accent border border-oneweb-border-accent',
-      success:
-        'bg-oneweb-status-success/15 text-oneweb-status-success border border-oneweb-status-success/30',
-      warning:
-        'bg-oneweb-status-warning/15 text-oneweb-status-warning border border-oneweb-status-warning/30',
-      danger:
-        'bg-oneweb-status-danger/15 text-oneweb-status-danger border border-oneweb-status-danger/30',
+  ({ className, variant = 'lime', size = 'md', dot = true, children, ...props }, ref) => {
+    // Normalizing aliases
+    const normalizedVariant: 'lime' | 'neutral' | 'danger' | 'warning' =
+      variant === 'accent' || variant === 'success'
+        ? 'lime'
+        : variant === 'default'
+        ? 'neutral'
+        : variant;
+
+    const variantStyles = {
+      lime: {
+        container: 'bg-[#c0ff00]/10 text-[#c0ff00]',
+        dot: 'bg-[#c0ff00]',
+      },
+      neutral: {
+        container: 'bg-white/5 text-[#8e8e93]',
+        dot: 'bg-[#8e8e93]',
+      },
+      danger: {
+        container: 'bg-red-500/10 text-red-500',
+        dot: 'bg-red-500',
+      },
+      warning: {
+        container: 'bg-amber-500/10 text-amber-500',
+        dot: 'bg-amber-500',
+      },
     };
 
-    const dotColors = {
-      default: 'bg-oneweb-text-secondary',
-      accent: 'bg-oneweb-accent shadow-[0_0_8px_#c0ff00]',
-      success: 'bg-oneweb-status-success shadow-[0_0_8px_#1bd96a]',
-      warning: 'bg-oneweb-status-warning',
-      danger: 'bg-oneweb-status-danger shadow-[0_0_8px_#ef4444]',
-    };
-
-    const sizes = {
-      sm: 'text-[11px] px-2 py-0.5 rounded-oneweb-full gap-1',
-      md: 'text-xs px-2.5 py-1 rounded-oneweb-full gap-1.5',
-    };
+    const currentStyle = variantStyles[normalizedVariant] || variantStyles.lime;
 
     return (
       <span
         ref={ref}
         className={cn(
-          'inline-flex items-center font-medium select-none tracking-wide',
-          variants[variant],
-          sizes[size],
+          'rounded-full inline-flex items-center gap-1.5 select-none tracking-normal leading-none font-medium',
+          size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-3 py-1 text-xs',
+          currentStyle.container,
           className
         )}
         {...props}
       >
         {dot && (
           <span
-            className={cn('w-1.5 h-1.5 rounded-full inline-block shrink-0', dotColors[variant])}
+            className={cn('w-1.5 h-1.5 rounded-full inline-block shrink-0', currentStyle.dot)}
             aria-hidden="true"
           />
         )}
-        {children}
+        <span>{children}</span>
       </span>
     );
   }

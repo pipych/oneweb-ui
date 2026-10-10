@@ -9,19 +9,19 @@ export const ButtonsPage: React.FC = () => {
     <div className="space-y-10 animate-fade-in">
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant="accent">Strict Pill (rounded-full)</Badge>
-          <Badge variant="default">No sharp corners</Badge>
+          <Badge variant="lime">Strict Pill (rounded-full)</Badge>
+          <Badge variant="neutral">No Borders (border-none)</Badge>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
           Кнопки (Button & IconButton)
         </h1>
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
-          Интерактивные элементы действия в строгой форме капсулы (<strong>rounded-full</strong>) без исключений.
+          Интерактивные элементы действия в строгой форме капсулы (<strong>rounded-full</strong>) без исключений и без обводок.
         </p>
       </div>
 
       {/* Interactive Controls */}
-      <div className="flex flex-wrap items-center gap-6 p-4 rounded-2xl bg-oneweb-surface border border-oneweb-border-subtle">
+      <div className="flex flex-wrap items-center gap-6 p-4 rounded-2xl bg-oneweb-surface">
         <label className="flex items-center gap-3 cursor-pointer">
           <Switch checked={loading} onCheckedChange={setLoading} />
           <span className="text-sm font-medium text-white">Режим загрузки (isLoading)</span>
@@ -204,7 +204,7 @@ export const ButtonsPage: React.FC = () => {
           <CardTitle>Пример использования</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-xl bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
+          <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
             <pre>
               <span className="text-oneweb-accent">import</span> &#123; Button, IconButton, Icon &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
               <span className="text-gray-500">// Кнопка Pill</span>{'\n'}

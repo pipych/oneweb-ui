@@ -10,13 +10,13 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-10 animate-fade-in">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-oneweb-surface to-oneweb-surface-elevated border border-oneweb-border-strong p-8 sm:p-12">
+      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-oneweb-surface to-oneweb-surface-elevated p-8 sm:p-12">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-oneweb-accent/10 blur-3xl pointer-events-none" />
         
         <div className="relative z-10 max-w-2xl space-y-4">
           <div className="flex items-center gap-2">
-            <Badge variant="accent" dot>Официальная библиотека</Badge>
-            <Badge variant="default">Экосистема One</Badge>
+            <Badge variant="lime">Официальная библиотека</Badge>
+            <Badge variant="neutral">Экосистема One</Badge>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
@@ -84,10 +84,10 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-3.5 rounded-2xl bg-oneweb-surface border border-oneweb-border-subtle flex flex-col justify-between h-28"
+              className="p-3.5 rounded-2xl bg-oneweb-surface flex flex-col justify-between h-28"
             >
               <div
-                className="w-full h-8 rounded-xl border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold"
+                className="w-full h-8 rounded-xl flex items-center justify-center font-mono text-[11px] font-bold"
                 style={{
                   backgroundColor: item.value,
                   color: item.textColor || '#ffffff',
@@ -108,7 +108,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 flex items-center justify-center text-oneweb-accent mb-2">
               <Icon name="straighten" size={24} />
             </div>
             <CardTitle>Strict Pill & 28px Radii</CardTitle>
@@ -120,7 +120,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
 
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 flex items-center justify-center text-oneweb-accent mb-2">
               <Icon name="touch_app" size={24} />
             </div>
             <CardTitle>MobileActionBtn (FAB)</CardTitle>
@@ -132,7 +132,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
 
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 flex items-center justify-center text-oneweb-accent mb-2">
               <Icon name="bolt" size={24} />
             </div>
             <CardTitle>Cloudflare Pages</CardTitle>
@@ -152,7 +152,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-2xl bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-primary overflow-x-auto">
+          <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-primary overflow-x-auto">
             <pre className="text-oneweb-text-secondary">
               <span className="text-oneweb-accent">import</span> &#123; Button, Input, SearchInput, Card, MobileActionBtn &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
               <span className="text-oneweb-accent">export default function</span> <span className="text-blue-400">MyScreen</span>() &#123;{'\n'}

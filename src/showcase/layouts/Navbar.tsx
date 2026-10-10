@@ -27,19 +27,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
               <span className="text-xl font-bold tracking-tight text-white">
                 One<span className="text-oneweb-accent">WebUI</span>
               </span>
-              <Badge variant="accent" size="sm">v0.1.0</Badge>
+              <Badge variant="lime" size="sm">v0.1.0</Badge>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <Badge variant="success" dot size="sm">Cloudflare Pages</Badge>
+          <Badge variant="lime" size="sm">Cloudflare Pages</Badge>
           
           <a
             href="https://github.com/pipych/oneweb-ui"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-oneweb-text-secondary hover:text-white bg-oneweb-surface-subtle hover:bg-oneweb-surface-elevated border border-oneweb-border-subtle rounded-full transition-colors"
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-oneweb-text-secondary hover:text-white bg-oneweb-surface-subtle hover:bg-oneweb-surface-elevated rounded-full transition-colors"
           >
             <Icon name="code" size={16} />
             <span>GitHub</span>
