@@ -1,8 +1,12 @@
 // OneWebUI Design System
-// Core primitives, icons, and tokens for the One ecosystem
+// Core primitives, icons, navigation, and tokens for the One ecosystem
 
 export * from './components/OneIcon';
 export * from './components/Button';
+export * from './components/IconButton';
+export * from './components/MobileActionButton';
+export * from './components/DesktopNavbar';
+export * from './components/MobileNavbar';
 export * from './components/Card';
 export * from './components/Input';
 export * from './components/Badge';

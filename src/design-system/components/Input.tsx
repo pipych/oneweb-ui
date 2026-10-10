@@ -8,6 +8,7 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   helperText?: string;
   leftIcon?: React.ReactNode | string;
   rightIcon?: React.ReactNode | string;
+  inputSize?: 'md' | 'lg';
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,6 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       leftIcon,
       rightIcon,
+      inputSize = 'md',
       disabled = false,
       type = 'text',
       className,
@@ -34,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const renderIcon = (icon: React.ReactNode | string) => {
       if (typeof icon === 'string') {
-        return <OneIcon name={icon} size="sm" />;
+        return <OneIcon name={icon} size={inputSize === 'lg' ? 'md' : 'sm'} />;
       }
       return icon;
     };
@@ -45,7 +47,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={generatedId}
             className={cn(
-              'text-xs font-semibold tracking-wide',
+              'text-xs font-semibold tracking-wide pl-2',
               hasError ? 'text-rose-400' : 'text-[#8e8e93]'
             )}
           >
@@ -55,7 +57,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center w-full">
           {leftIcon && (
-            <div className="absolute left-4 flex items-center justify-center pointer-events-none text-white/40">
+            <div className={cn(
+              'absolute flex items-center justify-center pointer-events-none text-white/40',
+              inputSize === 'lg' ? 'left-5' : 'left-4'
+            )}>
               {renderIcon(leftIcon)}
             </div>
           )}
@@ -66,13 +71,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             type={computedType}
             disabled={disabled}
             className={cn(
-              'w-full h-12 bg-white/[0.05] text-white text-sm rounded-2xl border transition-all duration-150 outline-none',
+              'w-full bg-[#14171c] text-white text-sm rounded-full border transition-all duration-200 outline-none',
               'placeholder:text-white/30',
-              leftIcon ? 'pl-11' : 'pl-4',
-              isPassword || rightIcon ? 'pr-12' : 'pr-4',
+              inputSize === 'lg' ? 'h-14 text-base' : 'h-12 text-sm',
+              leftIcon ? (inputSize === 'lg' ? 'pl-13' : 'pl-11') : (inputSize === 'lg' ? 'pl-6' : 'pl-5'),
+              isPassword || rightIcon ? (inputSize === 'lg' ? 'pr-14' : 'pr-12') : (inputSize === 'lg' ? 'pr-6' : 'pr-5'),
               hasError
                 ? 'border-rose-500/40 bg-rose-500/[0.05] focus:border-rose-500'
-                : 'border-white/[0.04] focus:border-[#c0ff00]/40 focus:bg-white/[0.08]',
+                : 'border-white/[0.04] focus:border-oneweb-accent/50 focus:bg-[#181c23]',
               disabled && 'opacity-30 cursor-not-allowed',
               className
             )}
@@ -84,7 +90,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 flex items-center justify-center text-white/40 hover:text-white transition-colors focus:outline-none"
+              className={cn(
+                'absolute flex items-center justify-center text-white/40 hover:text-white transition-colors focus:outline-none',
+                inputSize === 'lg' ? 'right-5' : 'right-4'
+              )}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               <OneIcon name={showPassword ? 'visibility_off' : 'visibility'} size="sm" />
@@ -92,18 +101,24 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
 
           {!isPassword && rightIcon && (
-            <div className="absolute right-4 flex items-center justify-center text-white/40">
+            <div className={cn(
+              'absolute flex items-center justify-center text-white/40',
+              inputSize === 'lg' ? 'right-5' : 'right-4'
+            )}>
               {renderIcon(rightIcon)}
             </div>
           )}
         </div>
 
-        {typeof error === 'string' && error && (
-          <span className="text-xs text-rose-400 font-medium">{error}</span>
-        )}
-
-        {!hasError && helperText && (
-          <span className="text-xs text-white/40">{helperText}</span>
+        {(hasError || helperText) && (
+          <p
+            className={cn(
+              'text-xs leading-normal pl-2',
+              hasError ? 'text-rose-400 font-medium' : 'text-[#8e8e93]'
+            )}
+          >
+            {typeof error === 'string' ? error : helperText}
+          </p>
         )}
       </div>
     );
