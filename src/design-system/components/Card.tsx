@@ -6,9 +6,9 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const cardVariants = {
-  default: 'bg-oneweb-surface border border-oneweb-border shadow-oneweb-md',
-  elevated: 'bg-oneweb-surface-elevated border border-oneweb-border shadow-oneweb-lg',
-  glass: 'bg-oneweb-surface-glass border border-oneweb-border backdrop-blur-xl shadow-oneweb-lg',
+  default: 'bg-[#14171c] border border-white/[0.04]',
+  elevated: 'bg-[#181c23] border border-white/[0.06]',
+  glass: 'bg-[#14171c]/80 border border-white/[0.04] backdrop-blur-2xl',
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -17,7 +17,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-oneweb-2xl transition-all duration-200 overflow-hidden flex flex-col',
+          'rounded-[32px] p-6 sm:p-7 flex flex-col gap-5 transition-all duration-200 overflow-hidden',
           cardVariants[variant],
           className
         )}
@@ -37,7 +37,7 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
     return (
       <div
         ref={ref}
-        className={cn('p-5 border-b border-oneweb-border flex flex-col gap-1.5', className)}
+        className={cn('flex flex-col gap-1.5 p-0 border-none', className)}
         {...rest}
       >
         {children}
@@ -56,7 +56,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
     return (
       <Component
         ref={ref}
-        className={cn('text-lg font-bold text-oneweb-text-primary tracking-tight', className)}
+        className={cn('text-lg font-bold text-white tracking-tight', className)}
         {...rest}
       >
         {children}
@@ -73,7 +73,7 @@ export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionP
     return (
       <p
         ref={ref}
-        className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
+        className={cn('text-xs text-[#8e8e93] leading-relaxed', className)}
         {...rest}
       >
         {children}
@@ -90,7 +90,7 @@ export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
     return (
       <div
         ref={ref}
-        className={cn('p-5 flex-1 text-sm text-oneweb-text-secondary', className)}
+        className={cn('p-0 flex-1 text-sm text-[#8e8e93] border-none', className)}
         {...rest}
       >
         {children}
@@ -108,7 +108,7 @@ export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
       <div
         ref={ref}
         className={cn(
-          'p-5 pt-3 border-t border-oneweb-border/60 flex items-center justify-between gap-3 mt-auto',
+          'p-0 pt-2 flex items-center justify-between gap-3 mt-auto border-none',
           className
         )}
         {...rest}

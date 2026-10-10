@@ -40,13 +40,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     return (
-      <div className="w-full flex flex-col gap-1.5 text-left">
+      <div className="w-full flex flex-col gap-2 text-left">
         {label && (
           <label
             htmlFor={generatedId}
             className={cn(
               'text-xs font-semibold tracking-wide',
-              hasError ? 'text-oneweb-status-danger' : 'text-oneweb-text-secondary'
+              hasError ? 'text-rose-400' : 'text-[#8e8e93]'
             )}
           >
             {label}
@@ -55,7 +55,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center w-full">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center justify-center pointer-events-none text-oneweb-text-muted">
+            <div className="absolute left-4 flex items-center justify-center pointer-events-none text-white/40">
               {renderIcon(leftIcon)}
             </div>
           )}
@@ -66,14 +66,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             type={computedType}
             disabled={disabled}
             className={cn(
-              'w-full bg-oneweb-surface-subtle text-oneweb-text-primary text-sm rounded-oneweb-xl border transition-all duration-150 outline-none placeholder:text-oneweb-text-muted',
-              leftIcon ? 'pl-10' : 'pl-4',
-              isPassword || rightIcon ? 'pr-11' : 'pr-4',
-              'py-2.5',
+              'w-full h-12 bg-white/[0.05] text-white text-sm rounded-2xl border transition-all duration-150 outline-none',
+              'placeholder:text-white/30',
+              leftIcon ? 'pl-11' : 'pl-4',
+              isPassword || rightIcon ? 'pr-12' : 'pr-4',
               hasError
-                ? 'border-oneweb-status-danger focus:ring-1 focus:ring-oneweb-status-danger'
-                : 'border-oneweb-border focus:border-oneweb-accent focus:ring-1 focus:ring-oneweb-accent',
-              disabled && 'opacity-40 cursor-not-allowed',
+                ? 'border-rose-500/40 bg-rose-500/[0.05] focus:border-rose-500'
+                : 'border-white/[0.04] focus:border-[#c0ff00]/40 focus:bg-white/[0.08]',
+              disabled && 'opacity-30 cursor-not-allowed',
               className
             )}
             {...rest}
@@ -84,7 +84,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 flex items-center justify-center text-oneweb-text-muted hover:text-oneweb-text-primary transition-colors focus:outline-none"
+              className="absolute right-4 flex items-center justify-center text-white/40 hover:text-white transition-colors focus:outline-none"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               <OneIcon name={showPassword ? 'visibility_off' : 'visibility'} size="sm" />
@@ -92,18 +92,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
 
           {!isPassword && rightIcon && (
-            <div className="absolute right-3.5 flex items-center justify-center text-oneweb-text-muted">
+            <div className="absolute right-4 flex items-center justify-center text-white/40">
               {renderIcon(rightIcon)}
             </div>
           )}
         </div>
 
         {typeof error === 'string' && error && (
-          <span className="text-xs text-oneweb-status-danger font-medium">{error}</span>
+          <span className="text-xs text-rose-400 font-medium">{error}</span>
         )}
 
         {!hasError && helperText && (
-          <span className="text-xs text-oneweb-text-muted">{helperText}</span>
+          <span className="text-xs text-white/40">{helperText}</span>
         )}
       </div>
     );

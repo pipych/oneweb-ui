@@ -3,25 +3,25 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center select-none font-medium transition-all duration-150 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 outline-none focus-visible:ring-2',
+  'inline-flex items-center justify-center select-none rounded-full font-semibold transition-all duration-150 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100 outline-none',
   {
     variants: {
       variant: {
         primary:
-          'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover font-semibold shadow-oneweb-sm focus-visible:ring-oneweb-accent',
+          'bg-oneweb-accent text-black font-bold hover:bg-oneweb-accent-hover focus-visible:ring-2 focus-visible:ring-oneweb-accent border-none shadow-none',
         secondary:
-          'bg-oneweb-surface-subtle text-oneweb-text-primary hover:bg-oneweb-surface-elevated border border-oneweb-border focus-visible:ring-oneweb-border-strong',
+          'bg-white/5 text-oneweb-text-primary hover:bg-white/10 border-none focus-visible:ring-2 focus-visible:ring-white/20',
         outline:
-          'bg-transparent text-oneweb-text-primary border border-oneweb-border hover:border-oneweb-border-strong hover:bg-oneweb-surface-subtle focus-visible:ring-oneweb-border-accent',
+          'bg-transparent text-oneweb-text-primary border border-white/10 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/20',
         ghost:
-          'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle focus-visible:ring-oneweb-border',
+          'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-white/5 border-none focus-visible:ring-2 focus-visible:ring-white/20',
         danger:
-          'bg-oneweb-status-danger text-oneweb-text-primary hover:opacity-90 font-semibold shadow-oneweb-sm focus-visible:ring-oneweb-status-danger',
+          'bg-oneweb-status-danger/15 text-oneweb-status-danger hover:bg-oneweb-status-danger/25 border-none font-semibold focus-visible:ring-2 focus-visible:ring-oneweb-status-danger',
       },
       size: {
-        sm: 'text-xs px-3 py-1.5 rounded-oneweb-md gap-1.5',
-        md: 'text-sm px-4 py-2 rounded-oneweb-lg gap-2',
-        lg: 'text-base px-5 py-2.5 rounded-oneweb-xl gap-2.5',
+        sm: 'h-9 px-4 text-xs gap-1.5',
+        md: 'h-11 px-5 text-sm gap-2',
+        lg: 'h-13 px-6 text-base gap-2.5',
       },
     },
     defaultVariants: {
@@ -66,7 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...rest}
       >
         {isLoading ? (
-          <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-oneweb-full animate-spin" />
+          <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : (
           leftIcon
         )}

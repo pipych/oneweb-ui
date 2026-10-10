@@ -3,19 +3,19 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
 export const badgeVariants = cva(
-  'inline-flex items-center font-medium border rounded-oneweb-full select-none tracking-wide transition-colors',
+  'inline-flex items-center font-medium rounded-full select-none tracking-wide transition-colors border-none',
   {
     variants: {
       variant: {
-        default: 'bg-oneweb-surface-subtle text-oneweb-text-secondary border-oneweb-border',
-        accent: 'bg-oneweb-accent-subtle text-oneweb-accent border-oneweb-border-accent font-semibold',
-        success: 'bg-oneweb-status-success/15 text-oneweb-status-success border-oneweb-status-success/30',
-        danger: 'bg-oneweb-status-danger/15 text-oneweb-status-danger border-oneweb-status-danger/30',
-        warning: 'bg-oneweb-status-warning/15 text-oneweb-status-warning border-oneweb-status-warning/30',
+        default: 'bg-white/5 text-white/80',
+        accent: 'bg-[#c0ff00]/10 text-[#c0ff00] font-semibold',
+        success: 'bg-emerald-500/10 text-emerald-400',
+        danger: 'bg-rose-500/10 text-rose-400',
+        warning: 'bg-amber-500/10 text-amber-400',
       },
       size: {
-        sm: 'text-[10px] px-2 py-0.5 gap-1',
-        md: 'text-xs px-2.5 py-1 gap-1.5',
+        sm: 'text-[11px] px-2.5 py-0.5 gap-1.5',
+        md: 'text-xs px-3 py-1 gap-2',
       },
     },
     defaultVariants: {
@@ -26,11 +26,11 @@ export const badgeVariants = cva(
 );
 
 const dotColors = {
-  default: 'bg-oneweb-text-secondary',
-  accent: 'bg-oneweb-accent shadow-oneweb-accent-glow',
-  success: 'bg-oneweb-status-success',
-  danger: 'bg-oneweb-status-danger',
-  warning: 'bg-oneweb-status-warning',
+  default: 'bg-white/60',
+  accent: 'bg-[#c0ff00] shadow-[0_0_6px_#c0ff00]',
+  success: 'bg-emerald-400',
+  danger: 'bg-rose-400',
+  warning: 'bg-amber-400',
 };
 
 export interface BadgeProps
@@ -50,7 +50,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         {...rest}
       >
         {dot && (
-          <span className={cn('w-1.5 h-1.5 rounded-oneweb-full animate-pulse', dotColors[selectedVariant])} />
+          <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', dotColors[selectedVariant])} />
         )}
         {children}
       </span>

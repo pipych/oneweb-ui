@@ -14,15 +14,15 @@ export const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-10 w-full items-center justify-between rounded-oneweb-xl border border-oneweb-border bg-oneweb-surface-subtle px-3.5 py-2 text-sm text-oneweb-text-primary',
-      'placeholder:text-oneweb-text-muted focus:outline-none focus:border-oneweb-accent focus:ring-1 focus:ring-oneweb-accent disabled:cursor-not-allowed disabled:opacity-40 transition-all',
+      'flex h-12 w-full items-center justify-between rounded-2xl border border-white/[0.04] bg-white/[0.05] px-4 py-2 text-sm text-white',
+      'placeholder:text-white/30 focus:outline-none focus:border-[#c0ff00]/40 focus:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-30 transition-all',
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <OneIcon name="unfold_more" size="sm" className="text-oneweb-text-muted" />
+      <OneIcon name="unfold_more" size="sm" className="text-white/40" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -36,7 +36,7 @@ export const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'relative z-50 min-w-[8rem] overflow-hidden rounded-oneweb-xl border border-oneweb-border bg-oneweb-surface-elevated text-oneweb-text-primary shadow-oneweb-lg backdrop-blur-xl animate-scale-in',
+        'relative z-50 min-w-[8rem] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#14171c] text-white shadow-2xl backdrop-blur-2xl animate-scale-in',
         position === 'popper' &&
           'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
         className
@@ -46,7 +46,7 @@ export const SelectContent = React.forwardRef<
     >
       <SelectPrimitive.Viewport
         className={cn(
-          'p-1.5',
+          'p-2',
           position === 'popper' &&
             'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
         )}
@@ -64,7 +64,7 @@ export const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn('px-2 py-1.5 text-xs font-semibold text-oneweb-text-secondary', className)}
+    className={cn('px-3 py-1.5 text-xs font-semibold text-[#8e8e93]', className)}
     {...props}
   />
 ));
@@ -77,15 +77,15 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-oneweb-lg py-2 pl-2 pr-8 text-sm outline-none transition-colors',
-      'focus:bg-oneweb-surface-subtle focus:text-oneweb-accent data-[disabled]:pointer-events-none data-[disabled]:opacity-40',
+      'relative flex w-full cursor-pointer select-none items-center rounded-xl py-2.5 pl-3 pr-8 text-sm outline-none transition-colors',
+      'focus:bg-white/10 focus:text-[#c0ff00] data-[disabled]:pointer-events-none data-[disabled]:opacity-30',
       className
     )}
     {...props}
   >
-    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <OneIcon name="check" size="sm" className="text-oneweb-accent" />
+        <OneIcon name="check" size="sm" className="text-[#c0ff00]" />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -99,7 +99,7 @@ export const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={cn('-mx-1 my-1 h-px bg-oneweb-border', className)}
+    className={cn('-mx-1 my-1 h-px bg-white/[0.04]', className)}
     {...props}
   />
 ));

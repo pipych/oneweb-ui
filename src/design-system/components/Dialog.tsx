@@ -15,7 +15,7 @@ export const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/75 backdrop-blur-md transition-all duration-200 animate-fade-in',
+      'fixed inset-0 z-50 bg-black/80 backdrop-blur-md transition-all duration-200 animate-fade-in',
       className
     )}
     {...props}
@@ -35,15 +35,15 @@ export const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%]',
-        'bg-oneweb-surface-elevated border border-oneweb-border rounded-oneweb-2xl shadow-oneweb-modal',
-        'p-6 duration-200 animate-scale-in outline-none flex flex-col gap-4',
+        'bg-[#14171c] border border-white/[0.06] rounded-[32px] shadow-2xl',
+        'p-7 duration-200 animate-scale-in outline-none flex flex-col gap-6',
         className
       )}
       {...props}
     >
       {children}
       {!hideCloseButton && (
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-oneweb-md p-1 text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle transition-colors focus:outline-none focus:ring-2 focus:ring-oneweb-accent">
+        <DialogPrimitive.Close className="absolute right-5 top-5 rounded-full p-1.5 text-white/40 hover:text-white hover:bg-white/10 transition-colors focus:outline-none">
           <OneIcon name="close" size="sm" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -58,7 +58,7 @@ export const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col gap-1.5 text-left border-b border-oneweb-border/60 pb-3', className)}
+    className={cn('flex flex-col gap-1.5 text-left border-none p-0', className)}
     {...props}
   />
 );
@@ -70,7 +70,7 @@ export const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-3 border-t border-oneweb-border/60',
+      'flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 border-none',
       className
     )}
     {...props}
@@ -84,7 +84,7 @@ export const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-bold text-oneweb-text-primary tracking-tight', className)}
+    className={cn('text-xl font-bold text-white tracking-tight', className)}
     {...props}
   />
 ));
@@ -96,7 +96,7 @@ export const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
+    className={cn('text-xs text-[#8e8e93] leading-relaxed', className)}
     {...props}
   />
 ));

@@ -16,7 +16,7 @@ export const DrawerOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/75 backdrop-blur-md transition-all duration-200 animate-fade-in',
+      'fixed inset-0 z-50 bg-black/80 backdrop-blur-md transition-all duration-200 animate-fade-in',
       className
     )}
     {...props}
@@ -25,18 +25,18 @@ export const DrawerOverlay = React.forwardRef<
 DrawerOverlay.displayName = 'DrawerOverlay';
 
 const drawerVariants = cva(
-  'fixed z-50 bg-oneweb-surface-elevated border-oneweb-border shadow-oneweb-sheet flex flex-col outline-none transition-all duration-300',
+  'fixed z-50 bg-[#14171c] border-white/[0.06] shadow-2xl flex flex-col outline-none transition-all duration-300',
   {
     variants: {
       side: {
         bottom:
-          'inset-x-0 bottom-0 max-h-[85vh] border-t rounded-t-oneweb-sheet p-6 animate-slide-up',
+          'inset-x-0 bottom-0 max-h-[85vh] border-t rounded-t-[32px] p-7 animate-slide-up gap-5',
         top:
-          'inset-x-0 top-0 max-h-[85vh] border-b rounded-b-oneweb-sheet p-6 animate-slide-down',
+          'inset-x-0 top-0 max-h-[85vh] border-b rounded-b-[32px] p-7 animate-slide-down gap-5',
         right:
-          'inset-y-0 right-0 h-full w-full sm:max-w-md border-l p-6 animate-slide-left',
+          'inset-y-0 right-0 h-full w-full sm:max-w-md border-l rounded-l-[32px] p-7 animate-slide-left gap-5',
         left:
-          'inset-y-0 left-0 h-full w-full sm:max-w-md border-r p-6 animate-slide-right',
+          'inset-y-0 left-0 h-full w-full sm:max-w-md border-r rounded-r-[32px] p-7 animate-slide-right gap-5',
       },
     },
     defaultVariants: {
@@ -63,10 +63,10 @@ export const DrawerContent = React.forwardRef<
       {...props}
     >
       {side === 'bottom' && showDragHandle && (
-        <div className="w-12 h-1.5 rounded-oneweb-full bg-oneweb-border-strong mx-auto mb-3 cursor-grab" />
+        <div className="w-12 h-1.5 rounded-full bg-white/20 mx-auto -mt-2 mb-2 cursor-grab" />
       )}
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-oneweb-md p-1 text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle transition-colors focus:outline-none focus:ring-2 focus:ring-oneweb-accent">
+      <DialogPrimitive.Close className="absolute right-5 top-5 rounded-full p-1.5 text-white/40 hover:text-white hover:bg-white/10 transition-colors focus:outline-none">
         <OneIcon name="close" size="sm" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -80,7 +80,7 @@ export const DrawerHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col gap-1.5 text-left pb-3 border-b border-oneweb-border/60', className)}
+    className={cn('flex flex-col gap-1.5 text-left border-none p-0', className)}
     {...props}
   />
 );
@@ -91,7 +91,7 @@ export const DrawerFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col sm:flex-row sm:justify-end gap-2 pt-3 mt-auto border-t border-oneweb-border/60', className)}
+    className={cn('flex flex-col sm:flex-row sm:justify-end gap-3 pt-2 mt-auto border-none', className)}
     {...props}
   />
 );
@@ -103,7 +103,7 @@ export const DrawerTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-bold text-oneweb-text-primary tracking-tight', className)}
+    className={cn('text-xl font-bold text-white tracking-tight', className)}
     {...props}
   />
 ));
@@ -115,13 +115,12 @@ export const DrawerDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
+    className={cn('text-xs text-[#8e8e93] leading-relaxed', className)}
     {...props}
   />
 ));
 DrawerDescription.displayName = 'DrawerDescription';
 
-// Export Sheet aliases for standard UI ergonomics
 export const Sheet = Drawer;
 export const SheetTrigger = DrawerTrigger;
 export const SheetContent = DrawerContent;

@@ -122,22 +122,22 @@ function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-oneweb-bg text-oneweb-text-primary font-oneweb-sans pb-28 selection:bg-oneweb-accent-subtle selection:text-oneweb-accent">
       {/* 1. Header */}
-      <header className="border-b border-oneweb-border sticky top-0 z-40 bg-oneweb-bg/90 backdrop-blur-md">
+      <header className="border-b border-white/[0.04] sticky top-0 z-40 bg-[#090b0e]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-oneweb-xl bg-oneweb-accent flex items-center justify-center font-black text-oneweb-text-inverse text-lg shadow-oneweb-accent-glow select-none">
+            <div className="w-9 h-9 rounded-full bg-oneweb-accent flex items-center justify-center font-black text-black text-lg shadow-[0_0_12px_rgba(192,255,0,0.4)] select-none">
               1
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base tracking-tight text-oneweb-text-primary">
+                <span className="font-extrabold text-base tracking-tight text-white">
                   OneWebUI
                 </span>
                 <Badge variant="accent" size="sm">
                   v1.0.0
                 </Badge>
               </div>
-              <p className="text-[11px] text-oneweb-text-secondary leading-none">
+              <p className="text-[11px] text-[#8e8e93] leading-none">
                 Design System for One Ecosystem
               </p>
             </div>
@@ -259,20 +259,20 @@ function ShowcaseContent() {
                 key={color.name}
                 type="button"
                 onClick={() => handleCopy(`var(--${color.name})`)}
-                className="bg-oneweb-surface border border-oneweb-border rounded-oneweb-xl p-3 flex flex-col gap-2.5 text-left hover:border-oneweb-border-strong hover:bg-oneweb-surface-elevated transition-all active:scale-95 group focus:outline-none"
+                className="bg-[#14171c] border border-white/[0.04] rounded-2xl p-3 flex flex-col gap-2.5 text-left hover:border-white/10 hover:bg-[#181c23] transition-all active:scale-95 group focus:outline-none"
               >
                 <div
-                  className="w-full h-12 rounded-oneweb-lg border border-oneweb-border/40 shadow-inner"
+                  className="w-full h-12 rounded-xl border border-white/[0.04] shadow-inner"
                   style={{ backgroundColor: color.value }}
                 />
                 <div>
-                  <div className="text-xs font-semibold text-oneweb-text-primary group-hover:text-oneweb-accent truncate">
+                  <div className="text-xs font-semibold text-white group-hover:text-oneweb-accent truncate">
                     {color.name}
                   </div>
-                  <div className="text-[11px] text-oneweb-text-secondary truncate">
+                  <div className="text-[11px] text-[#8e8e93] truncate">
                     {color.role}
                   </div>
-                  <div className="text-[10px] text-oneweb-text-muted font-oneweb-mono mt-0.5">
+                  <div className="text-[10px] text-white/40 font-oneweb-mono mt-0.5">
                     {color.value}
                   </div>
                 </div>
@@ -318,7 +318,7 @@ function ShowcaseContent() {
                 <CardDescription>Моноширинный стек (font-oneweb-mono)</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                <code className="font-oneweb-mono text-xs text-oneweb-accent bg-oneweb-surface-subtle p-2 rounded-oneweb-md block">
+                <code className="font-oneweb-mono text-xs text-oneweb-accent bg-white/[0.04] p-3 rounded-2xl block border border-white/[0.03]">
                   sha256: 89476ea08498adb1813b
                 </code>
                 <p className="text-xs text-oneweb-text-secondary">
@@ -383,15 +383,15 @@ function ShowcaseContent() {
                 {filteredIcons.map((icon) => (
                   <div
                     key={icon.name}
-                    className="p-3 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl flex flex-col items-center justify-center gap-2 hover:border-oneweb-border-accent hover:bg-oneweb-surface-elevated transition-all group"
+                    className="p-3 bg-white/[0.03] border border-white/[0.04] rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-white/[0.07] hover:border-white/10 transition-all group"
                   >
                     <OneIcon
                       name={icon.name}
                       size={selectedIconSize}
                       fill={iconFill}
-                      className="text-oneweb-text-primary group-hover:text-oneweb-accent transition-colors"
+                      className="text-white group-hover:text-oneweb-accent transition-colors"
                     />
-                    <span className="text-[11px] text-oneweb-text-secondary group-hover:text-oneweb-text-primary font-medium truncate max-w-full text-center">
+                    <span className="text-[11px] text-[#8e8e93] group-hover:text-white font-medium truncate max-w-full text-center">
                       {icon.name}
                     </span>
                   </div>
@@ -594,13 +594,13 @@ function ShowcaseContent() {
                 <CardDescription>Minecraft Fabric 1.21</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                <div className="flex justify-between text-xs py-1 border-b border-oneweb-border/40">
-                  <span className="text-oneweb-text-secondary">Игроки</span>
-                  <span className="font-semibold text-oneweb-text-primary">12 / 20</span>
+                <div className="flex justify-between items-center text-xs p-3 rounded-2xl bg-white/[0.03]">
+                  <span className="text-[#8e8e93]">Игроки</span>
+                  <span className="font-semibold text-white">12 / 20</span>
                 </div>
-                <div className="flex justify-between text-xs py-1">
-                  <span className="text-oneweb-text-secondary">Пинг</span>
-                  <span className="font-semibold text-oneweb-status-success">14 ms</span>
+                <div className="flex justify-between items-center text-xs p-3 rounded-2xl bg-white/[0.03]">
+                  <span className="text-[#8e8e93]">Пинг</span>
+                  <span className="font-semibold text-emerald-400">14 ms</span>
                 </div>
               </CardContent>
               <CardFooter>
@@ -754,9 +754,9 @@ function ShowcaseContent() {
                     </DrawerHeader>
                     <div className="py-4 flex flex-col gap-3">
                       <Input label="Быстрая команда" placeholder="say Привет миру" leftIcon="terminal" />
-                      <div className="flex items-center justify-between p-3 rounded-oneweb-xl bg-oneweb-surface-subtle">
-                        <span className="text-xs font-semibold text-oneweb-text-primary">Авторестарт</span>
-                        <Badge variant="success" size="sm">Включен</Badge>
+                      <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.04]">
+                        <span className="text-xs font-semibold text-white">Авторестарт</span>
+                        <Badge variant="success" size="sm" dot>Включен</Badge>
                       </div>
                     </div>
                     <DrawerFooter>
@@ -782,10 +782,10 @@ function ShowcaseContent() {
                       </DrawerDescription>
                     </DrawerHeader>
                     <div className="py-4 flex flex-col gap-4">
-                      <div className="p-3 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl flex flex-col gap-2">
-                        <span className="text-xs font-bold text-oneweb-text-primary">Параметры сессии</span>
-                        <span className="text-xs text-oneweb-text-secondary">Пользователь: root</span>
-                        <span className="text-xs text-oneweb-text-secondary">IP: 127.0.0.1</span>
+                      <div className="p-4 bg-white/[0.03] border border-white/[0.04] rounded-2xl flex flex-col gap-2">
+                        <span className="text-xs font-bold text-white">Параметры сессии</span>
+                        <span className="text-xs text-[#8e8e93]">Пользователь: root</span>
+                        <span className="text-xs text-[#8e8e93]">IP: 127.0.0.1</span>
                       </div>
                     </div>
                     <DrawerFooter>
@@ -835,36 +835,36 @@ function ShowcaseContent() {
                 </TabsList>
 
                 <TabsContent value="overview">
-                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
-                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Обзор экосистемы</h4>
-                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                  <div className="p-5 bg-white/[0.03] border border-white/[0.04] rounded-2xl mt-4 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-white">Вкладка: Обзор экосистемы</h4>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
                       Экосистема One включает сервер Minecraft OneHouse, лаунчер OneLaunch и дизайн-систему OneWebUI.
                     </p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="components">
-                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
-                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: 10 компонентов</h4>
-                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                  <div className="p-5 bg-white/[0.03] border border-white/[0.04] rounded-2xl mt-4 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-white">Вкладка: 10 компонентов</h4>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
                       Button, Card, Input, Badge, Dialog, Drawer, Tabs, Select, Toast, Tooltip.
                     </p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="tokens">
-                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
-                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Дизайн-токены</h4>
-                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                  <div className="p-5 bg-white/[0.03] border border-white/[0.04] rounded-2xl mt-4 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-white">Вкладка: Дизайн-токены</h4>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
                       Все переменные доступны через Tailwind класс oneweb-* или CSS var(--oneweb-*).
                     </p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="settings">
-                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
-                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Настройки</h4>
-                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                  <div className="p-5 bg-white/[0.03] border border-white/[0.04] rounded-2xl mt-4 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-white">Вкладка: Настройки</h4>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
                       Конфигурация темной OLED-палитры и вариативных шрифтов.
                     </p>
                   </div>
@@ -989,7 +989,7 @@ function ShowcaseContent() {
                       </Badge>
                     </SimpleTooltip>
                     <SimpleTooltip content="Иконка настроек экосистемы">
-                      <div className="p-2 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-lg cursor-pointer hover:border-oneweb-border-accent">
+                      <div className="w-10 h-10 bg-white/[0.05] border border-white/[0.04] rounded-full cursor-pointer hover:bg-white/10 transition-colors flex items-center justify-center">
                         <OneIcon name="settings" size="sm" />
                       </div>
                     </SimpleTooltip>

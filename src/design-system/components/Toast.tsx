@@ -22,19 +22,19 @@ export const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitive.Viewport.displayName;
 
 const toastVariants = cva(
-  'group pointer-events-auto relative flex w-full items-center justify-between space-x-3 overflow-hidden rounded-oneweb-xl border p-4 shadow-oneweb-lg transition-all duration-200 animate-slide-up data-[state=closed]:animate-fade-out',
+  'group pointer-events-auto relative flex w-full items-center justify-between space-x-3 overflow-hidden rounded-2xl border p-4 shadow-2xl transition-all duration-200 animate-slide-up data-[state=closed]:animate-fade-out',
   {
     variants: {
       variant: {
-        default: 'border-oneweb-border bg-oneweb-surface-elevated text-oneweb-text-primary',
+        default: 'border-white/[0.08] bg-[#181c23] text-white',
         success:
-          'border-oneweb-status-success/30 bg-oneweb-surface-elevated text-oneweb-text-primary [&_.toast-icon]:text-oneweb-status-success',
+          'border-emerald-500/20 bg-[#181c23] text-white [&_.toast-icon]:text-emerald-400',
         danger:
-          'border-oneweb-status-danger/30 bg-oneweb-surface-elevated text-oneweb-text-primary [&_.toast-icon]:text-oneweb-status-danger',
+          'border-rose-500/20 bg-[#181c23] text-white [&_.toast-icon]:text-rose-400',
         warning:
-          'border-oneweb-status-warning/30 bg-oneweb-surface-elevated text-oneweb-text-primary [&_.toast-icon]:text-oneweb-status-warning',
+          'border-amber-500/20 bg-[#181c23] text-white [&_.toast-icon]:text-amber-400',
         accent:
-          'border-oneweb-border-accent bg-oneweb-surface-elevated text-oneweb-text-primary [&_.toast-icon]:text-oneweb-accent',
+          'border-[#c0ff00]/30 bg-[#181c23] text-white [&_.toast-icon]:text-[#c0ff00]',
       },
     },
     defaultVariants: {
@@ -66,7 +66,7 @@ export const ToastAction = React.forwardRef<
   <ToastPrimitive.Action
     ref={ref}
     className={cn(
-      'inline-flex h-8 shrink-0 items-center justify-center rounded-oneweb-lg border border-oneweb-border bg-transparent px-3 text-xs font-medium text-oneweb-text-primary transition-colors hover:bg-oneweb-surface-subtle focus:outline-none focus:ring-1 focus:ring-oneweb-accent disabled:pointer-events-none disabled:opacity-40',
+      'inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-transparent px-3 text-xs font-semibold text-white transition-colors hover:bg-white/10 focus:outline-none focus:ring-1 focus:ring-[#c0ff00] disabled:pointer-events-none disabled:opacity-40',
       className
     )}
     {...props}
@@ -81,7 +81,7 @@ export const ToastClose = React.forwardRef<
   <ToastPrimitive.Close
     ref={ref}
     className={cn(
-      'absolute right-2 top-2 rounded-oneweb-md p-1 text-oneweb-text-muted transition-opacity hover:text-oneweb-text-primary focus:opacity-100 focus:outline-none focus:ring-1 focus:ring-oneweb-accent',
+      'absolute right-2.5 top-2.5 rounded-full p-1 text-white/40 transition-opacity hover:text-white hover:bg-white/10 focus:outline-none',
       className
     )}
     toast-close=""
@@ -98,7 +98,7 @@ export const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Title
     ref={ref}
-    className={cn('text-sm font-semibold text-oneweb-text-primary', className)}
+    className={cn('text-sm font-semibold text-white', className)}
     {...props}
   />
 ));
@@ -110,13 +110,12 @@ export const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
+    className={cn('text-xs text-[#8e8e93] leading-relaxed', className)}
     {...props}
   />
 ));
 ToastDescription.displayName = ToastPrimitive.Description.displayName;
 
-// Simple lightweight Toast Context & Hook for easy app integration
 export interface ToastItem {
   id: string;
   title: string;
