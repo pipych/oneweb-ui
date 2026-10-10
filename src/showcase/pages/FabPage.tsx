@@ -174,7 +174,7 @@ export const FabPage: React.FC = () => {
                 onClick={() => setClickCount((prev) => prev + 1)}
                 className={`w-14 h-14 rounded-full aspect-square flex items-center justify-center border border-white/[0.04] transition-all active:scale-95 cursor-pointer ${
                   variant === 'primary'
-                    ? 'bg-oneweb-accent text-oneweb-text-inverse shadow-oneweb-accent-glow hover:bg-oneweb-accent-hover'
+                    ? 'bg-oneweb-accent text-oneweb-text-inverse shadow-oneweb-lg hover:bg-oneweb-accent-hover'
                     : 'bg-oneweb-surface-elevated text-oneweb-accent shadow-oneweb-lg hover:bg-oneweb-surface-subtle'
                 }`}
                 title="Нажмите на FAB"

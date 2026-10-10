@@ -15,25 +15,30 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeId,
   onChange,
   logo,
-  actions,
-  desktopVariant = 'floating',
+  title,
   className,
   desktopClassName,
   mobileClassName,
   isStatic = false,
+  isCollapsed,
+  defaultCollapsed,
+  onToggleCollapse,
+  extraAction,
 }) => {
   return (
     <div className={cn('w-full', className)}>
-      {/* Desktop view: top navigation */}
-      <div className={cn('hidden md:block w-full', desktopClassName)}>
+      {/* Desktop view: OneDash vertical sidebar dock */}
+      <div className={cn('hidden md:block', desktopClassName)}>
         <DesktopNavbar
           items={items}
           activeId={activeId}
           onChange={onChange}
           logo={logo}
-          actions={actions}
-          variant={desktopVariant}
+          title={title}
           isStatic={isStatic}
+          isCollapsed={isCollapsed}
+          defaultCollapsed={defaultCollapsed}
+          onToggleCollapse={onToggleCollapse}
         />
       </div>
 
@@ -44,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           activeId={activeId}
           onChange={onChange}
           isStatic={isStatic}
+          extraAction={extraAction}
         />
       </div>
     </div>

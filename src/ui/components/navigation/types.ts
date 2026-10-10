@@ -43,25 +43,29 @@ export interface MobileNavbarProps {
 }
 
 /**
- * Props for DesktopNavbar component
+ * Props for DesktopNavbar component (OneDash 1:1)
  */
 export interface DesktopNavbarProps {
-  /** Navigation items (unlimited, scrollable with no-scrollbar) */
+  /** Navigation items */
   items: NavItem[];
   /** ID of current active item */
   activeId: string;
   /** Callback fired when a tab is selected */
   onChange: (id: string) => void;
-  /** Left slot: Logo / Brand element */
+  /** Brand / Logo element placed at the top (defaults to AppLogo) */
   logo?: React.ReactNode;
-  /** Right slot: Actions, buttons or User profile */
-  actions?: React.ReactNode;
-  /** Presentation style: 'floating' (capsule) or 'full' (full-width sticky bar) */
-  variant?: 'floating' | 'full';
+  /** Title text next to logo in expanded view (defaults to 'OneDash') */
+  title?: string;
   /** Additional container class */
   className?: string;
-  /** Whether the navbar should be statically placed instead of sticky/fixed (useful for previews) */
+  /** Whether the navbar should be statically placed instead of sticky (useful for previews) */
   isStatic?: boolean;
+  /** Controlled or initial collapsed state */
+  isCollapsed?: boolean;
+  /** Default collapsed state if uncontrolled */
+  defaultCollapsed?: boolean;
+  /** Callback when collapse/expand toggle is clicked */
+  onToggleCollapse?: () => void;
 }
 
 /**
@@ -72,10 +76,13 @@ export interface NavbarProps {
   activeId: string;
   onChange: (id: string) => void;
   logo?: React.ReactNode;
-  actions?: React.ReactNode;
-  desktopVariant?: 'floating' | 'full';
+  title?: string;
   className?: string;
   desktopClassName?: string;
   mobileClassName?: string;
   isStatic?: boolean;
+  isCollapsed?: boolean;
+  defaultCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+  extraAction?: MobileNavbarProps['extraAction'];
 }

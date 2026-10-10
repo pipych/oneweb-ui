@@ -40,7 +40,7 @@ export const MobileActionBtn = React.forwardRef<HTMLButtonElement, MobileActionB
   ) => {
     const variants = {
       primary:
-        'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover shadow-oneweb-accent-glow border-none',
+        'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover shadow-oneweb-lg border-none',
       surface:
         'bg-oneweb-surface-elevated text-oneweb-accent hover:bg-oneweb-surface-subtle shadow-oneweb-lg border border-white/[0.04]',
     };

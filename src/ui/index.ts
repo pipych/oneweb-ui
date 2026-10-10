@@ -15,6 +15,7 @@ export * from './components/Input';
 export * from './components/Card';
 export * from './components/Badge';
 export * from './components/Icon';
+export * from './components/AppLogo';
 export * from './components/MobileActionBtn';
 
 // Overlays & Radix Primitives

@@ -131,7 +131,7 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
                   onClick={() => onChange(tab.id)}
                   disabled={tab.disabled}
                   className={cn(
-                    'relative z-10 flex-1 h-full min-w-0 flex flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-95 sf-tap px-1',
+                    'relative z-10 flex-1 h-full min-w-0 flex flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-90 sf-tap px-1 group',
                     isActive ? 'text-[#c0ff00] font-bold' : 'text-[#8e8e93] hover:text-white',
                     tab.disabled && 'opacity-35 cursor-not-allowed pointer-events-none'
                   )}
@@ -139,13 +139,13 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
                   aria-selected={isActive}
                   role="tab"
                 >
-                  <div className="relative flex items-center justify-center">
+                  <div className="relative flex items-center justify-center transition-transform duration-150 active:scale-90 group-active:scale-90">
                     <Icon
                       name={tab.icon}
                       size={24}
                       className={cn(
                         'transition-all duration-300',
-                        isActive ? 'text-[#c0ff00] sf-glow-green' : 'text-[#8e8e93]'
+                        isActive ? 'text-[#c0ff00]' : 'text-[#8e8e93]'
                       )}
                     />
                     {tab.badge !== undefined && (
@@ -181,7 +181,7 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
                     onChange(extraAction.id);
                   }}
                   className={cn(
-                    'relative z-10 w-full h-full flex flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-95 sf-tap px-1',
+                    'relative z-10 w-full h-full flex flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-90 sf-tap px-1 group',
                     activeId === extraAction.id
                       ? 'text-[#c0ff00] font-bold'
                       : 'text-[#8e8e93] hover:text-white'
@@ -190,14 +190,14 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
                   aria-label={extraAction.label}
                   role="tab"
                 >
-                  <div className="relative flex items-center justify-center">
+                  <div className="relative flex items-center justify-center transition-transform duration-150 active:scale-90 group-active:scale-90">
                     <Icon
                       name={extraAction.icon}
                       size={24}
                       className={cn(
                         'transition-all duration-300',
                         activeId === extraAction.id
-                          ? 'text-[#c0ff00] sf-glow-green'
+                          ? 'text-[#c0ff00]'
                           : 'text-[#8e8e93]'
                       )}
                     />

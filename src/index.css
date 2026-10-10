@@ -102,15 +102,17 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
   -webkit-tap-highlight-color: transparent;
 }
 
 .sf-tap:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
 }
 
+/* Strictly Flat No-Glow Active Accent matching OneDash specifications */
 .sf-glow-green {
   color: #c0ff00 !important;
-  text-shadow: 0 0 12px rgba(192, 255, 0, 0.4);
+  filter: none !important;
+  text-shadow: none !important;
 }
