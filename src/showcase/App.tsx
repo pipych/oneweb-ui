@@ -10,6 +10,7 @@ import { FabPage } from './pages/FabPage';
 import { OverlaysPage } from './pages/OverlaysPage';
 import { BadgesPage } from './pages/BadgesPage';
 import { NavigationPage } from './pages/NavigationPage';
+import { WidgetsPage } from './pages/WidgetsPage';
 import { MobileActionBtn } from '@one/web-ui';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -31,6 +32,8 @@ export const App: React.FC = () => {
         return <FabPage />;
       case 'cards':
         return <CardsPage />;
+      case 'widgets':
+        return <WidgetsPage />;
       case 'badges':
         return <BadgesPage />;
       case 'navigation':

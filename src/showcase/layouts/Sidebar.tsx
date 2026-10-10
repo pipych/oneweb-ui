@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from '@one/web-ui';
 import { cn } from '@one/web-ui';
 
-export type PageId = 'overview' | 'tokens' | 'buttons' | 'inputs' | 'fab' | 'cards' | 'badges' | 'navigation' | 'overlays';
+export type PageId = 'overview' | 'tokens' | 'buttons' | 'inputs' | 'fab' | 'cards' | 'badges' | 'widgets' | 'navigation' | 'overlays';
 
 interface SidebarProps {
   activePage: PageId;
@@ -33,7 +33,8 @@ const navSections: { title: string; items: NavItem[] }[] = [
       { id: 'inputs', label: 'Input & SearchInput', icon: 'edit_square' },
       { id: 'fab', label: 'MobileActionBtn (FAB)', icon: 'touch_app', badge: 'Mobile' },
       { id: 'navigation', label: 'Navbar & TabBar', icon: 'navigation', badge: 'OneHouse' },
-      { id: 'cards', label: 'Card (28px)', icon: 'dashboard' },
+      { id: 'cards', label: 'Card & Bento (28px)', icon: 'dashboard' },
+      { id: 'widgets', label: 'Bento Widgets', icon: 'grid_view', badge: 'New' },
       { id: 'badges', label: 'Badge (Pill)', icon: 'label' },
     ],
   },

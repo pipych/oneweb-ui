@@ -27,3 +27,6 @@ export * from './overlays/Tooltip';
 
 // Navigation Components
 export * from './components/navigation';
+
+// Widgets & Bento Grid
+export * from './components/widgets';
