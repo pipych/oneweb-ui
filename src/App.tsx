@@ -11,38 +11,71 @@ import {
   Input,
   Badge,
   Dialog,
+  DialogTrigger,
+  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogContent,
   DialogFooter,
   DialogClose,
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+  ToastContainerProvider,
+  useToast,
+  TooltipProvider,
+  SimpleTooltip,
 } from './design-system';
 
-export function App() {
-  // Icon Showcase state
+function ShowcaseContent() {
+  const { addToast } = useToast();
+
+  // 1. Icon & Palette states
   const [iconFill, setIconFill] = useState(true);
-  const [selectedSize, setSelectedSize] = useState<'sm' | 'md' | 'lg'>('md');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // Button state
-  const [btnLoading, setBtnLoading] = useState(false);
-  const [btnDisabled, setBtnDisabled] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-
-  // Input state
-  const [inputValue, setInputValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [hasInputError, setHasInputError] = useState(false);
-  const [isInputDisabled, setIsInputDisabled] = useState(false);
-
-  // Dialog state
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedIconSize, setSelectedIconSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [iconSearch, setIconSearch] = useState('');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
+  // 2. Button states
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const [buttonClicks, setButtonClicks] = useState(0);
+
+  // 3. Input states
+  const [inputVal, setInputVal] = useState('one_admin');
+  const [passVal, setPassVal] = useState('supersecret123');
+  const [inputError, setInputError] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(false);
+
+  // 4. Select state
+  const [selectedServer, setSelectedServer] = useState('onehouse-main');
+
+  // Copy helper
   const handleCopy = (text: string) => {
     navigator.clipboard?.writeText(text);
     setCopiedToken(text);
+    addToast({
+      title: 'Скопировано в буфер!',
+      description: text,
+      variant: 'success',
+    });
     setTimeout(() => setCopiedToken(null), 2000);
   };
 
@@ -52,25 +85,14 @@ export function App() {
     { name: 'oneweb-surface', value: '#14171c', role: 'Card Base' },
     { name: 'oneweb-surface-elevated', value: '#181c23', role: 'Elevated Modal' },
     { name: 'oneweb-surface-subtle', value: '#252c37', role: 'Control Fill' },
-    { name: 'oneweb-accent', value: '#c0ff00', role: 'Brand Accent Lime' },
-    { name: 'oneweb-accent-hover', value: '#aee600', role: 'Accent Hover' },
+    { name: 'oneweb-accent', value: '#c0ff00', role: 'One Lime' },
+    { name: 'oneweb-accent-hover', value: '#aee600', role: 'Hover Lime' },
     { name: 'oneweb-text-primary', value: '#ffffff', role: 'High Emphasis' },
     { name: 'oneweb-text-secondary', value: '#8e8e93', role: 'Medium Emphasis' },
     { name: 'oneweb-border', value: 'rgba(255, 255, 255, 0.10)', role: 'Default Border' },
     { name: 'oneweb-status-success', value: '#1bd96a', role: 'Success' },
     { name: 'oneweb-status-warning', value: '#fbbf24', role: 'Warning' },
     { name: 'oneweb-status-danger', value: '#ef4444', role: 'Danger / Error' },
-  ];
-
-  const radii = [
-    { name: 'rounded-oneweb-sm', val: '4px' },
-    { name: 'rounded-oneweb-md', val: '8px' },
-    { name: 'rounded-oneweb-lg', val: '12px' },
-    { name: 'rounded-oneweb-xl', val: '16px' },
-    { name: 'rounded-oneweb-2xl', val: '20px' },
-    { name: 'rounded-oneweb-3xl', val: '24px' },
-    { name: 'rounded-oneweb-sheet', val: '32px' },
-    { name: 'rounded-oneweb-full', val: '9999px' },
   ];
 
   const sampleIcons = [
@@ -86,29 +108,29 @@ export function App() {
     { name: 'check_circle', label: 'Success' },
     { name: 'warning', label: 'Warning' },
     { name: 'error', label: 'Error' },
-    { name: 'info', label: 'Info' },
     { name: 'bolt', label: 'Lightning' },
     { name: 'lock', label: 'Security' },
     { name: 'rocket_launch', label: 'Launch' },
+    { name: 'notifications', label: 'Notifications' },
   ];
 
   const filteredIcons = sampleIcons.filter((i) =>
-    i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    i.label.toLowerCase().includes(searchTerm.toLowerCase())
+    i.name.toLowerCase().includes(iconSearch.toLowerCase()) ||
+    i.label.toLowerCase().includes(iconSearch.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen bg-oneweb-bg text-oneweb-text-primary font-oneweb-sans pb-24 selection:bg-oneweb-accent-subtle selection:text-oneweb-accent">
-      {/* Sticky Header */}
+    <div className="min-h-screen bg-oneweb-bg text-oneweb-text-primary font-oneweb-sans pb-28 selection:bg-oneweb-accent-subtle selection:text-oneweb-accent">
+      {/* 1. Header */}
       <header className="border-b border-oneweb-border sticky top-0 z-40 bg-oneweb-bg/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-oneweb-lg bg-oneweb-accent flex items-center justify-center font-bold text-oneweb-text-inverse text-base shadow-oneweb-accent-glow">
+            <div className="w-9 h-9 rounded-oneweb-xl bg-oneweb-accent flex items-center justify-center font-black text-oneweb-text-inverse text-lg shadow-oneweb-accent-glow select-none">
               1
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight text-oneweb-text-primary">
+                <span className="font-extrabold text-base tracking-tight text-oneweb-text-primary">
                   OneWebUI
                 </span>
                 <Badge variant="accent" size="sm">
@@ -116,20 +138,72 @@ export function App() {
                 </Badge>
               </div>
               <p className="text-[11px] text-oneweb-text-secondary leading-none">
-                Design System & Component Library (One Ecosystem)
+                Design System for One Ecosystem
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setIsDialogOpen(true)}
-              leftIcon={<OneIcon name="open_in_new" size="sm" />}
-            >
-              Открыть Dialog
-            </Button>
+            <SimpleTooltip content="Нажмите для вызова тестового тоста">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  addToast({
+                    title: 'Системное событие',
+                    description: 'OneWebUI дизайн-система инициализирована.',
+                    variant: 'accent',
+                  })
+                }
+                leftIcon={<OneIcon name="notifications" size="sm" />}
+              >
+                Тест Toast
+              </Button>
+            </SimpleTooltip>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<OneIcon name="open_in_new" size="sm" />}
+                >
+                  Открыть Dialog
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Настройки OneWebUI</DialogTitle>
+                  <DialogDescription>
+                    Модальное окно на базе Radix Dialog с поддержкой Escape, анимации и крестика закрытия.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex flex-col gap-3 py-2">
+                  <Input label="Имя профиля" defaultValue="Administrator" leftIcon="person" />
+                  <Input label="Пароль доступа" type="password" defaultValue="secret_token" leftIcon="lock" />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline" size="md">Отмена</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      onClick={() =>
+                        addToast({
+                          title: 'Сохранено',
+                          description: 'Параметры профиля обновлены',
+                          variant: 'success',
+                        })
+                      }
+                    >
+                      Сохранить
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
@@ -138,38 +212,37 @@ export function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 flex flex-col gap-12">
         {/* Hero Section */}
         <section className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="accent" size="md" dot>
               One Ecosystem
             </Badge>
             <Badge variant="default" size="md">
-              Strict Tokens Guarantee
+              10 Radix Core Primitives
             </Badge>
             <Badge variant="success" size="md">
-              Material Symbols Rounded
+              Zero Arbitrary CSS
             </Badge>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-oneweb-text-primary">
-            Дизайн-система <span className="text-oneweb-accent">OneWebUI</span>
+            OneWebUI — Design System for One Ecosystem
           </h1>
           <p className="text-sm sm:text-base text-oneweb-text-secondary max-w-3xl leading-relaxed">
-            Автономная библиотека компонентов и дизайн-токенов для веб-приложений экосистемы One.
-            Построена на базе Tailwind CSS (<code className="text-oneweb-accent bg-oneweb-surface-subtle px-1.5 py-0.5 rounded-oneweb-sm text-xs">oneweb-*</code>),
-            CSS-переменных (<code className="text-oneweb-accent bg-oneweb-surface-subtle px-1.5 py-0.5 rounded-oneweb-sm text-xs">--oneweb-*</code>),
-            иконках Material Symbols Rounded (<code className="text-oneweb-accent bg-oneweb-surface-subtle px-1.5 py-0.5 rounded-oneweb-sm text-xs">&lt;OneIcon /&gt;</code>) и шрифте Wix Madefor Display.
+            Полноценная модульная библиотека компонентов, дизайн-токенов и иконок для всех веб-приложений экосистемы One.
+            Построена на базе строгого Tailwind-неймспейса <code className="text-oneweb-accent bg-oneweb-surface-subtle px-1.5 py-0.5 rounded-oneweb-sm text-xs">oneweb-*</code>,
+            доступных Radix UI примитивов и вариативных шрифтов.
           </p>
         </section>
 
-        {/* 1. Palette & Design Tokens */}
+        {/* 1. Palette & Typography */}
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
                 <OneIcon name="palette" size="md" className="text-oneweb-accent" />
-                1. Токены и Палитра цветов
+                1. Токены палитры и шрифты
               </h2>
               <p className="text-xs text-oneweb-text-secondary">
-                Нажмите на карточку цвета, чтобы скопировать токен var(--oneweb-*)
+                Нажмите на токен, чтобы скопировать имя CSS-переменной
               </p>
             </div>
             {copiedToken && (
@@ -179,6 +252,7 @@ export function App() {
             )}
           </div>
 
+          {/* Color Tokens Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
             {paletteColors.map((color) => (
               <button
@@ -206,54 +280,56 @@ export function App() {
             ))}
           </div>
 
-          {/* Radii & Shadows Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-            <Card variant="default">
+          {/* Typography Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+            <Card>
               <CardHeader>
-                <CardTitle>Радиусы скругления (Border Radii)</CardTitle>
-                <CardDescription>
-                  Токены от rounded-oneweb-sm (4px) до rounded-oneweb-full (9999px)
-                </CardDescription>
+                <CardTitle>Wix Madefor Display</CardTitle>
+                <CardDescription>Основной шрифт интерфейса (font-oneweb-sans)</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-2.5">
-                {radii.map((r) => (
-                  <div
-                    key={r.name}
-                    className={`bg-oneweb-surface-subtle border border-oneweb-border px-3 py-2 text-xs flex items-center justify-between gap-3 ${r.name}`}
-                  >
-                    <span className="font-medium text-oneweb-text-primary">{r.name}</span>
-                    <span className="text-[11px] text-oneweb-accent font-oneweb-mono">{r.val}</span>
-                  </div>
-                ))}
+              <CardContent className="flex flex-col gap-2">
+                <p className="font-oneweb-sans text-lg font-bold text-oneweb-text-primary">
+                  Аа Бб Вв 12345
+                </p>
+                <p className="font-oneweb-sans text-xs text-oneweb-text-secondary leading-relaxed">
+                  Чистая современная типографика Apple / OLED эстетики.
+                </p>
               </CardContent>
             </Card>
 
-            <Card variant="default">
+            <Card>
               <CardHeader>
-                <CardTitle>Тени и Свечения (Shadows & Glows)</CardTitle>
-                <CardDescription>
-                  Эффекты глубины и фирменное свечение One Lime Glow
-                </CardDescription>
+                <CardTitle>Minecraft & Pixel Fonts</CardTitle>
+                <CardDescription>Пиксельный шрифт (font-oneweb-minecraft)</CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-3">
-                <div className="bg-oneweb-surface-subtle p-3 rounded-oneweb-xl shadow-oneweb-sm border border-oneweb-border text-center">
-                  <span className="text-xs font-medium">shadow-oneweb-sm</span>
-                </div>
-                <div className="bg-oneweb-surface-subtle p-3 rounded-oneweb-xl shadow-oneweb-md border border-oneweb-border text-center">
-                  <span className="text-xs font-medium">shadow-oneweb-md</span>
-                </div>
-                <div className="bg-oneweb-surface-subtle p-3 rounded-oneweb-xl shadow-oneweb-lg border border-oneweb-border text-center">
-                  <span className="text-xs font-medium">shadow-oneweb-lg</span>
-                </div>
-                <div className="bg-oneweb-surface-subtle p-3 rounded-oneweb-xl shadow-oneweb-accent-glow border border-oneweb-border-accent text-center text-oneweb-accent font-semibold">
-                  <span className="text-xs">accent-glow</span>
-                </div>
+              <CardContent className="flex flex-col gap-2">
+                <p className="font-oneweb-minecraft text-2xl text-oneweb-accent tracking-wider">
+                  MINECRAFT FABRIC 1.21
+                </p>
+                <p className="font-oneweb-minecraft text-sm text-oneweb-text-secondary">
+                  Ready for adventure in OneHouse.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Monospace</CardTitle>
+                <CardDescription>Моноширинный стек (font-oneweb-mono)</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <code className="font-oneweb-mono text-xs text-oneweb-accent bg-oneweb-surface-subtle p-2 rounded-oneweb-md block">
+                  sha256: 89476ea08498adb1813b
+                </code>
+                <p className="text-xs text-oneweb-text-secondary">
+                  Используется для консолей, хэшей и кодовых блоков.
+                </p>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        {/* 2. OneIcon Component Showcase */}
+        {/* 2. OneIcon Component */}
         <section className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -262,7 +338,7 @@ export function App() {
                 2. Компонент OneIcon (Material Symbols Rounded)
               </h2>
               <p className="text-xs text-oneweb-text-secondary">
-                Переключайте заливку (fill), размер (size) и используйте живой поиск
+                Вариативный шрифт Google Material Symbols с поддержкой fill, размеров sm/md/lg и кастомных пикселей
               </p>
             </div>
 
@@ -278,9 +354,9 @@ export function App() {
               {(['sm', 'md', 'lg'] as const).map((sz) => (
                 <Button
                   key={sz}
-                  variant={selectedSize === sz ? 'primary' : 'secondary'}
+                  variant={selectedIconSize === sz ? 'primary' : 'secondary'}
                   size="sm"
-                  onClick={() => setSelectedSize(sz)}
+                  onClick={() => setSelectedIconSize(sz)}
                 >
                   {sz.toUpperCase()}
                 </Button>
@@ -291,13 +367,13 @@ export function App() {
           <Card variant="default">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <CardTitle>Каталог системных иконок</CardTitle>
+                <CardTitle>Интерактивный каталог иконок</CardTitle>
                 <div className="w-full sm:w-64">
                   <Input
                     placeholder="Поиск иконки..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    leftIcon={<OneIcon name="search" size="sm" />}
+                    value={iconSearch}
+                    onChange={(e) => setIconSearch(e.target.value)}
+                    leftIcon="search"
                   />
                 </div>
               </div>
@@ -311,7 +387,7 @@ export function App() {
                   >
                     <OneIcon
                       name={icon.name}
-                      size={selectedSize}
+                      size={selectedIconSize}
                       fill={iconFill}
                       className="text-oneweb-text-primary group-hover:text-oneweb-accent transition-colors"
                     />
@@ -322,18 +398,10 @@ export function App() {
                 ))}
               </div>
             </CardContent>
-            <CardFooter>
-              <span className="text-xs text-oneweb-text-muted">
-                Рендерит &lt;span className="material-symbols-rounded"&gt;
-              </span>
-              <Badge variant="accent" size="sm" dot>
-                Material Symbols Active
-              </Badge>
-            </CardFooter>
           </Card>
         </section>
 
-        {/* 3. Button Component Showcase */}
+        {/* 3. Button Component */}
         <section className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -342,7 +410,7 @@ export function App() {
                 3. Кнопки (Button)
               </h2>
               <p className="text-xs text-oneweb-text-secondary">
-                Все варианты (primary, secondary, outline, ghost, danger) и размеры (sm, md, lg)
+                Варианты primary на #c0ff00, secondary, outline, ghost, danger; размеры sm, md, lg; loading & disabled states
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -367,43 +435,27 @@ export function App() {
             <CardContent className="flex flex-col gap-6">
               <div>
                 <span className="text-xs font-semibold text-oneweb-text-secondary block mb-3 uppercase tracking-wider">
-                  Варианты отображения (MD)
+                  Варианты стиля (MD)
                 </span>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     variant="primary"
                     isLoading={btnLoading}
                     disabled={btnDisabled}
-                    onClick={() => setClickCount((c) => c + 1)}
+                    onClick={() => setButtonClicks((c) => c + 1)}
                   >
-                    Primary ({clickCount})
+                    Primary ({buttonClicks})
                   </Button>
-                  <Button
-                    variant="secondary"
-                    isLoading={btnLoading}
-                    disabled={btnDisabled}
-                  >
+                  <Button variant="secondary" isLoading={btnLoading} disabled={btnDisabled}>
                     Secondary
                   </Button>
-                  <Button
-                    variant="outline"
-                    isLoading={btnLoading}
-                    disabled={btnDisabled}
-                  >
+                  <Button variant="outline" isLoading={btnLoading} disabled={btnDisabled}>
                     Outline
                   </Button>
-                  <Button
-                    variant="ghost"
-                    isLoading={btnLoading}
-                    disabled={btnDisabled}
-                  >
+                  <Button variant="ghost" isLoading={btnLoading} disabled={btnDisabled}>
                     Ghost
                   </Button>
-                  <Button
-                    variant="danger"
-                    isLoading={btnLoading}
-                    disabled={btnDisabled}
-                  >
+                  <Button variant="danger" isLoading={btnLoading} disabled={btnDisabled}>
                     Danger
                   </Button>
                 </div>
@@ -411,26 +463,17 @@ export function App() {
 
               <div>
                 <span className="text-xs font-semibold text-oneweb-text-secondary block mb-3 uppercase tracking-wider">
-                  Кнопки с OneIcon
+                  Размеры и иконки
                 </span>
                 <div className="flex flex-wrap items-center gap-3">
-                  <Button
-                    variant="primary"
-                    leftIcon={<OneIcon name="rocket_launch" size="sm" />}
-                  >
-                    Запуск сервиса
+                  <Button variant="primary" size="sm" leftIcon={<OneIcon name="bolt" size="sm" />}>
+                    Small (sm)
                   </Button>
-                  <Button
-                    variant="secondary"
-                    rightIcon={<OneIcon name="arrow_forward" size="sm" />}
-                  >
-                    Далее
+                  <Button variant="secondary" size="md" leftIcon={<OneIcon name="rocket_launch" size="sm" />}>
+                    Medium (md)
                   </Button>
-                  <Button
-                    variant="danger"
-                    leftIcon={<OneIcon name="delete" size="sm" />}
-                  >
-                    Удалить
+                  <Button variant="outline" size="lg" rightIcon={<OneIcon name="arrow_forward" size="sm" />}>
+                    Large (lg)
                   </Button>
                 </div>
               </div>
@@ -438,7 +481,7 @@ export function App() {
           </Card>
         </section>
 
-        {/* 4. Input Component Showcase */}
+        {/* 4. Input Component */}
         <section className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -447,23 +490,15 @@ export function App() {
                 4. Поля ввода (Input)
               </h2>
               <p className="text-xs text-oneweb-text-secondary">
-                Текст, пароль со встроенным Show/Hide, валидация ошибок и блокировка
+                Текст, пароль со встроенным переключателем Show/Hide, OneIcon слева/справа, состояния ошибки и блокировки
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setHasInputError(!hasInputError)}
-              >
-                Error: {hasInputError ? 'Вкл' : 'Выкл'}
+              <Button variant="outline" size="sm" onClick={() => setInputError(!inputError)}>
+                Error: {inputError ? 'Вкл' : 'Выкл'}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsInputDisabled(!isInputDisabled)}
-              >
-                Disabled: {isInputDisabled ? 'Вкл' : 'Выкл'}
+              <Button variant="outline" size="sm" onClick={() => setInputDisabled(!inputDisabled)}>
+                Disabled: {inputDisabled ? 'Вкл' : 'Выкл'}
               </Button>
             </div>
           </div>
@@ -472,18 +507,18 @@ export function App() {
             <Card>
               <CardHeader>
                 <CardTitle>Текстовое поле</CardTitle>
-                <CardDescription>Инпут со встроенной валидацией и иконкой</CardDescription>
+                <CardDescription>С валидацией ошибки и левой иконкой</CardDescription>
               </CardHeader>
               <CardContent>
                 <Input
                   label="Имя пользователя"
                   placeholder="Введите никнейм..."
-                  value={inputValue}
-                  disabled={isInputDisabled}
-                  error={hasInputError ? 'Поле обязательно для заполнения' : undefined}
-                  helperText="Используется для авторизации в экосистеме One"
-                  onChange={(e) => setInputValue(e.target.value)}
-                  leftIcon={<OneIcon name="person" size="sm" />}
+                  value={inputVal}
+                  disabled={inputDisabled}
+                  error={inputError ? 'Пользователь не найден в экосистеме One' : undefined}
+                  helperText="Поддерживает OneIcon через проп leftIcon"
+                  onChange={(e) => setInputVal(e.target.value)}
+                  leftIcon="person"
                 />
               </CardContent>
             </Card>
@@ -491,26 +526,26 @@ export function App() {
             <Card>
               <CardHeader>
                 <CardTitle>Поле пароля</CardTitle>
-                <CardDescription>Интерактивная кнопка показа/скрытия пароля</CardDescription>
+                <CardDescription>Встроенный переключатель видимости</CardDescription>
               </CardHeader>
               <CardContent>
                 <Input
                   type="password"
                   label="Мастер-пароль"
                   placeholder="••••••••"
-                  value={passwordValue}
-                  disabled={isInputDisabled}
-                  error={hasInputError ? 'Пароль должен содержать от 8 символов' : undefined}
-                  helperText="Нажмите 'Show' / 'Hide' справа от поля"
-                  onChange={(e) => setPasswordValue(e.target.value)}
-                  leftIcon={<OneIcon name="lock" size="sm" />}
+                  value={passVal}
+                  disabled={inputDisabled}
+                  error={inputError ? 'Неверный мастер-пароль' : undefined}
+                  helperText="Нажмите на глаз справа для показа пароля"
+                  onChange={(e) => setPassVal(e.target.value)}
+                  leftIcon="lock"
                 />
               </CardContent>
             </Card>
           </div>
         </section>
 
-        {/* 5. Badge Showcase */}
+        {/* 5. Badge Component */}
         <section className="flex flex-col gap-4">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
@@ -518,7 +553,7 @@ export function App() {
               5. Бейджи (Badge)
             </h2>
             <p className="text-xs text-oneweb-text-secondary">
-              Статусные метки: default, accent, success, warning, danger
+              Варианты: default, accent (#c0ff00), success, warning, danger с опциональным dot-индикатором
             </p>
           </div>
 
@@ -526,16 +561,18 @@ export function App() {
             <CardContent className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge variant="default" dot>Default</Badge>
-                <Badge variant="accent" dot>One Lime</Badge>
-                <Badge variant="success" dot>В сети</Badge>
-                <Badge variant="warning" dot>Внимание</Badge>
-                <Badge variant="danger" dot>Ошибка</Badge>
+                <Badge variant="accent" dot>Accent Lime</Badge>
+                <Badge variant="success" dot>В сети (Success)</Badge>
+                <Badge variant="warning" dot>Внимание (Warning)</Badge>
+                <Badge variant="danger" dot>Ошибка (Danger)</Badge>
+                <Badge variant="accent" size="sm">NEW</Badge>
+                <Badge variant="default" size="sm">v1.0.0</Badge>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* 6. Card Showcase */}
+        {/* 6. Card Component */}
         <section className="flex flex-col gap-4">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
@@ -543,7 +580,7 @@ export function App() {
               6. Карточки (Card)
             </h2>
             <p className="text-xs text-oneweb-text-secondary">
-              Варианты default, elevated, glass
+              CardHeader, CardTitle, CardDescription, CardContent, CardFooter; варианты default, elevated, glass
             </p>
           </div>
 
@@ -559,11 +596,11 @@ export function App() {
               <CardContent className="flex flex-col gap-2">
                 <div className="flex justify-between text-xs py-1 border-b border-oneweb-border/40">
                   <span className="text-oneweb-text-secondary">Игроки</span>
-                  <span className="font-semibold text-oneweb-text-primary">8 / 20</span>
+                  <span className="font-semibold text-oneweb-text-primary">12 / 20</span>
                 </div>
                 <div className="flex justify-between text-xs py-1">
                   <span className="text-oneweb-text-secondary">Пинг</span>
-                  <span className="font-semibold text-oneweb-status-success">18 ms</span>
+                  <span className="font-semibold text-oneweb-status-success">14 ms</span>
                 </div>
               </CardContent>
               <CardFooter>
@@ -576,19 +613,19 @@ export function App() {
             <Card variant="elevated">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Облачное хранилище</CardTitle>
-                  <Badge variant="accent" size="sm">R2</Badge>
+                  <CardTitle>Elevated Card</CardTitle>
+                  <Badge variant="accent" size="sm">Elevated</Badge>
                 </div>
-                <CardDescription>Синхронизация ассетов</CardDescription>
+                <CardDescription>Повышенная тень shadow-oneweb-lg</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-                  Все файлы проверены и готовы к деплою в Cloudflare Pages.
+                  Поверхность для модальных карточек и выпадающих меню.
                 </p>
               </CardContent>
               <CardFooter>
                 <Button variant="secondary" size="sm" className="w-full">
-                  Обновить
+                  Действие
                 </Button>
               </CardFooter>
             </Card>
@@ -599,65 +636,381 @@ export function App() {
                   <CardTitle>Glass Panel</CardTitle>
                   <Badge variant="warning" size="sm">Blur</Badge>
                 </div>
-                <CardDescription>Backdrop blur эффект</CardDescription>
+                <CardDescription>Полупрозрачное стекло backdrop-blur-xl</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                  Оптимизировано для темной OLED-палитры экосистемы One.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" size="sm" className="w-full">
+                  Стекло
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </section>
+
+        {/* 7. Dialog Component */}
+        <section className="flex flex-col gap-4">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
+              <OneIcon name="open_in_browser" size="md" className="text-oneweb-accent" />
+              7. Модальное окно (Dialog)
+            </h2>
+            <p className="text-xs text-oneweb-text-secondary">
+              Radix Dialog: затемнение фона, блюр, плавное появление, закрытие по Escape и клику вне окна
+            </p>
+          </div>
+
+          <Card>
+            <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
+              <div>
+                <h3 className="text-sm font-bold text-oneweb-text-primary">
+                  Интерактивное модальное окно
+                </h3>
+                <p className="text-xs text-oneweb-text-secondary">
+                  Полнофункциональный диалог с подтверждением действия
+                </p>
+              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="primary" leftIcon={<OneIcon name="visibility" size="sm" />}>
+                    Открыть модальное окно
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Подтверждение операции</DialogTitle>
+                    <DialogDescription>
+                      Вы уверены, что хотите применить новые настройки дизайн-системы?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                    Все компоненты будут немедленно перерисованы с использованием токенов OneWebUI.
+                  </p>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Отмена</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          addToast({
+                            title: 'Операция выполнена',
+                            description: 'Настройки успешно применены.',
+                            variant: 'success',
+                          })
+                        }
+                      >
+                        Применить
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 8. Drawer / Sheet Component */}
+        <section className="flex flex-col gap-4">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
+              <OneIcon name="dock_to_bottom" size="md" className="text-oneweb-accent" />
+              8. Шторка (Drawer / Sheet)
+            </h2>
+            <p className="text-xs text-oneweb-text-secondary">
+              Шторка снизу для мобильных экранов (Bottom Sheet) и панель сбоку для десктопа (Side Drawer)
+            </p>
+          </div>
+
+          <Card>
+            <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
+              <div>
+                <h3 className="text-sm font-bold text-oneweb-text-primary">
+                  Выдвижные шторки и панели
+                </h3>
+                <p className="text-xs text-oneweb-text-secondary">
+                  Выберите ориентацию появления шторки
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                {/* Bottom Sheet */}
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button variant="secondary" leftIcon={<OneIcon name="vertical_align_top" size="sm" />}>
+                      Шторка снизу (Bottom)
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent side="bottom">
+                    <DrawerHeader>
+                      <DrawerTitle>Мобильная шторка (Bottom Sheet)</DrawerTitle>
+                      <DrawerDescription>
+                        Плавное появление снизу с индикатором свайпа.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <div className="py-4 flex flex-col gap-3">
+                      <Input label="Быстрая команда" placeholder="say Привет миру" leftIcon="terminal" />
+                      <div className="flex items-center justify-between p-3 rounded-oneweb-xl bg-oneweb-surface-subtle">
+                        <span className="text-xs font-semibold text-oneweb-text-primary">Авторестарт</span>
+                        <Badge variant="success" size="sm">Включен</Badge>
+                      </div>
+                    </div>
+                    <DrawerFooter>
+                      <DrawerClose asChild>
+                        <Button variant="primary" className="w-full">Готово</Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+
+                {/* Right Drawer */}
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button variant="primary" leftIcon={<OneIcon name="dock_to_left" size="sm" />}>
+                      Панель сбоку (Right)
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent side="right">
+                    <DrawerHeader>
+                      <DrawerTitle>Боковая панель (Side Drawer)</DrawerTitle>
+                      <DrawerDescription>
+                        Десктопная выдвижная панель справа.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <div className="py-4 flex flex-col gap-4">
+                      <div className="p-3 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl flex flex-col gap-2">
+                        <span className="text-xs font-bold text-oneweb-text-primary">Параметры сессии</span>
+                        <span className="text-xs text-oneweb-text-secondary">Пользователь: root</span>
+                        <span className="text-xs text-oneweb-text-secondary">IP: 127.0.0.1</span>
+                      </div>
+                    </div>
+                    <DrawerFooter>
+                      <DrawerClose asChild>
+                        <Button variant="outline" className="w-full">Закрыть</Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 9. Tabs Component */}
+        <section className="flex flex-col gap-4">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
+              <OneIcon name="tab" size="md" className="text-oneweb-accent" />
+              9. Табы (Tabs — Segmented Control)
+            </h2>
+            <p className="text-xs text-oneweb-text-secondary">
+              TabsList, TabsTrigger, TabsContent в стиле Segmented Control на базе Radix Tabs
+            </p>
+          </div>
+
+          <Card>
+            <CardContent className="pt-6">
+              <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="w-full sm:w-auto">
+                  <TabsTrigger value="overview">
+                    <OneIcon name="dashboard" size="sm" className="mr-1.5" />
+                    Обзор
+                  </TabsTrigger>
+                  <TabsTrigger value="components">
+                    <OneIcon name="widgets" size="sm" className="mr-1.5" />
+                    Компоненты
+                  </TabsTrigger>
+                  <TabsTrigger value="tokens">
+                    <OneIcon name="palette" size="sm" className="mr-1.5" />
+                    Токены
+                  </TabsTrigger>
+                  <TabsTrigger value="settings">
+                    <OneIcon name="settings" size="sm" className="mr-1.5" />
+                    Настройки
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="overview">
+                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Обзор экосистемы</h4>
+                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                      Экосистема One включает сервер Minecraft OneHouse, лаунчер OneLaunch и дизайн-систему OneWebUI.
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="components">
+                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: 10 компонентов</h4>
+                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                      Button, Card, Input, Badge, Dialog, Drawer, Tabs, Select, Toast, Tooltip.
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="tokens">
+                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Дизайн-токены</h4>
+                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                      Все переменные доступны через Tailwind класс oneweb-* или CSS var(--oneweb-*).
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="settings">
+                  <div className="p-4 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-xl mt-3 flex flex-col gap-2">
+                    <h4 className="text-sm font-bold text-oneweb-text-primary">Вкладка: Настройки</h4>
+                    <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+                      Конфигурация темной OLED-палитры и вариативных шрифтов.
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 10. Select, Toast & Tooltip Components */}
+        <section className="flex flex-col gap-4">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-oneweb-text-primary flex items-center gap-2">
+              <OneIcon name="menu" size="md" className="text-oneweb-accent" />
+              10. Select, Toast & Tooltip
+            </h2>
+            <p className="text-xs text-oneweb-text-secondary">
+              Выпадающий список на Radix Select, провайдер тостов и подсказки на наведении
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Select Dropdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Кастомный Select</CardTitle>
+                <CardDescription>Выбор опции с чекмаркой на Radix UI</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-                  Оптимизирован для темной OLED-палитры экосистемы One.
-                </p>
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => setIsDialogOpen(true)}
-                  leftIcon={<OneIcon name="open_in_new" size="sm" />}
-                >
-                  Открыть Dialog
-                </Button>
+                <label className="text-xs font-semibold text-oneweb-text-secondary">
+                  Выберите сервер
+                </label>
+                <Select value={selectedServer} onValueChange={setSelectedServer}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите сервер..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Основные сервера</SelectLabel>
+                      <SelectItem value="onehouse-main">OneHouse Fabric 1.21 (Основной)</SelectItem>
+                      <SelectItem value="onehouse-dev">OneHouse Dev Testbed</SelectItem>
+                      <SelectSeparator />
+                      <SelectLabel>Служебные</SelectLabel>
+                      <SelectItem value="onelaunch-auth">OneLaunch Auth Server</SelectItem>
+                      <SelectItem value="cloudflare-r2">Cloudflare R2 Modpack Storage</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <span className="text-xs text-oneweb-text-muted">
+                  Выбранный ID: <code className="text-oneweb-accent font-oneweb-mono">{selectedServer}</code>
+                </span>
+              </CardContent>
+            </Card>
+
+            {/* Toast & Tooltip Controls */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Toast & Tooltip</CardTitle>
+                <CardDescription>Всплывающие уведомления и подсказки при наведении</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-semibold text-oneweb-text-secondary block mb-2">
+                    Триггеры всплывающих уведомлений (Toast):
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() =>
+                        addToast({
+                          title: 'Успешно!',
+                          description: 'Операция завершена штатно.',
+                          variant: 'success',
+                        })
+                      }
+                    >
+                      Success
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() =>
+                        addToast({
+                          title: 'Внимание!',
+                          description: 'Свободно менее 15% диска.',
+                          variant: 'warning',
+                        })
+                      }
+                    >
+                      Warning
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() =>
+                        addToast({
+                          title: 'Ошибка!',
+                          description: 'Сбой подключения к сервису.',
+                          variant: 'danger',
+                        })
+                      }
+                    >
+                      Danger
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-xs font-semibold text-oneweb-text-secondary block mb-2">
+                    Подсказки при наведении (Tooltip):
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <SimpleTooltip content="Подсказка: Сгенерировать новый ключ">
+                      <Button variant="outline" size="sm" leftIcon={<OneIcon name="key" size="sm" />}>
+                        Hover Me
+                      </Button>
+                    </SimpleTooltip>
+                    <SimpleTooltip content="Зеленая неоновая подсветка One Lime">
+                      <Badge variant="accent" size="md">
+                        Hover Badge
+                      </Badge>
+                    </SimpleTooltip>
+                    <SimpleTooltip content="Иконка настроек экосистемы">
+                      <div className="p-2 bg-oneweb-surface-subtle border border-oneweb-border rounded-oneweb-lg cursor-pointer hover:border-oneweb-border-accent">
+                        <OneIcon name="settings" size="sm" />
+                      </div>
+                    </SimpleTooltip>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
         </section>
       </main>
-
-      {/* Interactive Dialog */}
-      <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-        <DialogHeader>
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-              <OneIcon name="verified" size="md" className="text-oneweb-accent" />
-              <DialogTitle>Настройки OneWebUI</DialogTitle>
-            </div>
-            <DialogClose onClose={() => setIsDialogOpen(false)} />
-          </div>
-          <DialogDescription>
-            Модальное окно на базе токенов OneWebUI с поддержкой клавиши ESC.
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogContent className="flex flex-col gap-4">
-          <Input
-            label="Название проекта"
-            defaultValue="OneWebUI Design System"
-            leftIcon={<OneIcon name="title" size="sm" />}
-          />
-          <Input
-            label="Ключ авторизации"
-            type="password"
-            defaultValue="secret-key-12345"
-            leftIcon={<OneIcon name="key" size="sm" />}
-          />
-        </DialogContent>
-
-        <DialogFooter>
-          <Button variant="outline" size="md" onClick={() => setIsDialogOpen(false)}>
-            Отмена
-          </Button>
-          <Button variant="primary" size="md" onClick={() => setIsDialogOpen(false)}>
-            Сохранить
-          </Button>
-        </DialogFooter>
-      </Dialog>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <TooltipProvider>
+      <ToastContainerProvider>
+        <ShowcaseContent />
+      </ToastContainerProvider>
+    </TooltipProvider>
   );
 }
 

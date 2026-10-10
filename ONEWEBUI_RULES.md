@@ -1,176 +1,163 @@
-# OneWebUI: Правила проектирования и сборки интерфейсов
+# OneWebUI: Строгие правила верстки и архитектуры интерфейсов
 
-Данный документ устанавливает обязательные инженерные стандарты и архитектурные правила верстки для всех веб-приложений экосистемы **One**.
-
----
-
-## 1. Главные принципы
-
-1. **Токенизация на 100% (Strict Token Guarantee)**:
-   - Все цвета, отступы, скругления, тени и шрифты задаются **исключительно** через дизайн-токены OneWebUI.
-   - Любое использование «магических» значений нарушает консистентность экосистемы One.
-
-2. **Строгий запрет на Arbitrary CSS и Hex-значения**:
-   - ❌ **ЗАПРЕЩЕНО**: писать в разметке произвольные hex-цвета, например: `bg-[#090b0e]`, `text-[#c0ff00]`, `border-[#14171c]`, `bg-[rgba(20,23,28,0.94)]`.
-   - ❌ **ЗАПРЕЩЕНО**: писать произвольные радиусы, например: `rounded-[16px]`, `rounded-[32px]`.
-   - ❌ **ЗАПРЕЩЕНО**: писать инлайн-стили с хардкодными цветами `style={{ backgroundColor: '#c0ff00' }}`.
-   - ✅ **РАЗРЕШЕНО**: использовать утилитарные классы Tailwind с префиксом `oneweb-` либо переменные `var(--oneweb-*)`.
-
-3. **Обязательный импорт компонентов из `@one/web-ui`**:
-   - Базовые интерактивные элементы интерфейса (кнопки, инпуты, карточки, бейджи, модалки) **не создаются с нуля**, а импортируются из библиотеки:
-   ```tsx
-   import { Button, Card, Input, Badge, Dialog } from '@one/web-ui';
-   ```
+> **Для всех AI-агентов, LLM и разработчиков экосистемы One**: данный регламент является законом при создании, модификации или рефакторинге веб-интерфейсов. Любое отклонение считается багом спецификации.
 
 ---
 
-## 2. Справочник токенов и классов Tailwind
+## 1. Абсолютные запреты (Zero-Tolerance Rules)
 
-### Палитра цветов (`color`)
+1. ❌ **ЗАПРЕТ на произвольные hex-цвета (Arbitrary Hex Colors)**:
+   - **Запрещено**: `bg-[#090b0e]`, `text-[#c0ff00]`, `border-[#14171c]`, `bg-[#181c23]`, `text-[#8e8e93]`, `bg-[rgba(20,23,28,0.94)]`.
+   - **Разрешено**: только семантические классы Tailwind `bg-oneweb-*`, `text-oneweb-*`, `border-oneweb-*` или CSS-переменные `var(--oneweb-*)`.
 
-| Назначение | CSS-переменная | Класс Tailwind (Background) | Класс Tailwind (Text) | Класс Tailwind (Border) |
+2. ❌ **ЗАПРЕТ на произвольные скругления (Arbitrary Radii)**:
+   - **Запрещено**: `rounded-[16px]`, `rounded-[32px]`, `rounded-[20px]`.
+   - **Разрешено**: только классы дизайн-системы `rounded-oneweb-sm`, `rounded-oneweb-md`, `rounded-oneweb-lg`, `rounded-oneweb-xl`, `rounded-oneweb-2xl`, `rounded-oneweb-sheet`, `rounded-oneweb-full`.
+
+3. ❌ **ЗАПРЕТ на создание велосипедов для базовых примитивов**:
+   - **Запрещено**: писать собственные `<button>`, `<input>`, модалки `<div role="dialog">`, самодельные табы или выпадающие списки.
+   - **Обязательно**: импортировать готовые протестированные примитивы из `@one/web-ui`.
+
+4. ❌ **ЗАПРЕТ на инлайн-стили цветов**:
+   - **Запрещено**: `style={{ backgroundColor: '#c0ff00' }}` или `style={{ color: '#ffffff' }}`.
+
+---
+
+## 2. Обязательный импорт из `@one/web-ui`
+
+Все компоненты интерфейса импортируются из единой точки входа:
+
+```tsx
+import {
+  OneIcon,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  Input,
+  Badge,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  Sheet, // Алиас для Drawer
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+  Toast,
+  useToast,
+  Tooltip,
+  SimpleTooltip,
+} from '@one/web-ui';
+```
+
+---
+
+## 3. Справочник валидных классов Tailwind (`oneweb-*`)
+
+### Цвета (Colors)
+
+| Токен | Назначение | Класс фона | Класс текста | Класс границы |
 |---|---|---|---|---|
-| Основной фон (Canvas) | `--oneweb-bg` | `bg-oneweb-bg` | `text-oneweb-bg` | `border-oneweb-bg` |
-| Глубокий фон (Contrast) | `--oneweb-bg-subtle` | `bg-oneweb-bg-subtle` | `text-oneweb-bg-subtle` | `border-oneweb-bg-subtle` |
-| Карточка / Поверхность | `--oneweb-surface` | `bg-oneweb-surface` | `text-oneweb-surface` | `border-oneweb-surface` |
-| Приподнятая поверхность | `--oneweb-surface-elevated` | `bg-oneweb-surface-elevated` | `text-oneweb-surface-elevated` | `border-oneweb-surface-elevated` |
-| Суб-поверхность / Контрол | `--oneweb-surface-subtle` | `bg-oneweb-surface-subtle` | `text-oneweb-surface-subtle` | `border-oneweb-surface-subtle` |
-| Стекло (Backdrop Blur) | `--oneweb-surface-glass` | `bg-oneweb-surface-glass` | - | - |
-| Фирменный акцент (One Lime) | `--oneweb-accent` | `bg-oneweb-accent` | `text-oneweb-accent` | `border-oneweb-accent` |
-| Акцент ховер | `--oneweb-accent-hover` | `hover:bg-oneweb-accent-hover` | - | - |
-| Тинт акцента (15%) | `--oneweb-accent-subtle` | `bg-oneweb-accent-subtle` | - | `border-oneweb-border-accent` |
-| Стандартная граница | `--oneweb-border` | - | - | `border-oneweb-border` |
-| Тонкая граница | `--oneweb-border-subtle` | - | - | `border-oneweb-border-subtle` |
-| Усиленная граница | `--oneweb-border-strong` | - | - | `border-oneweb-border-strong` |
-| Основной текст (White) | `--oneweb-text-primary` | - | `text-oneweb-text-primary` | - |
-| Вторичный текст (SF Gray) | `--oneweb-text-secondary` | - | `text-oneweb-text-secondary` | - |
-| Приглушенный текст | `--oneweb-text-muted` | - | `text-oneweb-text-muted` | - |
-| Инверсный текст | `--oneweb-text-inverse` | - | `text-oneweb-text-inverse` | - |
-| Статус: Успех | `--oneweb-status-success` | `bg-oneweb-status-success` | `text-oneweb-status-success` | `border-oneweb-status-success` |
-| Статус: Предупреждение | `--oneweb-status-warning` | `bg-oneweb-status-warning` | `text-oneweb-status-warning` | `border-oneweb-status-warning` |
-| Статус: Ошибка / Danger | `--oneweb-status-danger` | `bg-oneweb-status-danger` | `text-oneweb-status-danger` | `border-oneweb-status-danger` |
+| `oneweb-bg` | Главный фон холста (Canvas, #090b0e) | `bg-oneweb-bg` | `text-oneweb-bg` | `border-oneweb-bg` |
+| `oneweb-bg-subtle` | Глубокий контрастный фон (#050709) | `bg-oneweb-bg-subtle` | `text-oneweb-bg-subtle` | `border-oneweb-bg-subtle` |
+| `oneweb-surface` | Базовая карточка / поверхность (#14171c) | `bg-oneweb-surface` | `text-oneweb-surface` | `border-oneweb-surface` |
+| `oneweb-surface-elevated` | Приподнятая модалка / меню (#181c23) | `bg-oneweb-surface-elevated` | `text-oneweb-surface-elevated` | `border-oneweb-surface-elevated` |
+| `oneweb-surface-subtle` | Фон инпутов / элементов (#252c37) | `bg-oneweb-surface-subtle` | `text-oneweb-surface-subtle` | `border-oneweb-surface-subtle` |
+| `oneweb-surface-glass` | Стекло с размытием (Backdrop Blur) | `bg-oneweb-surface-glass` | - | - |
+| `oneweb-accent` | Фирменный лайм экосистемы One (#c0ff00) | `bg-oneweb-accent` | `text-oneweb-accent` | `border-oneweb-accent` |
+| `oneweb-accent-hover` | Ховер лайма (#aee600) | `hover:bg-oneweb-accent-hover` | - | - |
+| `oneweb-accent-subtle` | Полупрозрачный тинт лайма (15%) | `bg-oneweb-accent-subtle` | - | `border-oneweb-border-accent` |
+| `oneweb-border` | Стандартная граница (rgba 10%) | - | - | `border-oneweb-border` |
+| `oneweb-border-subtle` | Тонкая разделительная линия (rgba 5%) | - | - | `border-oneweb-border-subtle` |
+| `oneweb-border-strong` | Усиленная граница (rgba 15%) | - | - | `border-oneweb-border-strong` |
+| `oneweb-text-primary` | Высококонтрастный текст (#ffffff) | - | `text-oneweb-text-primary` | - |
+| `oneweb-text-secondary` | Вторичный текст (#8e8e93) | - | `text-oneweb-text-secondary` | - |
+| `oneweb-text-muted` | Приглушенный текст / плейсхолдеры | - | `text-oneweb-text-muted` | - |
+| `oneweb-text-inverse` | Темный текст на лаймовом фоне (#090b0e) | - | `text-oneweb-text-inverse` | - |
+| `oneweb-status-success` | Статус Успех (#1bd96a) | `bg-oneweb-status-success` | `text-oneweb-status-success` | `border-oneweb-status-success` |
+| `oneweb-status-warning` | Статус Предупреждение (#fbbf24) | `bg-oneweb-status-warning` | `text-oneweb-status-warning` | `border-oneweb-status-warning` |
+| `oneweb-status-danger` | Статус Ошибка / Danger (#ef4444) | `bg-oneweb-status-danger` | `text-oneweb-status-danger` | `border-oneweb-status-danger` |
 
 ---
 
-### Скругления углов (`borderRadius`)
+### Скругления (Border Radii)
 
-| Значение | CSS-переменная | Класс Tailwind |
-|---|---|---|
-| 0px | `--oneweb-radius-none` | `rounded-oneweb-none` |
-| 4px | `--oneweb-radius-sm` | `rounded-oneweb-sm` |
-| 8px | `--oneweb-radius-md` | `rounded-oneweb-md` |
-| 12px | `--oneweb-radius-lg` | `rounded-oneweb-lg` |
-| 16px (Инпуты / карточки) | `--oneweb-radius-xl` | `rounded-oneweb-xl` |
-| 20px | `--oneweb-radius-2xl` | `rounded-oneweb-2xl` |
-| 24px | `--oneweb-radius-3xl` | `rounded-oneweb-3xl` |
-| 32px (Bottom Sheets, Модалки) | `--oneweb-radius-sheet` | `rounded-oneweb-sheet` |
-| 9999px (Pills, Аватары) | `--oneweb-radius-full` | `rounded-oneweb-full` |
+- `rounded-oneweb-none`: 0px
+- `rounded-oneweb-sm`: 4px (метки, микроэлементы)
+- `rounded-oneweb-md`: 8px (небольшие кнопки)
+- `rounded-oneweb-lg`: 12px (стандартные контролы)
+- `rounded-oneweb-xl`: 16px (инпуты, карточки)
+- `rounded-oneweb-2xl`: 20px (большие карточки)
+- `rounded-oneweb-3xl`: 24px (панели)
+- `rounded-oneweb-sheet`: 32px (шторки снизу и диалоги)
+- `rounded-oneweb-full`: 9999px (бейджи, таблетки, круглые аватары)
 
 ---
 
-### Тени и свечения (`boxShadow`)
+### Тени и свечения (Shadows & Glows)
 
-| Назначение | Класс Tailwind | Описание |
-|---|---|---|
-| Тонкая тень | `shadow-oneweb-sm` | Карточки в списке |
-| Средняя тень | `shadow-oneweb-md` | Стандартные панели |
-| Высокая тень | `shadow-oneweb-lg` | Выпадающие меню, поповеры |
-| Неоновый лайм | `shadow-oneweb-accent-glow` | Фирменное свечение `0 0 6px #c0ff00` |
-| Модальное окно | `shadow-oneweb-modal` | Диалоги `0 12px 40px rgba(0,0,0,0.8)` |
-| Нижняя шторка | `shadow-oneweb-sheet` | Bottom sheets `0 -12px 48px rgba(0,0,0,0.85)` |
+- `shadow-oneweb-sm`: карточки списка
+- `shadow-oneweb-md`: стандартные блоки
+- `shadow-oneweb-lg`: выпадающие меню
+- `shadow-oneweb-accent-glow`: фирменное неоновое свечение One Lime (`0 0 6px #c0ff00`)
+- `shadow-oneweb-modal`: центрированные диалоги (`0 12px 40px rgba(0,0,0,0.80)`)
+- `shadow-oneweb-sheet`: нижние шторки (`0 -12px 48px rgba(0,0,0,0.85)`)
 
 ---
 
-### Типографика (`fontFamily`)
+### Шрифты (Typography)
 
-- `font-oneweb-sans` — основной стек (`'Wix Madefor Display', -apple-system, sans-serif`)
-- `font-oneweb-mono` — моноширинный стек для логов, кода и хэшей
-- `font-oneweb-minecraft` — пиксельный стек для компонентов игрового профиля
+- `font-oneweb-sans`: основной шрифт `Wix Madefor Display`
+- `font-oneweb-minecraft`: аутентичный пиксельный шрифт `Silkscreen` / `VT323`
+- `font-oneweb-mono`: моноширинный стек для логов и хэшей
 
 ---
 
-## 3. Базовые примитивы библиотеки `@one/web-ui`
+## 4. Правила работы с OneIcon (Material Symbols Rounded)
 
-### `Button`
+Иконки создаются исключительно через компонент `OneIcon`:
+
 ```tsx
-import { Button } from '@one/web-ui';
+// Стандартная иконка с заливкой (fill=true по умолчанию):
+<OneIcon name="settings" size="md" />
 
-<Button variant="primary" size="md">Кнопка</Button>
-<Button variant="secondary" size="sm">Действие</Button>
-<Button variant="outline" size="md">Контур</Button>
-<Button variant="ghost" size="sm">Без фона</Button>
-<Button variant="danger" size="md">Удалить</Button>
-```
-*Поддерживает:* `isLoading`, `leftIcon`, `rightIcon`, `disabled`.
+// Контурная иконка:
+<OneIcon name="settings" size="md" fill={false} />
 
-### `Card`
-```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@one/web-ui';
-
-<Card variant="default"> {/* 'default' | 'elevated' | 'glass' */}
-  <CardHeader>
-    <CardTitle>Заголовок</CardTitle>
-    <CardDescription>Пояснение к блоку</CardDescription>
-  </CardHeader>
-  <CardContent>
-    Контент карточки
-  </CardContent>
-  <CardFooter>
-    Футер с действиями
-  </CardFooter>
-</Card>
-```
-
-### `Input`
-```tsx
-import { Input } from '@one/web-ui';
-
-<Input
-  label="Имя пользователя"
-  placeholder="Введите..."
-  error="Обязательное поле" // Подсветка ошибки в стиле OneWebUI
-  helperText="Подсказка под инпутом"
-  disabled={false}
-/>
-
-<Input
-  type="password" // Имеет встроенную кнопку переключения видимости Show/Hide
-  label="Пароль"
-/>
-```
-
-### `Badge`
-```tsx
-import { Badge } from '@one/web-ui';
-
-<Badge variant="accent" dot>Акцент</Badge>
-<Badge variant="success" dot>В сети</Badge>
-<Badge variant="warning">В ожидании</Badge>
-<Badge variant="danger">Ошибка</Badge>
-<Badge variant="default" size="sm">v1.0.0</Badge>
-```
-
-### `Dialog`
-```tsx
-import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter, DialogClose } from '@one/web-ui';
-
-<Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-  <DialogHeader>
-    <DialogTitle>Название окна</DialogTitle>
-    <DialogClose onClose={() => setIsOpen(false)} />
-  </DialogHeader>
-  <DialogContent>
-    Тело диалога
-  </DialogContent>
-  <DialogFooter>
-    Кнопки действий
-  </DialogFooter>
-</Dialog>
+// Акцентный цвет и кастомный размер в пикселях:
+<OneIcon name="bolt" size={20} className="text-oneweb-accent" />
 ```
 
 ---
 
-## 4. Чеклист перед коммитом
-- [ ] Отсутствуют произвольные цвета `[#...]` в добавленном/измененном коде.
-- [ ] Компоненты UI импортируются из `@one/web-ui`.
-- [ ] Сборка `npm run build` проходит без ошибок TypeScript и Vite.
+## 5. Чеклист перед отправкой кода (AI Gatekeeper)
+
+1. [ ] В файле нет ни одного `[#...].`
+2. [ ] Все используемые кнопки, инпуты, карточки, диалоги, табы, селекты, тосты и подсказки импортированы из `@one/web-ui`.
+3. [ ] Команда `npm run build` проходит без единой ошибки TypeScript и Vite.
+4. [ ] Новые стили проверены в темной теме OLED (#090b0e).

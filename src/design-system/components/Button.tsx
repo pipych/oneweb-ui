@@ -1,46 +1,55 @@
 import React, { forwardRef } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../utils/cn';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export const buttonVariants = cva(
+  'inline-flex items-center justify-center select-none font-medium transition-all duration-150 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 outline-none focus-visible:ring-2',
+  {
+    variants: {
+      variant: {
+        primary:
+          'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover font-semibold shadow-oneweb-sm focus-visible:ring-oneweb-accent',
+        secondary:
+          'bg-oneweb-surface-subtle text-oneweb-text-primary hover:bg-oneweb-surface-elevated border border-oneweb-border focus-visible:ring-oneweb-border-strong',
+        outline:
+          'bg-transparent text-oneweb-text-primary border border-oneweb-border hover:border-oneweb-border-strong hover:bg-oneweb-surface-subtle focus-visible:ring-oneweb-border-accent',
+        ghost:
+          'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle focus-visible:ring-oneweb-border',
+        danger:
+          'bg-oneweb-status-danger text-oneweb-text-primary hover:opacity-90 font-semibold shadow-oneweb-sm focus-visible:ring-oneweb-status-danger',
+      },
+      size: {
+        sm: 'text-xs px-3 py-1.5 rounded-oneweb-md gap-1.5',
+        md: 'text-sm px-4 py-2 rounded-oneweb-lg gap-2',
+        lg: 'text-base px-5 py-2.5 rounded-oneweb-xl gap-2.5',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
-const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    'bg-oneweb-accent text-oneweb-text-inverse hover:bg-oneweb-accent-hover font-semibold shadow-oneweb-sm focus-visible:ring-2 focus-visible:ring-oneweb-accent',
-  secondary:
-    'bg-oneweb-surface-subtle text-oneweb-text-primary hover:bg-oneweb-surface-elevated font-medium border border-oneweb-border focus-visible:ring-2 focus-visible:ring-oneweb-border-strong',
-  outline:
-    'bg-transparent text-oneweb-text-primary border border-oneweb-border hover:border-oneweb-border-strong hover:bg-oneweb-surface-subtle font-medium focus-visible:ring-2 focus-visible:ring-oneweb-border-accent',
-  ghost:
-    'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle font-medium focus-visible:ring-2 focus-visible:ring-oneweb-border',
-  danger:
-    'bg-oneweb-status-danger text-oneweb-text-primary hover:opacity-90 font-semibold shadow-oneweb-sm focus-visible:ring-2 focus-visible:ring-oneweb-status-danger',
-};
-
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'text-xs px-3 py-1.5 rounded-oneweb-md gap-1.5',
-  md: 'text-sm px-4 py-2 rounded-oneweb-lg gap-2',
-  lg: 'text-base px-5 py-2.5 rounded-oneweb-xl gap-2.5',
-};
-
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant = 'primary',
-      size = 'md',
+      variant,
+      size,
       isLoading = false,
       leftIcon,
       rightIcon,
       disabled = false,
       children,
-      className = '',
+      className,
       type = 'button',
       ...rest
     },
@@ -53,7 +62,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         disabled={isDisabled}
-        className={`inline-flex items-center justify-center select-none transition-all duration-150 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 outline-none ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        className={cn(buttonVariants({ variant, size }), className)}
         {...rest}
       >
         {isLoading ? (

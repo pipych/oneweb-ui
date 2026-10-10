@@ -1,154 +1,103 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { cn } from '../utils/cn';
+import { OneIcon } from './OneIcon';
 
-export interface DialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  className?: string;
-}
+export const Dialog = DialogPrimitive.Root;
+export const DialogTrigger = DialogPrimitive.Trigger;
+export const DialogPortal = DialogPrimitive.Portal;
+export const DialogClose = DialogPrimitive.Close;
 
-export const Dialog: React.FC<DialogProps> = ({
-  isOpen,
-  onClose,
-  children,
-  className = '',
-}) => {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
+export const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      'fixed inset-0 z-50 bg-black/75 backdrop-blur-md transition-all duration-200 animate-fade-in',
+      className
+    )}
+    {...props}
+  />
+));
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity animate-fade-in"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Modal Surface */}
-      <div
-        className={`relative z-10 w-full max-w-lg bg-oneweb-surface-elevated border border-oneweb-border rounded-oneweb-2xl shadow-oneweb-modal overflow-hidden flex flex-col animate-slide-up ${className}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
-
-export const DialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-  className = '',
-  children,
-  ...rest
-}) => {
-  return (
-    <div
-      className={`p-6 pb-4 border-b border-oneweb-border flex items-start justify-between gap-4 ${className}`}
-      {...rest}
-    >
-      <div className="flex flex-col gap-1 w-full">{children}</div>
-    </div>
-  );
-};
-
-export const DialogTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
-  className = '',
-  children,
-  ...rest
-}) => {
-  return (
-    <h2
-      className={`text-lg font-bold text-oneweb-text-primary tracking-tight ${className}`}
-      {...rest}
+export const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    hideCloseButton?: boolean;
+  }
+>(({ className, children, hideCloseButton = false, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        'fixed left-[50%] top-[50%] z-50 w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%]',
+        'bg-oneweb-surface-elevated border border-oneweb-border rounded-oneweb-2xl shadow-oneweb-modal',
+        'p-6 duration-200 animate-scale-in outline-none flex flex-col gap-4',
+        className
+      )}
+      {...props}
     >
       {children}
-    </h2>
-  );
-};
+      {!hideCloseButton && (
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-oneweb-md p-1 text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle transition-colors focus:outline-none focus:ring-2 focus:ring-oneweb-accent">
+          <OneIcon name="close" size="sm" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      )}
+    </DialogPrimitive.Content>
+  </DialogPortal>
+));
+DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-export const DialogDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({
-  className = '',
-  children,
-  ...rest
-}) => {
-  return (
-    <p
-      className={`text-xs text-oneweb-text-secondary leading-relaxed ${className}`}
-      {...rest}
-    >
-      {children}
-    </p>
-  );
-};
+export const DialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn('flex flex-col gap-1.5 text-left border-b border-oneweb-border/60 pb-3', className)}
+    {...props}
+  />
+);
+DialogHeader.displayName = 'DialogHeader';
 
-export const DialogContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-  className = '',
-  children,
-  ...rest
-}) => {
-  return (
-    <div className={`p-6 text-sm text-oneweb-text-secondary ${className}`} {...rest}>
-      {children}
-    </div>
-  );
-};
+export const DialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-3 border-t border-oneweb-border/60',
+      className
+    )}
+    {...props}
+  />
+);
+DialogFooter.displayName = 'DialogFooter';
 
-export const DialogFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-  className = '',
-  children,
-  ...rest
-}) => {
-  return (
-    <div
-      className={`p-6 pt-4 border-t border-oneweb-border/60 flex items-center justify-end gap-3 bg-oneweb-surface/50 ${className}`}
-      {...rest}
-    >
-      {children}
-    </div>
-  );
-};
+export const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn('text-lg font-bold text-oneweb-text-primary tracking-tight', className)}
+    {...props}
+  />
+));
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
-export const DialogClose: React.FC<{
-  onClose: () => void;
-  className?: string;
-}> = ({ onClose, className = '' }) => {
-  return (
-    <button
-      type="button"
-      onClick={onClose}
-      aria-label="Close dialog"
-      className={`text-oneweb-text-muted hover:text-oneweb-text-primary transition-colors p-1 rounded-oneweb-lg hover:bg-oneweb-surface-subtle focus:outline-none ${className}`}
-    >
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  );
-};
+export const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
+    {...props}
+  />
+));
+DialogDescription.displayName = DialogPrimitive.Description.displayName;

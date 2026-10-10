@@ -1,11 +1,13 @@
 import React, { forwardRef, useState } from 'react';
+import { cn } from '../utils/cn';
+import { OneIcon } from './OneIcon';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string | boolean;
   helperText?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  leftIcon?: React.ReactNode | string;
+  rightIcon?: React.ReactNode | string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,7 +20,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       rightIcon,
       disabled = false,
       type = 'text',
-      className = '',
+      className,
       id,
       ...rest
     },
@@ -30,14 +32,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasError = Boolean(error);
     const generatedId = id || (label ? `input-${label.toLowerCase().replace(/\s+/g, '-')}` : undefined);
 
+    const renderIcon = (icon: React.ReactNode | string) => {
+      if (typeof icon === 'string') {
+        return <OneIcon name={icon} size="sm" />;
+      }
+      return icon;
+    };
+
     return (
       <div className="w-full flex flex-col gap-1.5 text-left">
         {label && (
           <label
             htmlFor={generatedId}
-            className={`text-xs font-semibold tracking-wide ${
+            className={cn(
+              'text-xs font-semibold tracking-wide',
               hasError ? 'text-oneweb-status-danger' : 'text-oneweb-text-secondary'
-            }`}
+            )}
           >
             {label}
           </label>
@@ -46,7 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative flex items-center w-full">
           {leftIcon && (
             <div className="absolute left-3.5 flex items-center justify-center pointer-events-none text-oneweb-text-muted">
-              {leftIcon}
+              {renderIcon(leftIcon)}
             </div>
           )}
 
@@ -55,13 +65,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={generatedId}
             type={computedType}
             disabled={disabled}
-            className={`w-full bg-oneweb-surface-subtle text-oneweb-text-primary text-sm rounded-oneweb-xl border transition-all duration-150 outline-none placeholder:text-oneweb-text-muted ${
-              leftIcon ? 'pl-10' : 'pl-4'
-            } ${isPassword || rightIcon ? 'pr-11' : 'pr-4'} py-2.5 ${
+            className={cn(
+              'w-full bg-oneweb-surface-subtle text-oneweb-text-primary text-sm rounded-oneweb-xl border transition-all duration-150 outline-none placeholder:text-oneweb-text-muted',
+              leftIcon ? 'pl-10' : 'pl-4',
+              isPassword || rightIcon ? 'pr-11' : 'pr-4',
+              'py-2.5',
               hasError
                 ? 'border-oneweb-status-danger focus:ring-1 focus:ring-oneweb-status-danger'
-                : 'border-oneweb-border focus:border-oneweb-accent focus:ring-1 focus:ring-oneweb-accent'
-            } ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
+                : 'border-oneweb-border focus:border-oneweb-accent focus:ring-1 focus:ring-oneweb-accent',
+              disabled && 'opacity-40 cursor-not-allowed',
+              className
+            )}
             {...rest}
           />
 
@@ -73,15 +87,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className="absolute right-3.5 flex items-center justify-center text-oneweb-text-muted hover:text-oneweb-text-primary transition-colors focus:outline-none"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              <span className="text-xs font-medium">
-                {showPassword ? 'Hide' : 'Show'}
-              </span>
+              <OneIcon name={showPassword ? 'visibility_off' : 'visibility'} size="sm" />
             </button>
           )}
 
           {!isPassword && rightIcon && (
             <div className="absolute right-3.5 flex items-center justify-center text-oneweb-text-muted">
-              {rightIcon}
+              {renderIcon(rightIcon)}
             </div>
           )}
         </div>

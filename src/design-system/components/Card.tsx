@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { cn } from '../utils/cn';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'elevated' | 'glass';
@@ -11,11 +12,15 @@ const cardVariants = {
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = 'default', className = '', children, ...rest }, ref) => {
+  ({ variant = 'default', className, children, ...rest }, ref) => {
     return (
       <div
         ref={ref}
-        className={`rounded-oneweb-2xl transition-all duration-200 overflow-hidden flex flex-col ${cardVariants[variant]} ${className}`}
+        className={cn(
+          'rounded-oneweb-2xl transition-all duration-200 overflow-hidden flex flex-col',
+          cardVariants[variant],
+          className
+        )}
         {...rest}
       >
         {children}
@@ -28,11 +33,11 @@ Card.displayName = 'Card';
 export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className = '', children, ...rest }, ref) => {
+  ({ className, children, ...rest }, ref) => {
     return (
       <div
         ref={ref}
-        className={`p-5 border-b border-oneweb-border flex flex-col gap-1.5 ${className}`}
+        className={cn('p-5 border-b border-oneweb-border flex flex-col gap-1.5', className)}
         {...rest}
       >
         {children}
@@ -47,11 +52,11 @@ export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement>
 }
 
 export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ as: Component = 'h3', className = '', children, ...rest }, ref) => {
+  ({ as: Component = 'h3', className, children, ...rest }, ref) => {
     return (
       <Component
         ref={ref}
-        className={`text-lg font-bold text-oneweb-text-primary tracking-tight ${className}`}
+        className={cn('text-lg font-bold text-oneweb-text-primary tracking-tight', className)}
         {...rest}
       >
         {children}
@@ -64,11 +69,11 @@ CardTitle.displayName = 'CardTitle';
 export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
 
 export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
-  ({ className = '', children, ...rest }, ref) => {
+  ({ className, children, ...rest }, ref) => {
     return (
       <p
         ref={ref}
-        className={`text-xs text-oneweb-text-secondary leading-relaxed ${className}`}
+        className={cn('text-xs text-oneweb-text-secondary leading-relaxed', className)}
         {...rest}
       >
         {children}
@@ -81,11 +86,11 @@ CardDescription.displayName = 'CardDescription';
 export interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ className = '', children, ...rest }, ref) => {
+  ({ className, children, ...rest }, ref) => {
     return (
       <div
         ref={ref}
-        className={`p-5 flex-1 text-sm text-oneweb-text-secondary ${className}`}
+        className={cn('p-5 flex-1 text-sm text-oneweb-text-secondary', className)}
         {...rest}
       >
         {children}
@@ -98,11 +103,14 @@ CardContent.displayName = 'CardContent';
 export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ className = '', children, ...rest }, ref) => {
+  ({ className, children, ...rest }, ref) => {
     return (
       <div
         ref={ref}
-        className={`p-5 pt-3 border-t border-oneweb-border/60 flex items-center justify-between gap-3 mt-auto ${className}`}
+        className={cn(
+          'p-5 pt-3 border-t border-oneweb-border/60 flex items-center justify-between gap-3 mt-auto',
+          className
+        )}
         {...rest}
       >
         {children}

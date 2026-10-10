@@ -31,7 +31,6 @@ export default {
         'oneweb-status-warning': 'var(--oneweb-status-warning, #fbbf24)',
         'oneweb-status-danger': 'var(--oneweb-status-danger, #ef4444)',
 
-        // Nested structure for flexible utility access
         oneweb: {
           bg: 'var(--oneweb-bg, #090b0e)',
           'bg-subtle': 'var(--oneweb-bg-subtle, #050709)',
@@ -85,6 +84,46 @@ export default {
       fontFamily: {
         'oneweb-sans': ['var(--oneweb-font-sans)', 'sans-serif'],
         'oneweb-mono': ['var(--oneweb-font-mono)', 'monospace'],
+        'oneweb-minecraft': ['var(--oneweb-font-minecraft)', 'monospace'],
+      },
+      animation: {
+        'slide-up': 'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-down': 'slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-left': 'slideLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-right': 'slideRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'fade-in': 'fadeIn 0.2s ease-out forwards',
+        'fade-out': 'fadeOut 0.2s ease-in forwards',
+        'scale-in': 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+      },
+      keyframes: {
+        slideUp: {
+          '0%': { transform: 'translateY(100%)', opacity: '0.3' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-100%)', opacity: '0.3' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideLeft: {
+          '0%': { transform: 'translateX(100%)', opacity: '0.3' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideRight: {
+          '0%': { transform: 'translateX(-100%)', opacity: '0.3' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
       },
     },
   },
