@@ -203,3 +203,9 @@ export const Modal: React.FC<ModalProps> = ({
     document.body
   );
 };
+
+/**
+ * Drawer alias for mobile-first bottom sheet overlay
+ */
+export const Drawer = Modal;
+export type DrawerProps = ModalProps;
