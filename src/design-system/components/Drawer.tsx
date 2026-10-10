@@ -30,13 +30,13 @@ const drawerVariants = cva(
     variants: {
       side: {
         bottom:
-          'inset-x-0 bottom-0 max-h-[85vh] border-t rounded-t-[32px] p-7 animate-slide-up gap-5',
+          'inset-x-0 bottom-0 max-h-[85vh] border-t rounded-t-[32px] p-5 sm:p-7 animate-slide-up gap-4 sm:gap-5 safe-bottom',
         top:
-          'inset-x-0 top-0 max-h-[85vh] border-b rounded-b-[32px] p-7 animate-slide-down gap-5',
+          'inset-x-0 top-0 max-h-[85vh] border-b rounded-b-[32px] p-5 sm:p-7 animate-slide-down gap-4 sm:gap-5 safe-top',
         right:
-          'inset-y-0 right-0 h-full w-full sm:max-w-md border-l rounded-l-[32px] p-7 animate-slide-left gap-5',
+          'inset-y-0 right-0 h-full w-full sm:max-w-md border-l rounded-l-[32px] p-5 sm:p-7 animate-slide-left gap-4 sm:gap-5',
         left:
-          'inset-y-0 left-0 h-full w-full sm:max-w-md border-r rounded-r-[32px] p-7 animate-slide-right gap-5',
+          'inset-y-0 left-0 h-full w-full sm:max-w-md border-r rounded-r-[32px] p-5 sm:p-7 animate-slide-right gap-4 sm:gap-5',
       },
     },
     defaultVariants: {

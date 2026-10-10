@@ -17,7 +17,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-[32px] p-6 sm:p-7 flex flex-col gap-5 transition-all duration-200 overflow-hidden',
+          'rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 flex flex-col gap-4 sm:gap-5 transition-all duration-200 overflow-hidden',
           cardVariants[variant],
           className
         )}

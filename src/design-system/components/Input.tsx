@@ -42,7 +42,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     return (
-      <div className="w-full flex flex-col gap-2 text-left">
+      <div className="w-full min-w-0 flex flex-col gap-1.5 text-left">
         {label && (
           <label
             htmlFor={generatedId}
@@ -55,7 +55,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
 
-        <div className="relative flex items-center w-full">
+        <div className="relative flex items-center w-full min-w-0">
           {leftIcon && (
             <div className={cn(
               'absolute flex items-center justify-center pointer-events-none text-white/40',
@@ -71,10 +71,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             type={computedType}
             disabled={disabled}
             className={cn(
-              'w-full bg-[#14171c] text-white text-sm rounded-full border transition-all duration-200 outline-none',
+              'w-full min-w-0 bg-[#14171c] text-white text-sm rounded-full border transition-all duration-200 outline-none',
               'placeholder:text-white/30',
               inputSize === 'lg' ? 'h-14 text-base' : 'h-12 text-sm',
-              leftIcon ? (inputSize === 'lg' ? 'pl-13' : 'pl-11') : (inputSize === 'lg' ? 'pl-6' : 'pl-5'),
+              leftIcon ? (inputSize === 'lg' ? 'pl-14' : 'pl-11') : (inputSize === 'lg' ? 'pl-6' : 'pl-5'),
               isPassword || rightIcon ? (inputSize === 'lg' ? 'pr-14' : 'pr-12') : (inputSize === 'lg' ? 'pr-6' : 'pr-5'),
               hasError
                 ? 'border-rose-500/40 bg-rose-500/[0.05] focus:border-rose-500'

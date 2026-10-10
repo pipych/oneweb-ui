@@ -17,10 +17,10 @@ export const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'inline-flex items-center justify-center bg-[#14171c] border border-white/[0.04] rounded-full text-[#8e8e93] select-none gap-1',
+      'inline-flex items-center justify-start sm:justify-center max-w-full overflow-x-auto no-scrollbar bg-[#14171c] border border-white/[0.04] rounded-full text-[#8e8e93] select-none gap-1',
       size === 'sm' && 'p-1',
-      size === 'md' && 'p-1.5',
-      size === 'lg' && 'p-2',
+      size === 'md' && 'p-1 sm:p-1.5',
+      size === 'lg' && 'p-1.5 sm:p-2',
       className
     )}
     {...props}
@@ -56,21 +56,21 @@ export const TabsTrigger = React.forwardRef<
     <TabsPrimitive.Trigger
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center whitespace-nowrap rounded-full font-semibold transition-all duration-200',
-        'outline-none disabled:pointer-events-none disabled:opacity-30 border-none select-none gap-2',
+        'inline-flex items-center justify-center whitespace-nowrap rounded-full font-semibold transition-all duration-200 shrink-0',
+        'outline-none disabled:pointer-events-none disabled:opacity-30 border-none select-none gap-1.5 sm:gap-2',
         'text-[#8e8e93] hover:text-white',
         // Активный объемный пилл с лаймовым текстом
         'data-[state=active]:bg-[#252c37] data-[state=active]:text-oneweb-accent data-[state=active]:shadow-[0_2px_12px_rgba(0,0,0,0.6)] data-[state=active]:font-bold',
         'focus-visible:ring-2 focus-visible:ring-oneweb-accent',
-        size === 'sm' && 'h-8 px-3 text-xs',
-        size === 'md' && 'h-9 px-4 text-xs',
-        size === 'lg' && 'h-11 px-5 text-sm',
+        size === 'sm' && 'h-8 px-2.5 sm:px-3 text-xs',
+        size === 'md' && 'h-9 px-3 sm:px-4 text-xs',
+        size === 'lg' && 'h-11 px-4 sm:px-5 text-sm',
         className
       )}
       {...props}
     >
       {renderIcon()}
-      {children && <span>{children}</span>}
+      {children && <span className="truncate">{children}</span>}
     </TabsPrimitive.Trigger>
   );
 });

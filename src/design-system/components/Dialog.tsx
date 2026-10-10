@@ -35,8 +35,8 @@ export const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%]',
-        'bg-[#14171c] border border-white/[0.06] rounded-[32px] shadow-2xl',
-        'p-7 duration-200 animate-scale-in outline-none flex flex-col gap-6',
+        'bg-[#14171c] border border-white/[0.06] rounded-[28px] sm:rounded-[32px] shadow-2xl',
+        'p-5 sm:p-7 duration-200 animate-scale-in outline-none flex flex-col gap-5 sm:gap-6',
         className
       )}
       {...props}
