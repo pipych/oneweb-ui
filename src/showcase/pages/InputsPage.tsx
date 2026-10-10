@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
-import { Input, SearchInput, Card, CardHeader, CardTitle, CardDescription, CardContent, Icon, Badge } from '@one/web-ui';
+import {
+  Input,
+  SearchInput,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  Icon,
+  OneIcon,
+  Badge,
+} from '@one/web-ui';
 
 export const InputsPage: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [searchQuery, setSearchQuery] = useState('Minecraft 1.21.1');
+  const [basicText, setBasicText] = useState('');
+  const [searchWithIcon, setSearchWithIcon] = useState('');
+  const [searchWithAction, setSearchWithAction] = useState('one-server-prod-01');
+  const [fullSearch, setFullSearch] = useState('cloud backups');
   const [password, setPassword] = useState('SuperSecretPass!');
-  const [errorInput, setErrorInput] = useState('steve@invalid');
+  const [errorInput, setErrorInput] = useState('admin@invalid-domain');
 
   return (
     <div className="space-y-10 animate-fade-in">
@@ -13,6 +27,7 @@ export const InputsPage: React.FC = () => {
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="lime">Strict Pill (rounded-full)</Badge>
           <Badge variant="neutral">No Borders (border-none)</Badge>
+          <Badge variant="neutral">Fixed pl-11 Offset</Badge>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
           Поля ввода (Input & SearchInput)
@@ -20,85 +35,133 @@ export const InputsPage: React.FC = () => {
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
           Полноразмерные поля ввода на сплошной поверхности <code className="text-white font-mono text-xs">#14171c</code>.
           Строго без обводок (<code className="text-oneweb-accent font-mono text-xs">border-none ring-0 focus:ring-0</code>),
-          с идеальным вертикальным центрированием 20px иконок и автоматическими отступами <code className="text-white font-mono text-xs">pl-11 / pr-11</code>.
+          с идеальным вертикальным центрированием 20px иконок и гарантированным отсутствием наложения текста на иконки и экшены.
         </p>
       </div>
 
+      {/* Grid of Examples */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left Column: Standard Inputs */}
+        {/* Left Column: Required Core Variants */}
         <Card variant="default">
           <CardHeader>
-            <CardTitle>Текстовые поля (Input)</CardTitle>
+            <CardTitle>Базовые варианты Input</CardTitle>
             <CardDescription>
-              Сплошной фон #14171c, высота h-12, идеальное выравнивание иконок
+              Сплошной фон #14171c, высота h-11 / h-12, строгая форма капсулы
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
+            {/* 1. Базовый инпут */}
             <Input
-              label="Имя пользователя"
-              placeholder="Введите никнейм..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              helperText="Используется для авторизации на сервере"
-              leftIcon={<Icon name="person" />}
+              label="1. Базовый инпут"
+              placeholder="Простой текстовый ввод без иконок..."
+              value={basicText}
+              onChange={(e) => setBasicText(e.target.value)}
+              helperText="Стандартные отступы pl-4 / pr-4"
             />
 
+            {/* 2. С поисковой иконкой слева */}
             <Input
-              type="password"
-              label="Пароль учетной записи"
-              placeholder="Введите пароль..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              helperText="Иконка скрытия/показа отцентрована строго по вертикали (right-4)"
-              leftIcon={<Icon name="lock" />}
+              label="2. С поисковой иконкой слева"
+              placeholder="Поиск по экосистеме..."
+              value={searchWithIcon}
+              onChange={(e) => setSearchWithIcon(e.target.value)}
+              icon="search"
+              helperText="Жесткий отступ pl-11, текст никогда не наезжает на иконку"
             />
 
+            {/* 3. С экшеном справа */}
             <Input
-              label="Поле без иконки"
-              placeholder="Простой текстовый ввод с отступами px-5..."
+              label="3. С экшеном справа"
+              placeholder="Введите ID сервиса..."
+              value={searchWithAction}
+              onChange={(e) => setSearchWithAction(e.target.value)}
+              helperText="Слот rightAction с кнопкой быстрого действия"
+              rightAction={
+                <Button
+                  size="sm"
+                  variant="primary"
+                  className="h-8 px-3 text-xs"
+                  onClick={() => alert(`Запрос: ${searchWithAction}`)}
+                >
+                  Найти
+                </Button>
+              }
+            />
+
+            {/* 4. С иконкой слева И экшеном справа */}
+            <Input
+              label="4. Иконка слева + экшен справа"
+              placeholder="Поиск серверов и нод..."
+              value={fullSearch}
+              onChange={(e) => setFullSearch(e.target.value)}
+              icon="dns"
+              rightAction={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-8 px-3 text-xs"
+                  onClick={() => setFullSearch('')}
+                >
+                  Сброс
+                </Button>
+              }
             />
           </CardContent>
         </Card>
 
-        {/* Right Column: SearchInput & Validation */}
+        {/* Right Column: SearchInput, Password & States */}
         <Card variant="default">
           <CardHeader>
-            <CardTitle>Поиск и состояния (SearchInput)</CardTitle>
+            <CardTitle>SearchInput и состояния</CardTitle>
             <CardDescription>
-              Встроенная иконка лупы (20px, #8e8e93) и кнопка мгновенной очистки
+              Встроенная иконка лупы, мгновенная очистка и валидация
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-[#8e8e93] select-none px-2 block">
+            {/* SearchInput */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#8e8e93] select-none px-3 block">
                 Специализированный SearchInput
               </label>
               <SearchInput
-                placeholder="Поиск по мирам, модам и плагинам..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onClear={() => setSearchQuery('')}
+                placeholder="Быстрый поиск компонентов..."
+                value={searchWithIcon}
+                onChange={(e) => setSearchWithIcon(e.target.value)}
+                onClear={() => setSearchWithIcon('')}
               />
-              <p className="text-xs text-[#8e8e93] px-2">
-                Текущий запрос: <span className="text-white font-mono">{searchQuery || '(пусто)'}</span>
+              <p className="text-xs text-[#8e8e93] px-3">
+                Автоматическая кнопка сброса при наличии текста
               </p>
             </div>
 
+            {/* Password with toggle */}
+            <Input
+              type="password"
+              label="Поле пароля (Password)"
+              placeholder="Введите секретный пароль..."
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              icon="lock"
+              helperText="Интерактивное переключение видимости в правом слоте"
+            />
+
+            {/* Error Validation */}
             <Input
               label="Поле с ошибкой валидации"
               placeholder="Электронная почта..."
               value={errorInput}
               onChange={(e) => setErrorInput(e.target.value)}
               error="Некорректный адрес электронной почты"
-              leftIcon={<Icon name="mail" />}
+              icon="mail"
             />
 
+            {/* Disabled */}
             <Input
-              label="Отключенное поле (disabled)"
+              label="Отключенное состояние (disabled)"
               placeholder="Недоступно для редактирования"
               disabled
-              value="SYS-NODE-ONLINE-01"
-              leftIcon={<Icon name="block" />}
+              value="ONE-NODE-REGION-EU-01"
+              icon="block"
             />
           </CardContent>
         </Card>
@@ -112,19 +175,15 @@ export const InputsPage: React.FC = () => {
         <CardContent>
           <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
             <pre>
-              <span className="text-oneweb-accent">import</span> &#123; Input, SearchInput, Icon &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
-              <span className="text-gray-500">// Инпут с иконкой и без обводок</span>{'\n'}
+              <span className="text-oneweb-accent">import</span> &#123; Input, SearchInput, Button, OneIcon &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
+              <span className="text-gray-500">// 1. Базовый инпут</span>{'\n'}
+              &lt;<span className="text-blue-400">Input</span> placeholder=<span className="text-emerald-400">"Имя пользователя..."</span> /&gt;{'\n\n'}
+              <span className="text-gray-500">// 2. Инпут с поисковой иконкой слева (автоматический pl-11)</span>{'\n'}
+              &lt;<span className="text-blue-400">Input</span> icon=<span className="text-emerald-400">"search"</span> placeholder=<span className="text-emerald-400">"Поиск..."</span> /&gt;{'\n\n'}
+              <span className="text-gray-500">// 3. Инпут с экшеном справа</span>{'\n'}
               &lt;<span className="text-blue-400">Input</span>{'\n'}
-              {'  '}label=<span className="text-emerald-400">"Никнейм"</span>{'\n'}
-              {'  '}placeholder=<span className="text-emerald-400">"Steve"</span>{'\n'}
-              {'  '}leftIcon=&#123;&lt;<span className="text-blue-400">Icon</span> name=<span className="text-emerald-400">"person"</span> /&gt;&#125;{'\n'}
-              /&gt;{'\n\n'}
-              <span className="text-gray-500">// Поле поиска с кнопкой очистки</span>{'\n'}
-              &lt;<span className="text-blue-400">SearchInput</span>{'\n'}
-              {'  '}placeholder=<span className="text-emerald-400">"Быстрый поиск..."</span>{'\n'}
-              {'  '}value=&#123;query&#125;{'\n'}
-              {'  '}onChange=&#123;(e) =&gt; setQuery(e.target.value)&#125;{'\n'}
-              {'  '}onClear=&#123;() =&gt; setQuery(<span className="text-emerald-400">''</span>)&#125;{'\n'}
+              {'  '}placeholder=<span className="text-emerald-400">"ID сервиса..."</span>{'\n'}
+              {'  '}rightAction=&#123;&lt;<span className="text-blue-400">Button</span> size=<span className="text-emerald-400">"sm"</span>&gt;Найти&lt;/<span className="text-blue-400">Button</span>&gt;&#125;{'\n'}
               /&gt;
             </pre>
           </div>

@@ -30,23 +30,147 @@ import {
   TooltipTrigger,
   TooltipContent,
   Icon,
+  OneIcon,
+  Badge,
 } from '@one/web-ui';
 
 export const OverlaysPage: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [switchState, setSwitchState] = useState(true);
+  const [activeTab, setActiveTab] = useState('server');
+  const [searchAlert, setSearchAlert] = useState(false);
 
   return (
     <TooltipProvider>
       <div className="space-y-10 animate-fade-in">
         <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="lime">Sliding Capsule (300ms)</Badge>
+            <Badge variant="neutral">One Lime (#c0ff00)</Badge>
+            <Badge variant="neutral">Action Slot</Badge>
+          </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-            Оверлеи и Radix UI примитивы
+            Вкладки (Tabs) и Radix UI Оверлеи
           </h1>
           <p className="text-oneweb-text-secondary text-sm sm:text-base">
-            Доступные интерактивные компоненты с фокусом, клавиатурной навигацией и поддержкой ARIA.
+            Фирменный переключатель вкладок по референсу экосистемы One: капсульная форма,
+            плавное перемещение активной плашки, счетчики и слот дополнительного действия.
           </p>
         </div>
+
+        {/* 1. Interactive Tabs Section (Reference Implementation) */}
+        <Card variant="default">
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <CardTitle>Переключатель вкладок (Tabs по референсу)</CardTitle>
+                <CardDescription>
+                  Капсульный контейнер #14171c, скользящая активная плашка #1c222b, счетчики и кнопка «Поиск»
+                </CardDescription>
+              </div>
+              <Badge variant="lime">Активна: {activeTab === 'server' ? 'Сервер' : 'Клиент'}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="p-4 sm:p-6 rounded-[24px] bg-[#090b0e] flex flex-col items-start gap-4">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                {/* Reference Tabs Layout */}
+                <TabsList
+                  rightAction={
+                    <button
+                      type="button"
+                      onClick={() => setSearchAlert(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#8e8e93] hover:text-white bg-white/5 hover:bg-white/10 transition-colors cursor-pointer select-none sf-tap"
+                    >
+                      <OneIcon name="search" size={16} />
+                      <span>Поиск</span>
+                    </button>
+                  }
+                >
+                  <TabsTrigger value="server" icon="dns" count={19}>
+                    Сервер
+                  </TabsTrigger>
+                  <TabsTrigger value="client" icon="computer" count={20}>
+                    Клиент
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Tab Contents */}
+                <TabsContent value="server" className="mt-4">
+                  <div className="p-5 rounded-[22px] bg-[#14171c] border-none text-left space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-[12px] bg-[#1c222b] flex items-center justify-center text-[#c0ff00]">
+                          <OneIcon name="dns" size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-white font-bold text-sm">Серверная инфраструктура</h4>
+                          <p className="text-[#8e8e93] text-xs">19 активных нод и кластеров OneHouse</p>
+                        </div>
+                      </div>
+                      <Badge variant="lime">19 Онлайн</Badge>
+                    </div>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
+                      Управление вычислительными ресурсами, контейнерами Docker, логами сборки и сетевыми портами.
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="client" className="mt-4">
+                  <div className="p-5 rounded-[22px] bg-[#14171c] border-none text-left space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-[12px] bg-[#1c222b] flex items-center justify-center text-[#c0ff00]">
+                          <OneIcon name="computer" size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-white font-bold text-sm">Клиентские приложения</h4>
+                          <p className="text-[#8e8e93] text-xs">20 подключенных клиентов и сессий</p>
+                        </div>
+                      </div>
+                      <Badge variant="neutral">20 Сессий</Badge>
+                    </div>
+                    <p className="text-xs text-[#8e8e93] leading-relaxed">
+                      Клиентские рабочие места, веб-интерфейсы, сессии авторизации OneID и мобильные клиенты.
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
+              {searchAlert && (
+                <div className="w-full p-3 rounded-full bg-[#1c222b] text-xs text-white flex items-center justify-between animate-fade-in">
+                  <div className="flex items-center gap-2 px-2">
+                    <OneIcon name="search" size={16} className="text-[#c0ff00]" />
+                    <span>Поисковая строка или шорткат активирован из слота действия Tabs.</span>
+                  </div>
+                  <button
+                    onClick={() => setSearchAlert(false)}
+                    className="text-[#8e8e93] hover:text-white px-3 py-1 rounded-full text-xs font-semibold cursor-pointer"
+                  >
+                    Закрыть
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Code Specification */}
+            <div className="rounded-2xl bg-black/60 p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
+              <pre>
+                <span className="text-oneweb-accent">import</span> &#123; Tabs, TabsList, TabsTrigger, TabsContent, OneIcon &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
+                &lt;<span className="text-blue-400">Tabs</span> defaultValue=<span className="text-emerald-400">"server"</span>&gt;{'\n'}
+                {'  '}&lt;<span className="text-blue-400">TabsList</span>{'\n'}
+                {'    '}rightAction=&#123;&lt;<span className="text-blue-400">button</span>&gt;&lt;<span className="text-blue-400">OneIcon</span> name=<span className="text-emerald-400">"search"</span> /&gt; Поиск&lt;/<span className="text-blue-400">button</span>&gt;&#125;{'\n'}
+                {'  '}&gt;{'\n'}
+                {'    '}&lt;<span className="text-blue-400">TabsTrigger</span> value=<span className="text-emerald-400">"server"</span> icon=<span className="text-emerald-400">"dns"</span> count=&#123;<span className="text-amber-400">19</span>&#125;&gt;Сервер&lt;/<span className="text-blue-400">TabsTrigger</span>&gt;{'\n'}
+                {'    '}&lt;<span className="text-blue-400">TabsTrigger</span> value=<span className="text-emerald-400">"client"</span> icon=<span className="text-emerald-400">"computer"</span> count=&#123;<span className="text-amber-400">20</span>&#125;&gt;Клиент&lt;/<span className="text-blue-400">TabsTrigger</span>&gt;{'\n'}
+                {'  '}&lt;/<span className="text-blue-400">TabsList</span>&gt;{'\n\n'}
+                {'  '}&lt;<span className="text-blue-400">TabsContent</span> value=<span className="text-emerald-400">"server"</span>&gt;...&lt;/<span className="text-blue-400">TabsContent</span>&gt;{'\n'}
+                {'  '}&lt;<span className="text-blue-400">TabsContent</span> value=<span className="text-emerald-400">"client"</span>&gt;...&lt;/<span className="text-blue-400">TabsContent</span>&gt;{'\n'}
+                &lt;/<span className="text-blue-400">Tabs</span>&gt;
+              </pre>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Dialog & Dropdown Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -130,79 +254,46 @@ export const OverlaysPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Tabs & Switch Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Tabs */}
-          <Card variant="default">
-            <CardHeader>
-              <CardTitle>Вкладки (Tabs)</CardTitle>
-              <CardDescription>
-                Переключение секций и контента без перезагрузки
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="account" className="w-full">
-                <TabsList className="w-full grid grid-cols-3">
-                  <TabsTrigger value="account">Аккаунт</TabsTrigger>
-                  <TabsTrigger value="password">Пароль</TabsTrigger>
-                  <TabsTrigger value="billing">Сервер</TabsTrigger>
-                </TabsList>
-                <TabsContent value="account" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
-                  Контент вкладки учетной записи пользователя OneHouse.
-                </TabsContent>
-                <TabsContent value="password" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
-                  Настройки безопасности и двухфакторной аутентификации.
-                </TabsContent>
-                <TabsContent value="billing" className="p-4 bg-oneweb-surface-subtle rounded-2xl text-xs text-oneweb-text-secondary">
-                  Параметры инстанса и деплоя Cloudflare Pages.
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          {/* Switch & Tooltips */}
-          <Card variant="default">
-            <CardHeader>
-              <CardTitle>Переключатель & Тултип</CardTitle>
-              <CardDescription>
-                Микро-контролы взаимодействия
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-oneweb-surface-subtle">
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">Турбо-режим рендеринга</span>
-                  <span className="text-xs text-oneweb-text-secondary">Оптимизация для мобильных устройств</span>
-                </div>
-                <Switch checked={switchState} onCheckedChange={setSwitchState} />
+        {/* Switch & Tooltips */}
+        <Card variant="default">
+          <CardHeader>
+            <CardTitle>Переключатель & Тултип</CardTitle>
+            <CardDescription>Микро-контролы взаимодействия</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-[#14171c]">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-white">Турбо-режим рендеринга</span>
+                <span className="text-xs text-oneweb-text-secondary">Оптимизация для мобильных устройств</span>
               </div>
+              <Switch checked={switchState} onCheckedChange={setSwitchState} />
+            </div>
 
-              <div className="flex items-center gap-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm" leftIcon={<Icon name="help" size={16} />}>
-                      Наведи на меня
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Подсказка OneWebUI на базе Radix Tooltip
-                  </TooltipContent>
-                </Tooltip>
+            <div className="flex items-center gap-4">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="sm" leftIcon={<Icon name="help" size={16} />}>
+                    Наведи на меня
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Подсказка OneWebUI на базе Radix Tooltip
+                </TooltipContent>
+              </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="secondary" size="sm" leftIcon={<Icon name="info" size={16} />}>
-                      Информация
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Токены соответствуют палитре #c0ff00 и #090b0e
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="secondary" size="sm" leftIcon={<Icon name="info" size={16} />}>
+                    Информация
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Токены соответствуют палитре #c0ff00 и #090b0e
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </TooltipProvider>
   );

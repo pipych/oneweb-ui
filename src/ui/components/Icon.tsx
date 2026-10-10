@@ -11,9 +11,12 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
 /**
  * Material Symbols Rounded Icon Component
  * Default fill variation is 1 as per One design system specification.
+ * Automatically normalizes icon names to snake_case lowercase for reliable ligature rendering.
  */
 export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
   ({ name, fill = true, size = 20, className, style, ...props }, ref) => {
+    const cleanName = typeof name === 'string' ? name.trim().toLowerCase().replace(/[-\s]/g, '_') : '';
+
     const customStyle: React.CSSProperties = {
       fontSize: typeof size === 'number' ? `${size}px` : size,
       width: typeof size === 'number' ? `${size}px` : size,
@@ -30,10 +33,15 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
         aria-hidden="true"
         {...props}
       >
-        {name}
+        {cleanName}
       </span>
     );
   }
 );
 
 Icon.displayName = 'Icon';
+
+/**
+ * OneIcon alias for design system consistency
+ */
+export const OneIcon = Icon;
