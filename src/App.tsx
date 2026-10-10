@@ -1,181 +1,94 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+  Input,
+  Badge,
+  SegmentedTabs,
+  BottomSheet,
+  MobileTabBar,
+  AppHeader,
+  AppLogo,
   SFSymbol,
   BrandLoader,
   ResourceGauge,
-  AppLogo,
-  BottomSheet,
   PlayerAvatar,
-  MobileTabBar,
-  DesktopSidebar,
-  useDeviceMode,
-  ServerStatus,
   TabId,
 } from './design-system';
 
+type CatalogSection = 'all' | 'buttons' | 'cards' | 'inputs' | 'tabs' | 'navigation';
+
 export function App() {
-  const { isDesktop, setViewMode } = useDeviceMode();
-  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
-  const [activeSubTab, setActiveSubTab] = useState<'properties' | 'gamerules' | 'players'>('properties');
-
-  // Simulated authentic server status
-  const [status, setStatus] = useState<ServerStatus>({
-    status: 'online',
-    uptimeSeconds: 84200,
-    cpuPercent: 14,
-    ramUsedMB: 3890,
-    ramTotalMB: 8192,
-    tps: 20.0,
-    players: {
-      online: 3,
-      max: 20,
-      list: ['Notch', 'Alex', 'Steve'],
-    },
-    serverInfo: {
-      motd: '§a§lOneHouse §7- Уютный приватный сервер 1.21.1',
-      version: 'NeoForge 1.21.1',
-      difficulty: 'Hard',
-      gamemode: 'Survival',
-    },
-    lastLogLine: '[Server thread/INFO]: Done (12.4s)! For help, type "help"',
-    error: null,
-  });
-
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [startupProgress, setStartupProgress] = useState(15);
-  const [startupLogLine, setStartupLogLine] = useState('');
-  const [copiedItem, setCopiedItem] = useState<string | null>(null);
-  const [showIpModal, setShowIpModal] = useState(false);
-  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
-  const [broadcastText, setBroadcastText] = useState('');
+  const [activeCatalogTab, setActiveCatalogTab] = useState<CatalogSection>('all');
   const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  const [confirmModal, setConfirmModal] = useState<{
-    open: boolean;
-    type: 'stop' | 'restart';
-    title: string;
-    description: string;
-  }>({
-    open: false,
-    type: 'stop',
-    title: '',
-    description: '',
-  });
+  // Buttons demo state
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [copiedPill, setCopiedPill] = useState(false);
 
-  // Interactive gamerules state
-  const [gamerules, setGamerules] = useState<{ [key: string]: boolean }>({
-    keepInventory: true,
-    mobGriefing: false,
-    doDaylightCycle: true,
-    doFireTick: false,
-    naturalRegeneration: true,
-    showDeathMessages: true,
-  });
+  // Cards & Gauges demo state
+  const [tpsVal, setTpsVal] = useState(20.0);
+  const [ramVal, setRamVal] = useState(58);
+  const [cpuVal, setCpuVal] = useState(19);
 
-  // Interactive console state
-  const [consoleLogs, setConsoleLogs] = useState<string[]>([
-    '[12:40:01 INFO]: Preparing start region for dimension minecraft:overworld',
-    '[12:40:03 INFO]: Time elapsed: 1824 ms',
-    '[12:40:04 INFO]: Done (12.4s)! For help, type "help"',
-    '[12:45:22 INFO]: Steve logged in with entity id 142 at (-120.5, 64.0, 240.5)',
-    '[12:48:10 INFO]: Alex joined the game',
-    '[12:55:00 INFO]: Notch joined the game',
-  ]);
-  const [consoleInput, setConsoleInput] = useState('');
+  // Inputs demo state
+  const [textVal, setTextVal] = useState('onehouse.pp.ua:25565');
+  const [passVal, setPassVal] = useState('SecretToken_2026');
+  const [hasInputErr, setHasInputErr] = useState(false);
+  const [switch1, setSwitch1] = useState(true);
+  const [switch2, setSwitch2] = useState(false);
+  const [switch3, setSwitch3] = useState(true);
+
+  // Tabs demo state
+  const [demoTabId, setDemoTabId] = useState('server');
+  const [demoPillTabId, setDemoPillTabId] = useState('tab1');
+
+  // Navigation demo state
+  const [navTabId, setNavTabId] = useState<TabId>('dashboard');
+  const [isHeaderRefreshing, setIsHeaderRefreshing] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const showToast = (text: string, type: 'success' | 'error' = 'success') => {
     setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 2800);
   };
 
-  const handleCopyText = (text: string, label: string) => {
-    navigator.clipboard?.writeText(text);
-    setCopiedItem(text);
-    setTimeout(() => setCopiedItem(null), 2000);
-    showToast(`${label} скопирован в буфер!`);
+  const handleCopyDemo = () => {
+    navigator.clipboard?.writeText('onehouse.pp.ua');
+    setCopiedPill(true);
+    showToast('onehouse.pp.ua скопирован в буфер');
+    setTimeout(() => setCopiedPill(false), 2000);
   };
 
-  // Start Server handler with simulated real progress
-  const handleStart = () => {
-    setActionLoading('start');
-    setStatus((prev) => ({ ...prev, status: 'starting', tps: 0 }));
-    setStartupProgress(20);
-    setStartupLogLine('Инициализация NeoForge 1.21.1...');
-
-    setTimeout(() => {
-      setStartupProgress(45);
-      setStartupLogLine('Загрузка модов и библиотек Create 6.0...');
-    }, 1000);
-
-    setTimeout(() => {
-      setStartupProgress(75);
-      setStartupLogLine('Preparing level minecraft:overworld...');
-    }, 2000);
-
-    setTimeout(() => {
-      setStartupProgress(100);
-      setStartupLogLine('Done (12.4s)! For help, type "help"');
-      setStatus((prev) => ({
-        ...prev,
-        status: 'online',
-        tps: 20.0,
-        cpuPercent: 18,
-        ramUsedMB: 3950,
-      }));
-      setActionLoading(null);
-      showToast('Сервер успешно запущен!');
-    }, 3200);
+  const handleHeaderRefresh = () => {
+    setIsHeaderRefreshing(true);
+    showToast('Данные сервера обновлены');
+    setTimeout(() => setIsHeaderRefreshing(false), 800);
   };
 
-  const handleStopConfirm = () => {
-    const isRestart = confirmModal.type === 'restart';
-    setConfirmModal((prev) => ({ ...prev, open: false }));
-    setActionLoading(isRestart ? 'restart' : 'stop');
+  const sections = [
+    { id: 'all', label: 'Все компоненты' },
+    { id: 'buttons', label: 'Кнопки' },
+    { id: 'cards', label: 'Карточки' },
+    { id: 'inputs', label: 'Поля ввода' },
+    { id: 'tabs', label: 'Табы' },
+    { id: 'navigation', label: 'Навигация' },
+  ];
 
-    if (isRestart) {
-      setStatus((prev) => ({ ...prev, status: 'stopping', tps: 0 }));
-      setTimeout(() => {
-        handleStart();
-      }, 1500);
-    } else {
-      setStatus((prev) => ({ ...prev, status: 'stopping', tps: 0 }));
-      setTimeout(() => {
-        setStatus((prev) => ({
-          ...prev,
-          status: 'offline',
-          tps: 0,
-          cpuPercent: 0,
-          ramUsedMB: 0,
-          players: { ...prev.players, online: 0, list: [] },
-        }));
-        setActionLoading(null);
-        showToast('Сервер остановлен');
-      }, 1800);
-    }
+  const shouldShow = (section: CatalogSection) => {
+    return activeCatalogTab === 'all' || activeCatalogTab === section;
   };
-
-  const handleSendConsole = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!consoleInput.trim()) return;
-    const cmd = consoleInput.trim();
-    setConsoleLogs((prev) => [...prev, `> ${cmd}`, `[Server]: Executed "${cmd}"`]);
-    setConsoleInput('');
-  };
-
-  const isOnline = status.status === 'online';
-  const isPending = status.status === 'starting' || status.status === 'stopping' || actionLoading !== null;
-  const ramPercent = Math.min(100, Math.round((status.ramUsedMB / status.ramTotalMB) * 100));
 
   return (
-    <div
-      className={`min-h-screen bg-[#090b0e] text-white flex ${
-        isDesktop ? 'flex-row' : 'flex-col'
-      } selection:bg-[#c0ff00]/30 selection:text-[#c0ff00]`}
-    >
+    <div className="min-h-screen bg-[#090b0e] text-white selection:bg-[#c0ff00]/30 selection:text-[#c0ff00] pb-32">
       {/* Тост уведомление */}
       {notification && (
         <div
-          className={`fixed top-6 left-4 right-4 z-[110] p-3 rounded-2xl text-sm font-semibold flex items-center gap-2 shadow-2xl backdrop-blur-xl animate-slide-up max-w-md mx-auto ${
+          className={`fixed top-6 left-4 right-4 z-[110] p-3.5 rounded-2xl text-sm font-semibold flex items-center gap-2.5 shadow-2xl backdrop-blur-xl animate-slide-up max-w-md mx-auto ${
             notification.type === 'success'
               ? 'bg-[#14171c]/95 text-[#c0ff00]'
               : 'bg-[#14171c]/95 text-red-400'
@@ -189,769 +102,809 @@ export function App() {
         </div>
       )}
 
-      {/* Левая навигационная панель (Sidebar) для экранов десктопа */}
-      {isDesktop && (
-        <DesktopSidebar
-          activeTab={activeTab}
-          onTabChange={(tab) => setActiveTab(tab)}
-          status={status}
-          onSwitchToMobile={() => setViewMode('mobile')}
-        />
-      )}
-
-      {/* Основная рабочая область контента */}
-      <div className="flex-1 flex flex-col min-w-0 w-full">
-        {/* Мобильная шапка бренда (скрыта на экранах ПК/десктопа) */}
-        {!isDesktop && (
-          <header className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between safe-top">
-            <div className="flex items-center gap-2.5">
-              <AppLogo className="w-7 h-7 text-[#c0ff00] transition-transform active:scale-90 sf-tap" />
-              <span className="font-extrabold text-white text-base tracking-tight">OneHouse</span>
+      {/* Каталог Хедер */}
+      <header className="sticky top-0 z-40 w-full bg-[#090b0e]/90 backdrop-blur-2xl safe-top px-4 py-3.5 border-b border-white/5">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#14171c] flex items-center justify-center shrink-0 shadow-inner">
+              <AppLogo className="w-6 h-6 text-[#c0ff00]" />
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setViewMode('desktop')}
-                className="text-[11px] font-bold px-3 py-1 rounded-full bg-white/10 text-white/80 active:scale-95 sf-tap transition-all"
-              >
-                ПК вид
-              </button>
-            </div>
-          </header>
-        )}
-
-        {/* Экран контента */}
-        <main className="flex-1 w-full overflow-x-hidden">
-          <div
-            className={`flex flex-col gap-4 ${
-              isDesktop
-                ? 'pb-8 pt-6 px-4 sm:px-6 max-w-7xl'
-                : 'pb-28 pt-2 px-4 max-w-md'
-            } mx-auto w-full animate-fade-in`}
-          >
-            {/* На вкладках Сервер / Настройки отображаем переключатель разделов (Segmented Control) */}
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div
-                className={`bg-[#14171c] p-1 rounded-full flex items-center transition-all ${
-                  isDesktop ? 'w-full max-w-sm h-10' : 'w-full max-w-md'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveSubTab('properties')}
-                  className={`flex-1 ${
-                    isDesktop ? 'h-full flex items-center justify-center' : 'py-2.5'
-                  } rounded-full text-xs font-black transition-all sf-tap ${
-                    activeSubTab === 'properties'
-                      ? 'bg-[#252c37] text-[#c0ff00] shadow-md'
-                      : 'text-[#8e8e93] hover:text-white'
-                  }`}
-                >
-                  Сервер
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveSubTab('gamerules')}
-                  className={`flex-1 ${
-                    isDesktop ? 'h-full flex items-center justify-center' : 'py-2.5'
-                  } rounded-full text-xs font-black transition-all sf-tap ${
-                    activeSubTab === 'gamerules'
-                      ? 'bg-[#252c37] text-[#c0ff00] shadow-md'
-                      : 'text-[#8e8e93] hover:text-white'
-                  }`}
-                >
-                  Правила игры
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveSubTab('players')}
-                  className={`flex-1 ${
-                    isDesktop ? 'h-full flex items-center justify-center' : 'py-2.5'
-                  } rounded-full text-xs font-black transition-all sf-tap ${
-                    activeSubTab === 'players'
-                      ? 'bg-[#252c37] text-[#c0ff00] shadow-md'
-                      : 'text-[#8e8e93] hover:text-white'
-                  }`}
-                >
-                  Игроки
-                </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-black tracking-tight text-white leading-none">
+                  OneWebUI
+                </h1>
+                <Badge variant="accent" size="sm" dot>
+                  v1.0.0
+                </Badge>
               </div>
-
-              {isDesktop && (
-                <button
-                  type="button"
-                  onClick={() => setViewMode('mobile')}
-                  className="text-xs font-bold px-3.5 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/80 active:scale-95 sf-tap transition-all"
-                >
-                  Мобильный вид
-                </button>
-              )}
+              <p className="text-[11px] text-[#8e8e93] font-medium mt-0.5">
+                Каталог компонентов экосистемы One (OneHouse reference)
+              </p>
             </div>
+          </div>
 
-            {/* Вкладка 1: Главный экран сервера (Dashboard) */}
-            {activeSubTab === 'properties' && (
-              <>
-                {/* Сетка виджетов пазлом на десктопе */}
-                <div
-                  className={
-                    isDesktop
-                      ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-stretch'
-                      : 'flex flex-col gap-4'
-                  }
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-xs text-[#8e8e93] font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c0ff00]" />
+              OLED Dark Mode
+            </span>
+          </div>
+        </div>
+
+        {/* Быстрая фильтрация по секциям */}
+        <div className="max-w-6xl mx-auto mt-3 overflow-x-auto no-scrollbar">
+          <div className="bg-[#14171c] p-1 rounded-full inline-flex items-center gap-1">
+            {sections.map((sec) => {
+              const isActive = activeCatalogTab === sec.id;
+              return (
+                <button
+                  key={sec.id}
+                  onClick={() => setActiveCatalogTab(sec.id as CatalogSection)}
+                  className={`px-4 py-2 rounded-full text-xs font-black transition-all sf-tap whitespace-nowrap ${
+                    isActive
+                      ? 'bg-[#252c37] text-[#c0ff00] shadow-md'
+                      : 'text-[#8e8e93] hover:text-white'
+                  }`}
                 >
-                  {/* Главная Hero Карточка сервера (2 колонки на десктопе) */}
-                  <div
-                    className={`relative rounded-3xl p-5 glass-panel overflow-hidden shadow-2xl ${
-                      isDesktop ? 'col-span-1 md:col-span-2 xl:col-span-2' : ''
-                    } flex flex-col justify-between`}
-                  >
-                    {/* Фоновое неоновое свечение */}
-                    <div
-                      className={`absolute -right-16 -top-16 w-44 h-44 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
-                        isOnline
-                          ? 'bg-[#c0ff00]/15'
-                          : status.status === 'starting'
-                          ? 'bg-amber-400/20'
-                          : status.status === 'stopping'
-                          ? 'bg-orange-500/15'
-                          : 'bg-red-500/10'
-                      }`}
-                    />
+                  {sec.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </header>
 
-                    <div className="flex items-center justify-between gap-3 relative z-10">
-                      {/* Адрес сервера слева */}
-                      <span className="text-xl font-black text-white font-mono tracking-tight select-all truncate min-w-0">
-                        onehouse.pp.ua
-                      </span>
+      {/* Основной контент каталога */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 flex flex-col gap-10">
 
-                      {/* Блок справа: Кнопка копирования, кнопка ℹ️ и статус сервера */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        {/* Кнопка копировать чисто иконкой */}
-                        <button
-                          onClick={() => handleCopyText('onehouse.pp.ua', 'Адрес onehouse.pp.ua')}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 sf-tap transition-colors duration-200 shrink-0 ${
-                            copiedItem === 'onehouse.pp.ua'
-                              ? 'bg-[#c0ff00]/25 text-[#c0ff00]'
-                              : 'bg-white/10 hover:bg-white/15 text-white/80 hover:text-white'
-                          }`}
-                          title="Копировать адрес"
-                        >
-                          <div className="relative w-4 h-4 flex items-center justify-center">
-                            <span
-                              className={`absolute transition-all duration-300 transform ${
-                                copiedItem === 'onehouse.pp.ua'
-                                  ? 'opacity-100 scale-100 rotate-0'
-                                  : 'opacity-0 scale-50 -rotate-45'
-                              }`}
-                            >
-                              <SFSymbol name="checkmark.circle.fill" size={15} className="text-[#c0ff00]" animated={false} />
-                            </span>
-                            <span
-                              className={`absolute transition-all duration-300 transform ${
-                                copiedItem === 'onehouse.pp.ua'
-                                  ? 'opacity-0 scale-50 rotate-45'
-                                  : 'opacity-100 scale-100 rotate-0'
-                              }`}
-                            >
-                              <SFSymbol name="doc.on.doc.fill" size={14} animated={false} />
-                            </span>
-                          </div>
-                        </button>
-
-                        {/* Круглая кнопка подсказки ℹ️ */}
-                        <button
-                          onClick={() => setShowIpModal(true)}
-                          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/15 flex items-center justify-center active:scale-90 sf-tap transition-all shrink-0 text-white/80 hover:text-white"
-                          title="Подробные адреса подключения"
-                        >
-                          <SFSymbol name="info.circle.fill" size={16} animated={false} />
-                        </button>
-
-                        {/* Статус сервера: цветной кружок */}
-                        <div
-                          className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0"
-                          title={
-                            status.status === 'online'
-                              ? 'Онлайн'
-                              : status.status === 'starting'
-                              ? 'Запуск'
-                              : status.status === 'stopping'
-                              ? 'Остановка'
-                              : 'Оффлайн'
-                          }
-                        >
-                          <span
-                            className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${
-                              isOnline
-                                ? 'bg-[#c0ff00]'
-                                : status.status === 'starting'
-                                ? 'bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.8)]'
-                                : status.status === 'stopping'
-                                ? 'bg-orange-500 animate-pulse'
-                                : 'bg-red-500'
-                            }`}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Строка консоли / Ошибка / Статус */}
-                    {(status.status === 'starting' || status.status === 'stopping' || (!isOnline && status.status === 'offline')) && (
-                      <div className="mt-3.5 pt-3 flex items-center justify-between gap-2 text-xs relative z-10">
-                        {status.status === 'starting' ? (
-                          <div className="flex flex-col gap-1.5 w-full">
-                            <div className="relative w-full h-8 rounded-full bg-black/40 overflow-hidden flex items-center px-3.5 shadow-inner">
-                              <div
-                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-amber-500/40 via-amber-400/50 to-amber-300/60 rounded-full transition-all duration-300 ease-out"
-                                style={{ width: `${Math.max(10, Math.min(100, startupProgress))}%` }}
-                              />
-                              <div className="relative z-10 flex items-center justify-between w-full text-[11px] font-mono text-amber-200">
-                                <div className="flex items-center gap-2 truncate min-w-0 pr-2">
-                                  <BrandLoader size={11} color="#fbbf24" className="shrink-0" />
-                                  <span className="truncate font-medium text-amber-100">
-                                    {startupLogLine || 'Запуск компонентов Minecraft...'}
-                                  </span>
-                                </div>
-                                <span className="text-[10px] font-black text-amber-300 shrink-0 font-mono pl-1">
-                                  {Math.round(startupProgress)}%
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ) : status.status === 'stopping' ? (
-                          <div className="flex items-center gap-2.5 text-orange-300 font-mono text-[11px] truncate w-full bg-orange-500/15 px-3.5 py-2 rounded-full">
-                            <BrandLoader size={12} color="#f97316" className="shrink-0" />
-                            <span className="truncate flex-1 font-medium">Остановка сервера и сохранение мира...</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 text-[#8e8e93] font-mono text-[11px] truncate w-full px-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-                            <span className="truncate flex-1">Сервер выключен</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Кнопки управления сервером */}
-                    <div className="mt-3.5 grid grid-cols-3 gap-2 relative z-10">
-                      {status.status === 'starting' ? (
-                        <>
-                          <button
-                            disabled
-                            className="h-12 col-span-2 rounded-full bg-amber-400/20 text-amber-300 font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 sf-tap transition-all disabled:opacity-90"
-                          >
-                            <BrandLoader size={12} color="#fbbf24" />
-                            <span>Запуск сервера...</span>
-                          </button>
-                          <button
-                            onClick={() =>
-                              setConfirmModal({
-                                open: true,
-                                type: 'stop',
-                                title: 'Прервать запуск сервера?',
-                                description: 'Процесс запуска будет остановлен.',
-                              })
-                            }
-                            className="h-12 col-span-1 rounded-full bg-red-500/20 text-red-400 font-black text-sm flex items-center justify-center gap-1.5 active:scale-95 sf-tap transition-all hover:bg-red-500/30"
-                          >
-                            <SFSymbol name="stop.fill" size={15} animated={false} />
-                            <span>Стоп</span>
-                          </button>
-                        </>
-                      ) : status.status === 'stopping' ? (
-                        <button
-                          disabled
-                          className="col-span-3 h-12 rounded-full bg-orange-500/20 text-orange-400 font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 sf-tap transition-all disabled:opacity-90"
-                        >
-                          <BrandLoader size={12} color="#f97316" />
-                          <span>Остановка сервера...</span>
-                        </button>
-                      ) : !isOnline ? (
-                        <button
-                          onClick={handleStart}
-                          disabled={isPending}
-                          className="col-span-3 h-12 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 sf-tap transition-all disabled:opacity-50"
-                        >
-                          {actionLoading === 'start' ? (
-                            <>
-                              <BrandLoader size={12} color="#090b0e" />
-                              <span>Запуск...</span>
-                            </>
-                          ) : (
-                            <>
-                              <SFSymbol name="play.fill" size={17} animated={false} />
-                              <span>Запустить сервер</span>
-                            </>
-                          )}
-                        </button>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() =>
-                              setConfirmModal({
-                                open: true,
-                                type: 'restart',
-                                title: 'Перезапустить сервер?',
-                                description: 'Все подключенные игроки будут временно отключены.',
-                              })
-                            }
-                            disabled={isPending}
-                            className="h-12 col-span-2 rounded-full bg-white/10 hover:bg-white/15 text-white font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 sf-tap transition-all disabled:opacity-50"
-                          >
-                            <SFSymbol name="arrow.clockwise" size={16} animated={false} />
-                            <span>Перезапустить</span>
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              setConfirmModal({
-                                open: true,
-                                type: 'stop',
-                                title: 'Остановить сервер?',
-                                description: 'Мир будет сохранён, сервер перейдёт в статус Оффлайн.',
-                              })
-                            }
-                            disabled={isPending}
-                            className="h-12 col-span-1 rounded-full bg-red-500/20 text-red-400 font-black text-sm flex items-center justify-center gap-1.5 active:scale-95 sf-tap transition-all hover:bg-red-500/30 disabled:opacity-50"
-                          >
-                            <SFSymbol name="stop.fill" size={15} animated={false} />
-                            <span>Стоп</span>
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Метрики производительности (CPU / RAM / TPS) */}
-                  <div
-                    className={`rounded-3xl p-4 glass-panel flex flex-col justify-between gap-3 ${
-                      isDesktop ? 'col-span-1 md:col-span-2 xl:col-span-1' : ''
-                    }`}
-                  >
-                    <div className="flex items-center justify-between pb-0.5">
-                      <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
-                        <SFSymbol name="bolt.fill" size={14} className="text-[#c0ff00]" />
-                        Ресурсы
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 pt-0.5 items-center">
-                      {/* TPS */}
-                      <ResourceGauge
-                        value={isOnline ? (status.tps ?? 20.0).toFixed(1) : '—'}
-                        label="TPS"
-                        percent={isOnline ? Math.min(100, Math.max(0, ((status.tps ?? 20.0) / 20.0) * 100)) : 0}
-                        color={!isOnline ? '#8e8e93' : '#c0ff00'}
-                        strokeWidth={9}
-                        size={94}
-                      />
-
-                      {/* RAM */}
-                      <ResourceGauge
-                        value={`${ramPercent}%`}
-                        label="RAM"
-                        percent={ramPercent}
-                        color={ramPercent > 90 ? '#ef4444' : '#c0ff00'}
-                        strokeWidth={9}
-                        size={94}
-                      />
-
-                      {/* CPU */}
-                      <ResourceGauge
-                        value={`${status.cpuPercent}%`}
-                        label="CPU"
-                        percent={status.cpuPercent}
-                        color={status.cpuPercent > 90 ? '#ef4444' : '#c0ff00'}
-                        strokeWidth={9}
-                        size={94}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Список игроков онлайн */}
-                  <div
-                    className={`rounded-3xl p-4 glass-panel flex flex-col gap-3 ${
-                      isDesktop ? 'col-span-1 md:col-span-1 xl:col-span-2' : ''
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <SFSymbol name="person.2.fill" size={16} className="text-[#c0ff00]" />
-                        <span className="text-xs font-black uppercase tracking-wider text-white">
-                          Игроки в игре
-                        </span>
-                        <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-extrabold text-white">
-                          {status.players.online}
-                        </span>
-                      </div>
-
-                      <button
-                        onClick={() => setShowBroadcastModal(true)}
-                        className="px-3 py-1 rounded-full bg-white/5 text-[11px] font-bold text-[#c0ff00] flex items-center gap-1 active:scale-95 sf-tap transition-all"
-                      >
-                        <SFSymbol name="arrow.up" size={13} animated={false} />
-                        Объявление
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      {status.players.list.map((nickname) => (
-                        <div
-                          key={nickname}
-                          className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5"
-                        >
-                          <div className="flex items-center gap-3">
-                            <PlayerAvatar name={nickname} size={32} />
-                            <span className="text-sm font-bold text-white">{nickname}</span>
-                          </div>
-
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => {
-                                setStatus((prev) => ({
-                                  ...prev,
-                                  players: {
-                                    ...prev.players,
-                                    online: Math.max(0, prev.players.online - 1),
-                                    list: prev.players.list.filter((p) => p !== nickname),
-                                  },
-                                }));
-                                showToast(`Игрок ${nickname} кикнут`);
-                              }}
-                              className="px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-bold active:scale-95 sf-tap transition-all"
-                            >
-                              Кик
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Виджет «Модпак» на десктопе */}
-                  {isDesktop && (
-                    <div className="flex flex-col justify-between rounded-3xl p-5 glass-panel transition-all shadow-xl col-span-1 md:col-span-1 xl:col-span-1 text-left">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="w-12 h-12 rounded-2xl bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00] shrink-0">
-                          <SFSymbol name="deployed_code" size={24} animated={false} />
-                        </div>
-                        <span className="px-3 py-1 rounded-full bg-white/5 text-[11px] font-bold text-[#c0ff00] flex items-center gap-1">
-                          <span>Установлен</span>
-                          <SFSymbol name="checkmark" size={12} animated={false} />
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col items-start text-left mt-4 w-full">
-                        <h3 className="text-lg font-black text-white text-left">
-                          Модпак NeoForge
-                        </h3>
-                        <p className="text-xs text-[#8e8e93] mt-0.5 text-left">
-                          Create 6.0, Appleskin, BlueMap (48 модов)
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Интерактивная консоль на главной */}
-                  <div className="col-span-1 md:col-span-2 xl:col-span-3 rounded-3xl p-5 glass-panel flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <SFSymbol name="terminal" size={16} className="text-[#c0ff00]" />
-                        <span className="text-xs font-black uppercase tracking-wider text-white">
-                          Консоль сервера
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-[#8e8e93] font-mono">
-                        port 25565
-                      </span>
-                    </div>
-
-                    {/* Вывод логов */}
-                    <div className="bg-black/50 rounded-2xl p-3 font-mono text-xs text-white/80 h-36 overflow-y-auto space-y-1">
-                      {consoleLogs.map((log, i) => (
-                        <div key={i} className="leading-relaxed">
-                          {log.startsWith('>') ? (
-                            <span className="text-[#c0ff00] font-bold">{log}</span>
-                          ) : (
-                            <span className="text-[#8e8e93]">{log}</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Ввод команд */}
-                    <form onSubmit={handleSendConsole} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={consoleInput}
-                        onChange={(e) => setConsoleInput(e.target.value)}
-                        placeholder="Введите команду сервера (например: time set day)..."
-                        className="flex-1 h-11 px-4 rounded-full bg-white/[0.06] text-white text-xs font-mono border-none outline-none focus:bg-white/[0.09] transition-all"
-                      />
-                      <button
-                        type="submit"
-                        className="h-11 px-5 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-xs active:scale-95 sf-tap transition-all shrink-0"
-                      >
-                        Отправить
-                      </button>
-                    </form>
-                  </div>
+        {/* 1. СЕКЦИЯ: КНОПКИ */}
+        {shouldShow('buttons') && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00]">
+                  <SFSymbol name="play.fill" size={16} />
                 </div>
-              </>
-            )}
-
-            {/* Вкладка 2: Правила игры (Gamerules) */}
-            {activeSubTab === 'gamerules' && (
-              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
-                <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                  <div>
-                    <h3 className="text-base font-black text-white">Правила мира (Gamerules)</h3>
-                    <p className="text-xs text-[#8e8e93] mt-0.5">
-                      Изменения применяются мгновенно без перезагрузки сервера
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col divide-y divide-white/5">
-                  {Object.entries(gamerules).map(([key, val]) => (
-                    <div key={key} className="py-3 flex items-center justify-between gap-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-white font-mono">{key}</span>
-                        <span className="text-xs text-[#8e8e93]">
-                          {key === 'keepInventory'
-                            ? 'Сохранение инвентаря после смерти игрока'
-                            : key === 'mobGriefing'
-                            ? 'Разрушение блоков криперами и мобами'
-                            : key === 'doDaylightCycle'
-                            ? 'Смена дня и ночи'
-                            : key === 'doFireTick'
-                            ? 'Распространение огня'
-                            : key === 'naturalRegeneration'
-                            ? 'Естественная регенерация здоровья'
-                            : 'Оповещения о смерти в чате'}
-                        </span>
-                      </div>
-
-                      <label className="ios-switch shrink-0 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={val}
-                          onChange={(e) => {
-                            setGamerules((prev) => ({ ...prev, [key]: e.target.checked }));
-                            showToast(`Правило ${key} обновлено`);
-                          }}
-                        />
-                        <span className="ios-slider" />
-                      </label>
-                    </div>
-                  ))}
+                <div>
+                  <h2 className="text-base font-black text-white uppercase tracking-wider">
+                    Кнопки (Buttons & Controls)
+                  </h2>
+                  <p className="text-xs text-[#8e8e93]">
+                    Капсульные кнопки rounded-full, тактильный отклик .sf-tap, фирменные состояния
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Вкладка 3: Игроки */}
-            {activeSubTab === 'players' && (
-              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-base font-black text-white">Управление игроками</h3>
-                    <p className="text-xs text-[#8e8e93]">Онлайн: {status.players.online} / {status.players.max}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Primary Action Button */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-white">
+                      Primary Action
+                    </span>
+                    <Badge variant="accent" size="sm">
+                      #c0ff00
+                    </Badge>
                   </div>
-                  <button
+                  <p className="text-xs text-[#8e8e93]">
+                    Главная action-кнопка запуска сервиса (pill rounded-full, черная типографика, scale-95)
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="w-full"
+                    leftIcon={<SFSymbol name="play.fill" size={17} />}
+                    onClick={() => showToast('Нажата кнопка «Запустить сервер»')}
+                  >
+                    Запустить сервер
+                  </Button>
+
+                  <Button
+                    variant="primary"
+                    size="md"
+                    isLoading={btnLoading}
+                    className="w-full"
                     onClick={() => {
-                      const name = prompt('Никнейм игрока для добавления в белый список:');
-                      if (name) {
-                        setStatus((prev) => ({
-                          ...prev,
-                          players: {
-                            ...prev.players,
-                            online: prev.players.online + 1,
-                            list: [...prev.players.list, name],
-                          },
-                        }));
-                        showToast(`Игрок ${name} добавлен`);
-                      }
+                      setBtnLoading(true);
+                      setTimeout(() => setBtnLoading(false), 2000);
                     }}
-                    className="px-3.5 py-1.5 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-xs active:scale-95 sf-tap transition-all"
+                  >
+                    {btnLoading ? 'Запуск...' : 'Тест Loading состояния'}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Secondary & Danger Buttons */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-white">
+                      Secondary & Danger
+                    </span>
+                    <Badge variant="subtle" size="sm">
+                      Glass Pill
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-[#8e8e93]">
+                    Вторичные и критические операции: мягкий полупрозрачный фон, красная предупреждающая плашка
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    className="col-span-2"
+                    leftIcon={<SFSymbol name="arrow.clockwise" size={16} />}
+                    onClick={() => showToast('Сервер перезапускается...')}
+                  >
+                    Перезапустить
+                  </Button>
+
+                  <Button
+                    variant="danger"
+                    size="md"
+                    className="col-span-1"
+                    leftIcon={<SFSymbol name="stop.fill" size={15} />}
+                    onClick={() => showToast('Сервер остановлен', 'error')}
+                  >
+                    Стоп
+                  </Button>
+                </div>
+              </div>
+
+              {/* Process States (Warning & Orange) */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-white">
+                      Process & Progress
+                    </span>
+                    <Badge variant="warning" size="sm">
+                      BrandLoader
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-[#8e8e93]">
+                    Состояния в процессе выполнения: встроенный волновой SVG-индикатор без внешних спиннеров
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="warning"
+                    size="md"
+                    disabled
+                    className="w-full"
+                    leftIcon={<BrandLoader size={12} color="#fbbf24" />}
+                  >
+                    Запуск компонентов...
+                  </Button>
+
+                  <Button
+                    variant="orange"
+                    size="md"
+                    disabled
+                    className="w-full"
+                    leftIcon={<BrandLoader size={12} color="#f97316" />}
+                  >
+                    Остановка сервера...
+                  </Button>
+                </div>
+              </div>
+
+              {/* Icon Buttons & Copy Buttons */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4 md:col-span-2 lg:col-span-3">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-white">
+                      IconButtons & Pill Actions
+                    </span>
+                    <Badge variant="default" size="sm">
+                      w-9 h-9
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-[#8e8e93]">
+                    Круглые кнопки действий (копирование со сменяемой иконкой, справка ℹ️, быстрые теги «Объявление», «Кик»)
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Кнопка копировать со сменяемой иконкой */}
+                  <button
+                    onClick={handleCopyDemo}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-90 sf-tap transition-colors duration-200 shrink-0 ${
+                      copiedPill
+                        ? 'bg-[#c0ff00]/25 text-[#c0ff00]'
+                        : 'bg-white/10 hover:bg-white/15 text-white/80 hover:text-white'
+                    }`}
+                    title="Копировать адрес"
+                  >
+                    <div className="relative w-4 h-4 flex items-center justify-center">
+                      <span
+                        className={`absolute transition-all duration-300 transform ${
+                          copiedPill ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-45'
+                        }`}
+                      >
+                        <SFSymbol name="checkmark.circle.fill" size={16} className="text-[#c0ff00]" />
+                      </span>
+                      <span
+                        className={`absolute transition-all duration-300 transform ${
+                          copiedPill ? 'opacity-0 scale-50 rotate-45' : 'opacity-100 scale-100 rotate-0'
+                        }`}
+                      >
+                        <SFSymbol name="doc.on.doc.fill" size={15} />
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Информационная кнопка ℹ️ */}
+                  <button
+                    onClick={() => setIsSheetOpen(true)}
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 flex items-center justify-center active:scale-90 sf-tap transition-all shrink-0 text-white/80 hover:text-white"
+                    title="Открыть модальное окно"
+                  >
+                    <SFSymbol name="info.circle.fill" size={17} />
+                  </button>
+
+                  {/* Кнопка обновления */}
+                  <button
+                    onClick={handleHeaderRefresh}
+                    className={`w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 flex items-center justify-center active:scale-90 sf-tap transition-all shrink-0 text-white/80 hover:text-white ${
+                      isHeaderRefreshing ? 'animate-sf-rotate' : ''
+                    }`}
+                    title="Обновить"
+                  >
+                    <SFSymbol name="arrow.clockwise" size={17} />
+                  </button>
+
+                  <div className="h-6 w-px bg-white/10 mx-1" />
+
+                  {/* Pill Action: Объявление */}
+                  <button
+                    onClick={() => showToast('Объявление отправлено')}
+                    className="px-3.5 py-1.5 rounded-full bg-white/5 text-xs font-bold text-[#c0ff00] flex items-center gap-1.5 active:scale-95 sf-tap hover:bg-[#c0ff00]/15 transition-all"
+                  >
+                    <SFSymbol name="arrow.up" size={13} />
+                    <span>Объявление</span>
+                  </button>
+
+                  {/* Pill Action: Kick */}
+                  <button
+                    onClick={() => showToast('Действие Кик', 'error')}
+                    className="px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-400 text-xs font-bold active:scale-95 sf-tap hover:bg-red-500/20 transition-all"
+                  >
+                    Кик
+                  </button>
+
+                  {/* Pill Action: Operator */}
+                  <button
+                    onClick={() => showToast('Роль оператора выдана')}
+                    className="px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold active:scale-95 sf-tap hover:bg-white/15 transition-all"
+                  >
+                    OP
+                  </button>
+
+                  {/* Pill Action: Add */}
+                  <button
+                    onClick={() => showToast('Добавить игрока')}
+                    className="px-3.5 py-1.5 rounded-full bg-[#c0ff00] text-[#090b0e] text-xs font-black active:scale-95 sf-tap transition-all"
                   >
                     + Добавить
                   </button>
                 </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 2. СЕКЦИЯ: КАРТОЧКИ */}
+        {shouldShow('cards') && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00]">
+                <SFSymbol name="house.fill" size={16} />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-white uppercase tracking-wider">
+                  Карточки (Bento & Glass Cards)
+                </h2>
+                <p className="text-xs text-[#8e8e93]">
+                  Скругление rounded-3xl / rounded-[28px], velvet glass surface, неоновые свечения, без серых рамок
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Hero Status Card */}
+              <div className="rounded-3xl p-5 glass-panel overflow-hidden shadow-2xl relative flex flex-col justify-between md:col-span-2">
+                {/* Фоновое неоновое свечение */}
+                <div className="absolute -right-16 -top-16 w-44 h-44 rounded-full blur-3xl pointer-events-none bg-[#c0ff00]/15" />
+
+                <div className="flex items-center justify-between gap-3 relative z-10">
+                  <span className="text-xl font-black text-white font-mono tracking-tight select-all truncate">
+                    onehouse.pp.ua
+                  </span>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={handleCopyDemo}
+                      className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center active:scale-90 sf-tap text-white/80"
+                    >
+                      <SFSymbol name="doc.on.doc.fill" size={14} />
+                    </button>
+                    <button
+                      onClick={() => setIsSheetOpen(true)}
+                      className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center active:scale-90 sf-tap text-white/80"
+                    >
+                      <SFSymbol name="info.circle.fill" size={16} />
+                    </button>
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#c0ff00]" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-2 relative z-10">
+                  <span className="text-xs text-[#8e8e93] font-medium">
+                    Пример главной карточки сервера с неоновым источником света в правом углу
+                  </span>
+                  <div className="grid grid-cols-3 gap-2 mt-1">
+                    <Button variant="secondary" size="md" className="col-span-2" leftIcon={<SFSymbol name="arrow.clockwise" size={15} />}>
+                      Перезапустить
+                    </Button>
+                    <Button variant="danger" size="md" className="col-span-1" leftIcon={<SFSymbol name="stop.fill" size={14} />}>
+                      Стоп
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resource Gauges Card */}
+              <div className="rounded-3xl p-4 glass-panel flex flex-col justify-between gap-3">
+                <div className="flex items-center justify-between pb-0.5">
+                  <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
+                    <SFSymbol name="bolt.fill" size={14} className="text-[#c0ff00]" />
+                    Ресурсы
+                  </span>
+                  <span className="text-[10px] text-[#8e8e93] font-mono">ResourceGauge</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-0.5 items-center">
+                  <ResourceGauge
+                    value={tpsVal.toFixed(1)}
+                    label="TPS"
+                    percent={(tpsVal / 20.0) * 100}
+                    color="#c0ff00"
+                    strokeWidth={9}
+                    size={90}
+                  />
+                  <ResourceGauge
+                    value={`${ramVal}%`}
+                    label="RAM"
+                    percent={ramVal}
+                    color={ramVal > 90 ? '#ef4444' : '#c0ff00'}
+                    strokeWidth={9}
+                    size={90}
+                  />
+                  <ResourceGauge
+                    value={`${cpuVal}%`}
+                    label="CPU"
+                    percent={cpuVal}
+                    color="#c0ff00"
+                    strokeWidth={9}
+                    size={90}
+                  />
+                </div>
+
+                {/* Интерактивные ползунки для проверки шкал */}
+                <div className="flex items-center justify-between gap-1 pt-2 border-t border-white/5">
+                  <button
+                    onClick={() => { setTpsVal(20.0); setRamVal(45); setCpuVal(15); }}
+                    className="text-[10px] font-bold text-[#8e8e93] hover:text-[#c0ff00] px-2 py-1 rounded-full bg-white/5"
+                  >
+                    Норма
+                  </button>
+                  <button
+                    onClick={() => { setTpsVal(14.2); setRamVal(78); setCpuVal(62); }}
+                    className="text-[10px] font-bold text-[#8e8e93] hover:text-amber-400 px-2 py-1 rounded-full bg-white/5"
+                  >
+                    Нагрузка
+                  </button>
+                  <button
+                    onClick={() => { setTpsVal(8.5); setRamVal(95); setCpuVal(98); }}
+                    className="text-[10px] font-bold text-[#8e8e93] hover:text-red-400 px-2 py-1 rounded-full bg-white/5"
+                  >
+                    Пик
+                  </button>
+                </div>
+              </div>
+
+              {/* Online Players Card */}
+              <div className="rounded-3xl p-4 glass-panel flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <SFSymbol name="person.2.fill" size={16} className="text-[#c0ff00]" />
+                    <span className="text-xs font-black uppercase tracking-wider text-white">
+                      Игроки в игре
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-extrabold text-white">
+                      3
+                    </span>
+                  </div>
+                </div>
 
                 <div className="flex flex-col gap-2">
-                  {status.players.list.map((nickname) => (
-                    <div
-                      key={nickname}
-                      className="flex items-center justify-between p-3 rounded-2xl bg-white/5"
-                    >
+                  {[
+                    { name: 'Alex', status: 'Строит ферму' },
+                    { name: 'Steve', status: 'В шахте' },
+                    { name: 'Notch', status: 'Создатель' },
+                  ].map((player) => (
+                    <div key={player.name} className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5">
                       <div className="flex items-center gap-3">
-                        <PlayerAvatar name={nickname} size={36} />
+                        <PlayerAvatar name={player.name} size={32} />
                         <div>
-                          <span className="text-sm font-bold text-white block">{nickname}</span>
-                          <span className="text-[11px] text-[#c0ff00] font-medium">Игрок онлайн</span>
+                          <span className="text-sm font-bold text-white block leading-none">{player.name}</span>
+                          <span className="text-[10px] text-[#8e8e93]">{player.status}</span>
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => showToast(`${nickname} назначен оператором`)}
-                          className="px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold active:scale-95 sf-tap transition-all"
-                        >
-                          OP
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatus((prev) => ({
-                              ...prev,
-                              players: {
-                                ...prev.players,
-                                online: Math.max(0, prev.players.online - 1),
-                                list: prev.players.list.filter((p) => p !== nickname),
-                              },
-                            }));
-                            showToast(`${nickname} кикнут`);
-                          }}
-                          className="px-3 py-1 rounded-full bg-red-500/15 text-red-400 text-xs font-bold active:scale-95 sf-tap transition-all"
-                        >
-                          Кик
-                        </button>
-                      </div>
+                      <span className="text-[10px] font-mono text-[#c0ff00]">online</span>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        </main>
-      </div>
 
-      {/* Нижний парящий Island Dock (только для мобильных экранов) */}
-      {!isDesktop && (
-        <MobileTabBar
-          activeTab={activeTab}
-          onTabChange={(tab) => {
-            setActiveTab(tab);
-            if (tab === 'dashboard') setActiveSubTab('properties');
-            if (tab === 'settings') setActiveSubTab('gamerules');
-            if (tab === 'players') setActiveSubTab('players');
-          }}
-        />
-      )}
+              {/* Feature Bento Card */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4 md:col-span-2">
+                <div className="flex items-center justify-between w-full">
+                  <div className="w-12 h-12 rounded-2xl bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00] shrink-0">
+                    <SFSymbol name="deployed_code" size={24} />
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-white/5 text-[11px] font-bold text-[#c0ff00] flex items-center gap-1">
+                    <span>Установлен</span>
+                    <SFSymbol name="checkmark" size={12} />
+                  </span>
+                </div>
 
-      {/* Модальное окно подтверждения Stop / Restart */}
+                <div>
+                  <h3 className="text-lg font-black text-white">Модпак NeoForge 1.21.1</h3>
+                  <p className="text-xs text-[#8e8e93] mt-1 leading-relaxed">
+                    Поддержка кастомных датапаков, шейдеров и синхронизации с BlueMap в реальном времени
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3. СЕКЦИЯ: ПОЛЯ ВВОДА */}
+        {shouldShow('inputs') && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00]">
+                <SFSymbol name="terminal" size={16} />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-white uppercase tracking-wider">
+                  Поля ввода (Inputs & Switches)
+                </h2>
+                <p className="text-xs text-[#8e8e93]">
+                  Pill-инпуты rounded-full без рамок, слоты под иконки слева/справа, нативные iOS-свитчеры
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Текстовые поля и пароли */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
+                <span className="text-xs font-black uppercase tracking-wider text-white">
+                  Pill Inputs
+                </span>
+
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-[#8e8e93] mb-1.5 block">
+                      Адрес сервера (Java / Bedrock)
+                    </label>
+                    <Input
+                      value={textVal}
+                      onChange={(e) => setTextVal(e.target.value)}
+                      leftIcon="globe"
+                      placeholder="Введите хост или адрес..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-[#8e8e93] mb-1.5 block">
+                      Пароль доступа / RCON Token
+                    </label>
+                    <Input
+                      isPassword
+                      value={passVal}
+                      onChange={(e) => setPassVal(e.target.value)}
+                      leftIcon="lock.fill"
+                      placeholder="Введите пароль..."
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-[#8e8e93]">Поле с валидацией</label>
+                      <button
+                        onClick={() => setHasInputErr(!hasInputErr)}
+                        className="text-[10px] text-[#c0ff00] font-bold"
+                      >
+                        Переключить ошибку
+                      </button>
+                    </div>
+                    <Input
+                      defaultValue="invalid_port_99999"
+                      leftIcon="exclamationmark.triangle.fill"
+                      error={hasInputErr ? 'Неверный диапазон портов (1024-65535)' : undefined}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* iOS Switches & Toggles */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    iOS-Style Switches (.ios-switch)
+                  </span>
+                  <p className="text-xs text-[#8e8e93] mt-1">
+                    Фирменные тумблеры с акцентным цветом #c0ff00 и плавной анимацией
+                  </p>
+                </div>
+
+                <div className="flex flex-col divide-y divide-white/5">
+                  <div className="py-2.5 flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-bold text-white block">Сохранение инвентаря</span>
+                      <span className="text-xs text-[#8e8e93]">keepInventory</span>
+                    </div>
+                    <label className="ios-switch shrink-0 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={switch1}
+                        onChange={(e) => setSwitch1(e.target.checked)}
+                      />
+                      <span className="ios-slider" />
+                    </label>
+                  </div>
+
+                  <div className="py-2.5 flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-bold text-white block">Разрушение криперами</span>
+                      <span className="text-xs text-[#8e8e93]">mobGriefing</span>
+                    </div>
+                    <label className="ios-switch shrink-0 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={switch2}
+                        onChange={(e) => setSwitch2(e.target.checked)}
+                      />
+                      <span className="ios-slider" />
+                    </label>
+                  </div>
+
+                  <div className="py-2.5 flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-bold text-white block">Смена дня и ночи</span>
+                      <span className="text-xs text-[#8e8e93]">doDaylightCycle</span>
+                    </div>
+                    <label className="ios-switch shrink-0 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={switch3}
+                        onChange={(e) => setSwitch3(e.target.checked)}
+                      />
+                      <span className="ios-slider" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4. СЕКЦИЯ: ТАБЫ */}
+        {shouldShow('tabs') && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00]">
+                <SFSymbol name="slider.horizontal.3" size={16} />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-white uppercase tracking-wider">
+                  Табы (Segmented Controls)
+                </h2>
+                <p className="text-xs text-[#8e8e93]">
+                  Точные переключатели OneHouse: bg-[#14171c], внутренний pill bg-[#252c37], лаймовый активный текст #c0ff00
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 3-позиционный таб из OneHouse */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    3-Tab Segmented Control
+                  </span>
+                  <p className="text-xs text-[#8e8e93] mt-0.5">
+                    Оригинальный блок из референса «Сервер / Правила игры / Игроки»
+                  </p>
+                </div>
+
+                <SegmentedTabs
+                  tabs={[
+                    { id: 'server', label: 'Сервер' },
+                    { id: 'gamerules', label: 'Правила игры' },
+                    { id: 'players', label: 'Игроки' },
+                  ]}
+                  activeId={demoTabId}
+                  onChange={(id) => setDemoTabId(id)}
+                />
+
+                <div className="p-4 rounded-2xl bg-white/5 text-xs text-[#8e8e93]">
+                  Активная вкладка: <strong className="text-[#c0ff00] uppercase font-mono">{demoTabId}</strong>
+                </div>
+              </div>
+
+              {/* 2-позиционный переключатель */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    2-Tab Toggle Switcher
+                  </span>
+                  <p className="text-xs text-[#8e8e93] mt-0.5">
+                    Используется для переключения режимов (Java / Bedrock, Онлайн / Оффлайн)
+                  </p>
+                </div>
+
+                <SegmentedTabs
+                  tabs={[
+                    { id: 'tab1', label: 'Java Edition' },
+                    { id: 'tab2', label: 'Bedrock Edition' },
+                  ]}
+                  activeId={demoPillTabId}
+                  onChange={(id) => setDemoPillTabId(id)}
+                />
+
+                <div className="p-4 rounded-2xl bg-white/5 text-xs text-[#8e8e93]">
+                  Выбран протокол: <strong className="text-[#c0ff00] uppercase font-mono">{demoPillTabId}</strong>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 5. СЕКЦИЯ: НАВИГАЦИЯ */}
+        {shouldShow('navigation') && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#c0ff00]/10 flex items-center justify-center text-[#c0ff00]">
+                <SFSymbol name="map.fill" size={16} />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-white uppercase tracking-wider">
+                  Навигация (MobileTabBar & AppHeader & Sheets)
+                </h2>
+                <p className="text-xs text-[#8e8e93]">
+                  Плавающий Island Dock с плавной скользящей капсулой, шапка сервиса и нижние шторки
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* AppHeader Preview */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    Шапка сервиса (AppHeader)
+                  </span>
+                  <p className="text-xs text-[#8e8e93] mt-0.5">
+                    Статус сервера (ОНЛАЙН / ЗАПУСК / ОФФЛАЙН), версия и кнопка обновления
+                  </p>
+                </div>
+
+                <div className="rounded-2xl overflow-hidden border border-white/5 bg-[#090b0e]">
+                  <AppHeader
+                    status={{
+                      status: 'online',
+                      uptimeSeconds: 84000,
+                      cpuPercent: 12,
+                      ramUsedMB: 4000,
+                      ramTotalMB: 8192,
+                      players: { online: 3, max: 20, list: [] },
+                      serverInfo: {
+                        motd: 'OneHouse',
+                        version: '1.21.1 NeoForge',
+                        difficulty: 'Hard',
+                        gamemode: 'Survival',
+                      },
+                    }}
+                    onRefresh={handleHeaderRefresh}
+                    isRefreshing={isHeaderRefreshing}
+                  />
+                </div>
+              </div>
+
+              {/* BottomSheet Modal Trigger */}
+              <div className="rounded-3xl p-5 glass-panel flex flex-col justify-between gap-4">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    Нижняя шторка (BottomSheet)
+                  </span>
+                  <p className="text-xs text-[#8e8e93] mt-0.5">
+                    Модальное окно со скруглением rounded-t-[32px] и поддержкой жеста смахивания вниз
+                  </p>
+                </div>
+
+                <Button
+                  variant="secondary"
+                  size="md"
+                  className="w-full"
+                  leftIcon={<SFSymbol name="info.circle.fill" size={17} />}
+                  onClick={() => setIsSheetOpen(true)}
+                >
+                  Открыть BottomSheet
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
+      </main>
+
+      {/* Нижний плавающий MobileTabBar (Island Dock) */}
+      <MobileTabBar
+        activeTab={navTabId}
+        onTabChange={(tab) => {
+          setNavTabId(tab);
+          showToast(`Вкладка переключена: ${tab}`);
+        }}
+      />
+
+      {/* Интерактивное модальное окно BottomSheet */}
       <BottomSheet
-        isOpen={confirmModal.open}
-        onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
-      >
-        <div className="w-12 h-12 rounded-full bg-red-500/15 flex items-center justify-center text-red-400 mx-auto">
-          <SFSymbol name="exclamationmark.triangle.fill" size={24} animated={false} />
-        </div>
-
-        <div className="text-center">
-          <h3 className="text-lg font-black text-white">{confirmModal.title}</h3>
-          <p className="text-xs text-[#8e8e93] font-medium mt-1">
-            {confirmModal.description}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          <button
-            onClick={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
-            className="h-12 rounded-full bg-white/10 text-white font-black text-sm active:scale-95 sf-tap transition-all"
-          >
-            Отмена
-          </button>
-          <button
-            onClick={handleStopConfirm}
-            className="h-12 rounded-full bg-red-500 text-white font-black text-sm active:scale-95 sf-tap transition-all"
-          >
-            Подтвердить
-          </button>
-        </div>
-      </BottomSheet>
-
-      {/* Модальное окно с подробными адресами сервера (ℹ️) */}
-      <BottomSheet
-        isOpen={showIpModal}
-        onClose={() => setShowIpModal(false)}
-        title="Подключение к серверу"
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        title="Демонстрация BottomSheet"
       >
         <div className="flex flex-col gap-3">
+          <p className="text-xs text-[#8e8e93]">
+            Это точный компонент шторки OneHouse. Потяните ручку сверху вниз на сенсорном экране, чтобы закрыть окно с физическим жестом смахивания.
+          </p>
+
           <div className="p-3.5 rounded-2xl bg-white/5 flex items-center justify-between">
             <div>
-              <span className="text-xs text-[#8e8e93] block">Java Edition (основной)</span>
+              <span className="text-xs text-[#8e8e93] block">Адрес OneHouse</span>
               <span className="text-sm font-black text-white font-mono">onehouse.pp.ua</span>
             </div>
             <button
-              onClick={() => handleCopyText('onehouse.pp.ua', 'Java IP')}
-              className="px-3 py-1.5 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-xs active:scale-95 sf-tap transition-all"
-            >
-              Копировать
-            </button>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-white/5 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-[#8e8e93] block">Bedrock Edition (смартфоны)</span>
-              <span className="text-sm font-black text-white font-mono">onehouse.pp.ua : 19132</span>
-            </div>
-            <button
-              onClick={() => handleCopyText('onehouse.pp.ua:19132', 'Bedrock IP')}
-              className="px-3 py-1.5 rounded-full bg-white/10 text-white font-black text-xs active:scale-95 sf-tap transition-all"
-            >
-              Копировать
-            </button>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-white/5 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-[#8e8e93] block">Прямой IP адрес</span>
-              <span className="text-sm font-black text-white font-mono">188.114.96.10:25565</span>
-            </div>
-            <button
-              onClick={() => handleCopyText('188.114.96.10:25565', 'Direct IP')}
-              className="px-3 py-1.5 rounded-full bg-white/10 text-white font-black text-xs active:scale-95 sf-tap transition-all"
-            >
-              Копировать
-            </button>
-          </div>
-        </div>
-      </BottomSheet>
-
-      {/* Модальное окно объявления */}
-      <BottomSheet
-        isOpen={showBroadcastModal}
-        onClose={() => setShowBroadcastModal(false)}
-        title="Отправить объявление игрокам"
-      >
-        <div className="flex flex-col gap-3">
-          <input
-            type="text"
-            value={broadcastText}
-            onChange={(e) => setBroadcastText(e.target.value)}
-            placeholder="Текст сообщения в чат сервера..."
-            className="w-full h-12 rounded-full bg-white/[0.06] text-white text-sm font-medium px-4 border-none outline-none focus:bg-white/[0.09]"
-          />
-          <div className="grid grid-cols-2 gap-2 mt-1">
-            <button
-              onClick={() => setShowBroadcastModal(false)}
-              className="h-12 rounded-full bg-white/10 text-white font-black text-sm active:scale-95 sf-tap transition-all"
-            >
-              Отмена
-            </button>
-            <button
               onClick={() => {
-                if (broadcastText.trim()) {
-                  showToast(`Объявление отправлено: "${broadcastText}"`);
-                  setBroadcastText('');
-                  setShowBroadcastModal(false);
-                }
+                handleCopyDemo();
+                setIsSheetOpen(false);
               }}
-              className="h-12 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-sm active:scale-95 sf-tap transition-all"
+              className="px-3 py-1.5 rounded-full bg-[#c0ff00] text-[#090b0e] font-black text-xs active:scale-95 sf-tap"
             >
-              Отправить
+              Копировать
             </button>
           </div>
+
+          <button
+            onClick={() => setIsSheetOpen(false)}
+            className="h-12 w-full rounded-full bg-white/10 text-white font-black text-sm active:scale-95 sf-tap mt-1"
+          >
+            Закрыть
+          </button>
         </div>
       </BottomSheet>
     </div>
