@@ -17,6 +17,7 @@ export * from './components/Select';
 export * from './components/Toast';
 export * from './components/Tooltip';
 export * from './utils/cn';
+export * from './utils/device';
 
 import tokens from './tokens/oneweb-tokens.json';
 export { tokens as onewebTokens };

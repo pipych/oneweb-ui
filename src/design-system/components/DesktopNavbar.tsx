@@ -49,25 +49,25 @@ export function DesktopNavbar({
   const isFloating = variant === 'floating';
 
   const defaultLogo = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink">
       {logo || (
-        <div className="w-9 h-9 rounded-full bg-oneweb-accent flex items-center justify-center font-black text-black text-lg shadow-[0_0_12px_rgba(192,255,0,0.4)] select-none shrink-0">
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-oneweb-accent flex items-center justify-center font-black text-black text-sm sm:text-lg shadow-[0_0_12px_rgba(192,255,0,0.4)] select-none shrink-0">
           1
         </div>
       )}
-      <div>
+      <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-extrabold text-base tracking-tight text-white leading-none">
+          <span className="font-extrabold text-sm sm:text-base tracking-tight text-white leading-none truncate">
             {title}
           </span>
           {badgeText && (
-            <Badge variant="accent" size="sm">
+            <Badge variant="accent" size="sm" className="hidden sm:inline-flex">
               {badgeText}
             </Badge>
           )}
         </div>
         {subtitle && (
-          <p className="text-[11px] text-[#8e8e93] leading-none mt-1">
+          <p className="text-[10px] sm:text-[11px] text-[#8e8e93] leading-none mt-1 truncate hidden xs:block">
             {subtitle}
           </p>
         )}
@@ -80,17 +80,17 @@ export function DesktopNavbar({
       className={cn(
         'z-40 transition-all duration-200',
         isFloating
-          ? 'sticky top-4 max-w-7xl mx-auto px-4 w-full'
+          ? 'sticky top-3 sm:top-4 max-w-7xl mx-auto px-3 sm:px-4 w-full'
           : 'sticky top-0 w-full bg-[#090b0e]/85 backdrop-blur-xl border-b border-white/[0.04]',
         className
       )}
     >
       <div
         className={cn(
-          'flex items-center justify-between gap-4',
+          'flex items-center justify-between gap-2 sm:gap-4',
           isFloating
-            ? 'bg-[#14171c]/90 backdrop-blur-2xl border border-white/[0.06] rounded-full px-5 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
-            : 'max-w-7xl mx-auto px-4 sm:px-6 h-16'
+            ? 'bg-[#14171c]/90 backdrop-blur-2xl border border-white/[0.06] rounded-full px-3 sm:px-5 py-2 sm:py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
+            : 'max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16'
         )}
       >
         {/* Бренд */}

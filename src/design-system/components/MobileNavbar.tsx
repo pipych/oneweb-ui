@@ -104,7 +104,7 @@ export function MobileNavbar({
                 type="button"
                 onClick={() => onChange(item.id)}
                 className={cn(
-                  'relative flex-1 h-full flex flex-col items-center justify-center rounded-full transition-all duration-200 outline-none select-none active:scale-95 px-1',
+                  'relative flex-1 h-full min-w-0 flex flex-col items-center justify-center rounded-full transition-all duration-200 outline-none select-none active:scale-95 px-1',
                   isActive ? 'text-oneweb-accent font-bold' : 'text-[#8e8e93] hover:text-white'
                 )}
               >
@@ -125,7 +125,7 @@ export function MobileNavbar({
                 </div>
                 <span
                   className={cn(
-                    'text-[10px] tracking-tight mt-1 whitespace-nowrap transition-colors duration-200 leading-none',
+                    'text-[10px] tracking-tight mt-1 whitespace-nowrap truncate max-w-full transition-colors duration-200 leading-none',
                     isActive ? 'font-bold text-oneweb-accent' : 'font-medium text-[#8e8e93]'
                   )}
                 >
