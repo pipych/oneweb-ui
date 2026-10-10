@@ -20,6 +20,7 @@
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   user-select: none;
 }
 
@@ -75,7 +76,7 @@
   /* Typography */
   --oneweb-font-sans: 'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --oneweb-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --oneweb-font-minecraft: 'VT323', 'Silkscreen', monospace;
+  --oneweb-font-minecraft: 'Minecraft', 'VT323', 'Silkscreen', monospace, sans-serif;
 }
 
 html, body, #root {
@@ -86,21 +87,300 @@ html, body, #root {
   padding: 0;
   background-color: #090b0e;
   color: #ffffff;
-  font-family: 'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-.safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
-}
-
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-overflow-scrolling: touch;
+  user-select: none;
 }
 
 * {
-  font-family: 'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Wix Madefor Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   box-sizing: border-box;
+}
+
+/* Chrome / Edge / Safari Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe areas for mobile devices and Telegram */
+.safe-bottom {
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+}
+
+.safe-top {
+  padding-top: max(16px, env(safe-area-inset-top, 16px));
+}
+
+/* Bottom Sheet Slide Up / Down Animations */
+@keyframes sf-sheet-in {
+  0% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes sf-sheet-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes sf-backdrop-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes sf-backdrop-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-sheet-in {
+  animation: sf-sheet-in 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-sheet-out {
+  animation: sf-sheet-out 0.26s cubic-bezier(0.4, 0, 1, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-backdrop-in {
+  animation: sf-backdrop-in 0.3s ease-out forwards;
+}
+
+.animate-backdrop-out {
+  animation: sf-backdrop-out 0.26s ease-in forwards;
+}
+
+.animate-sheet-up {
+  animation: sf-sheet-in 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* 120 FPS Mobile Hardware Acceleration */
+.gpu-layer {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Apple SF Symbols 8 Beta Motion System */
+@keyframes sf-bounce-8 {
+  0% { transform: scale3d(1, 1, 1); }
+  22% { transform: scale3d(0.74, 1.26, 1); }
+  54% { transform: scale3d(1.20, 0.86, 1); }
+  76% { transform: scale3d(0.95, 1.05, 1); }
+  100% { transform: scale3d(1, 1, 1); }
+}
+
+@keyframes sf-wiggle-8 {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-9deg) scale(1.06); }
+  40% { transform: rotate(9deg) scale(1.08); }
+  60% { transform: rotate(-5deg) scale(1.04); }
+  80% { transform: rotate(2deg) scale(1.01); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes sf-breathe-8 {
+  0% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.85; }
+}
+
+@keyframes sf-rotate-8 {
+  0% { transform: rotate(0deg); }
+  60% { transform: rotate(380deg); }
+  80% { transform: rotate(355deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-sf-bounce {
+  animation: sf-bounce-8 0.46s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.animate-sf-wiggle {
+  animation: sf-wiggle-8 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.animate-sf-breathe {
+  animation: sf-breathe-8 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-sf-rotate {
+  animation: sf-rotate-8 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+/* Tactile touch feel */
+.sf-tap {
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sf-tap:active {
+  transform: scale(0.92);
+}
+
+.sf-glow-green {
+  color: #c0ff00 !important;
+  filter: none !important;
+}
+
+.sf-glow-green svg {
+  overflow: visible !important;
+}
+
+/* Borderless OLED Aesthetic - No outlines anywhere on the site */
+*, ::before, ::after {
+  border-color: transparent !important;
+  outline: none !important;
+}
+
+/* Glass Card & UI Elements */
+.glass-panel {
+  background: rgba(20, 23, 28, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: none !important;
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  border: none !important;
+}
+
+/* UI Input */
+.ui-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: none !important;
+  border-radius: 16px;
+  padding: 13px 16px;
+  font-size: 14px;
+  color: #fff;
+  outline: none !important;
+  transition: all 0.2s ease;
+}
+
+.ui-input:focus {
+  background: rgba(255, 255, 255, 0.09);
+  outline: none !important;
+}
+
+.ui-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* iOS-style toggle switch */
+.ios-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 28px;
+}
+
+.ios-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ios-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 9999px;
+}
+
+.ios-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+input:checked + .ios-slider {
+  background-color: #c0ff00;
+}
+
+input:checked + .ios-slider:before {
+  transform: translateX(20px);
+  background-color: #090b0e;
+}
+
+/* Minecraft Authentic Multiplayer Styles */
+.font-minecraft,
+input.font-minecraft,
+textarea.font-minecraft {
+  font-family: 'Minecraft', 'VT323', 'Silkscreen', monospace, sans-serif !important;
+  letter-spacing: 0.5px;
+}
+
+.font-minecraft-title {
+  font-family: 'Minecraft', 'Silkscreen', 'VT323', monospace, sans-serif !important;
+  letter-spacing: 0.2px;
+}
+
+.mc-text-shadow {
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.75);
+}
+
+.pixelated {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }

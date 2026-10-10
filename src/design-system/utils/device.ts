@@ -2,39 +2,60 @@ import { useState, useEffect } from 'react';
 
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 
-const STORAGE_KEY = 'oneweb_view_mode';
+const STORAGE_KEY = 'onehouse_view_mode';
 
 /**
- * Проверка, является ли устройство настольным компьютером (ПК / Mac / большой экран)
+ * Определение, является ли клиент настольным компьютером (ПК / Mac / Linux / Telegram Desktop / Браузер на ПК)
  */
 export function isDesktopDevice(): boolean {
   if (typeof window === 'undefined') return false;
 
-  // 1. Проверка Telegram WebApp platform
+  // 1. Проверка через Telegram WebApp platform (если запущено внутри Telegram)
   const tg = (window as any).Telegram?.WebApp;
   const tgPlatform = typeof tg?.platform === 'string' ? tg.platform.toLowerCase() : '';
+
   if (tgPlatform) {
+    // Нативные настольные клиенты Telegram и веб-версии на ПК
     if (['tdesktop', 'macos', 'web', 'weba', 'webk'].includes(tgPlatform)) {
       return true;
     }
+    // Мобильные приложения Telegram
     if (['android', 'ios'].includes(tgPlatform)) {
       return false;
     }
   }
 
-  // 2. Проверка User-Agent
+  // 2. Проверка User-Agent браузера
   const ua = navigator.userAgent || '';
+  const platform = (navigator as any).userAgentData?.platform || navigator.platform || '';
+
+  // Смартфоны и мобильные устройства
   const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
   if (isMobileUA) {
     return false;
   }
 
-  // 3. Проверка ширины вьюпорта (порог md = 768px)
-  return window.innerWidth >= 768;
+  // iPad / планшеты
+  const isIPad = /iPad/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua));
+  if (isIPad) {
+    return window.innerWidth >= 640;
+  }
+
+  // Настольные операционные системы: Windows, Mac, Linux
+  const isDesktopOS =
+    /Win|Mac|Linux/i.test(platform) ||
+    /Windows NT|Macintosh|X11|Linux/i.test(ua);
+
+  if (isDesktopOS && !/Android/i.test(ua)) {
+    return true;
+  }
+
+  // 3. Fallback: по разрешению экрана (от 640px)
+  return window.innerWidth >= 640;
 }
 
 /**
- * Получение эффективного режима с учетом пользовательского выбора
+ * Получение текущего эффективного режима с учетом пользовательского переключателя
  */
 export function getEffectiveIsDesktop(): boolean {
   if (typeof window === 'undefined') return false;
@@ -51,7 +72,7 @@ export function getEffectiveIsDesktop(): boolean {
 }
 
 /**
- * Хук для отслеживания и переключения режима адаптивности (Desktop vs Mobile)
+ * Хук для отслеживания и переключения режима отображения
  */
 export function useDeviceMode() {
   const [isDesktop, setIsDesktop] = useState<boolean>(() => getEffectiveIsDesktop());
@@ -77,7 +98,6 @@ export function useDeviceMode() {
   }, []);
 
   const setViewMode = (mode: ViewMode) => {
-    setViewModeState(mode);
     try {
       if (mode === 'auto') {
         localStorage.removeItem(STORAGE_KEY);
@@ -87,13 +107,9 @@ export function useDeviceMode() {
     } catch (e) {
       // ignore
     }
-    setIsDesktop(mode === 'auto' ? isDesktopDevice() : mode === 'desktop');
+    setViewModeState(mode);
+    setIsDesktop(getEffectiveIsDesktop());
   };
 
-  return {
-    isDesktop,
-    isMobile: !isDesktop,
-    viewMode,
-    setViewMode,
-  };
+  return { isDesktop, viewMode, setViewMode };
 }

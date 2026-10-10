@@ -1,7 +1,6 @@
 import React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { cn } from '../utils/cn';
-import { OneIcon } from './OneIcon';
 
 export const Tabs = TabsPrimitive.Root;
 
@@ -17,10 +16,7 @@ export const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'inline-flex items-center justify-start sm:justify-center max-w-full overflow-x-auto no-scrollbar bg-[#14171c] border border-white/[0.04] rounded-full text-[#8e8e93] select-none gap-1',
-      size === 'sm' && 'p-1',
-      size === 'md' && 'p-1 sm:p-1.5',
-      size === 'lg' && 'p-1.5 sm:p-2',
+      'bg-[#14171c] p-1 rounded-full flex items-center transition-all w-full max-w-md border-none select-none',
       className
     )}
     {...props}
@@ -30,47 +26,26 @@ TabsList.displayName = TabsPrimitive.List.displayName;
 
 export interface TabsTriggerProps
   extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> {
-  icon?: string | React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  icon?: React.ReactNode;
 }
 
 export const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   TabsTriggerProps
->(({ className, icon, size = 'md', children, ...props }, ref) => {
-  const renderIcon = () => {
-    if (!icon) return null;
-    if (typeof icon === 'string') {
-      return (
-        <OneIcon
-          name={icon}
-          size={size === 'sm' ? 16 : size === 'lg' ? 20 : 'sm'}
-          className="shrink-0 transition-colors"
-        />
-      );
-    }
-    return icon;
-  };
-
+>(({ className, icon, children, ...props }, ref) => {
   return (
     <TabsPrimitive.Trigger
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center whitespace-nowrap rounded-full font-semibold transition-all duration-200 shrink-0',
-        'outline-none disabled:pointer-events-none disabled:opacity-30 border-none select-none gap-1.5 sm:gap-2',
+        'flex-1 py-2.5 rounded-full text-xs font-black transition-all sf-tap flex items-center justify-center gap-1.5 border-none outline-none select-none',
         'text-[#8e8e93] hover:text-white',
-        // Активный объемный пилл с лаймовым текстом
-        'data-[state=active]:bg-[#252c37] data-[state=active]:text-oneweb-accent data-[state=active]:shadow-[0_2px_12px_rgba(0,0,0,0.6)] data-[state=active]:font-bold',
-        'focus-visible:ring-2 focus-visible:ring-oneweb-accent',
-        size === 'sm' && 'h-8 px-2.5 sm:px-3 text-xs',
-        size === 'md' && 'h-9 px-3 sm:px-4 text-xs',
-        size === 'lg' && 'h-11 px-4 sm:px-5 text-sm',
+        'data-[state=active]:bg-[#252c37] data-[state=active]:text-[#c0ff00] data-[state=active]:shadow-md',
         className
       )}
       {...props}
     >
-      {renderIcon()}
-      {children && <span className="truncate">{children}</span>}
+      {icon}
+      {children && <span>{children}</span>}
     </TabsPrimitive.Trigger>
   );
 });
@@ -82,11 +57,58 @@ export const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}
-    className={cn(
-      'mt-4 outline-none focus-visible:ring-2 focus-visible:ring-oneweb-accent animate-fade-in',
-      className
-    )}
+    className={cn('mt-4 outline-none animate-fade-in border-none', className)}
     {...props}
   />
 ));
 TabsContent.displayName = TabsPrimitive.Content.displayName;
+
+/**
+ * High-level OneHouse Segmented Tabs component copied 1-in-1 from SettingsView.tsx
+ */
+export interface SegmentedTabsProps {
+  tabs: { id: string; label: string; icon?: React.ReactNode }[];
+  activeId: string;
+  onChange: (id: string) => void;
+  className?: string;
+  isDesktop?: boolean;
+}
+
+export function SegmentedTabs({
+  tabs,
+  activeId,
+  onChange,
+  className = '',
+  isDesktop = false,
+}: SegmentedTabsProps) {
+  return (
+    <div
+      className={cn(
+        'bg-[#14171c] p-1 rounded-full flex items-center transition-all',
+        isDesktop ? 'w-full max-w-sm h-10' : 'w-full max-w-md',
+        className
+      )}
+    >
+      {tabs.map((tab) => {
+        const isActive = activeId === tab.id;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => onChange(tab.id)}
+            className={cn(
+              'flex-1 rounded-full text-xs font-black transition-all sf-tap flex items-center justify-center gap-1.5',
+              isDesktop ? 'h-full' : 'py-2.5',
+              isActive
+                ? 'bg-[#252c37] text-[#c0ff00] shadow-md'
+                : 'text-[#8e8e93] hover:text-white'
+            )}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}

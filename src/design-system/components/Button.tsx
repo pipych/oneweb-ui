@@ -1,27 +1,33 @@
 import React, { forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
+import { BrandLoader } from './BrandLoader';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center select-none rounded-full font-semibold transition-all duration-150 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100 outline-none',
+  'rounded-full font-black text-sm flex items-center justify-center transition-all sf-tap select-none disabled:opacity-50 disabled:cursor-not-allowed outline-none border-none',
   {
     variants: {
       variant: {
         primary:
-          'bg-oneweb-accent text-black font-bold hover:bg-oneweb-accent-hover focus-visible:ring-2 focus-visible:ring-oneweb-accent border-none shadow-none',
+          'bg-[#c0ff00] text-[#090b0e] active:scale-95',
         secondary:
-          'bg-white/5 text-oneweb-text-primary hover:bg-white/10 border-none focus-visible:ring-2 focus-visible:ring-white/20',
-        outline:
-          'bg-transparent text-oneweb-text-primary border border-white/10 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/20',
-        ghost:
-          'bg-transparent text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-white/5 border-none focus-visible:ring-2 focus-visible:ring-white/20',
+          'bg-white/10 hover:bg-white/15 text-white active:scale-95',
         danger:
-          'bg-oneweb-status-danger/15 text-oneweb-status-danger hover:bg-oneweb-status-danger/25 border-none font-semibold focus-visible:ring-2 focus-visible:ring-oneweb-status-danger',
+          'bg-red-500/20 text-red-400 hover:bg-red-500/30 active:scale-95',
+        warning:
+          'bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 active:scale-95',
+        orange:
+          'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 active:scale-95',
+        ghost:
+          'bg-transparent hover:bg-white/5 text-white/80 hover:text-white active:scale-95',
+        pillAction:
+          'bg-white/5 text-[11px] font-bold text-[#c0ff00] hover:bg-[#c0ff00]/15 active:scale-95',
       },
       size: {
-        sm: 'h-9 px-4 text-xs gap-1.5',
-        md: 'h-11 px-5 text-sm gap-2',
-        lg: 'h-13 px-6 text-base gap-2.5',
+        sm: 'h-9 px-3.5 text-xs gap-1.5',
+        md: 'h-12 px-5 text-sm gap-2.5',
+        lg: 'h-14 px-6 text-base gap-3',
+        action: 'px-3 py-1 text-[11px] gap-1',
       },
     },
     defaultVariants: {
@@ -42,8 +48,8 @@ export interface ButtonProps
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant,
-      size,
+      variant = 'primary',
+      size = 'md',
       isLoading = false,
       leftIcon,
       rightIcon,
@@ -57,6 +63,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const isDisabled = disabled || isLoading;
 
+    const loaderColor =
+      variant === 'primary'
+        ? '#090b0e'
+        : variant === 'danger'
+        ? '#f87171'
+        : variant === 'warning'
+        ? '#fbbf24'
+        : variant === 'orange'
+        ? '#f97316'
+        : '#c0ff00';
+
     return (
       <button
         ref={ref}
@@ -66,7 +83,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...rest}
       >
         {isLoading ? (
-          <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          <BrandLoader size={12} color={loaderColor} />
         ) : (
           leftIcon
         )}
