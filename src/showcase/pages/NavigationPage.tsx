@@ -10,6 +10,17 @@ import {
   NavItem,
 } from '@one/web-ui';
 
+// Pool of tabs for testing (module level to avoid re-creation on render)
+const ALL_TABS: NavItem[] = [
+  { id: 'home', label: 'Главная', icon: 'home' },
+  { id: 'media', label: 'Медиа', icon: 'newspaper', badge: 3 },
+  { id: 'summary', label: 'Свод', icon: 'description' },
+  { id: 'players', label: 'Игроки', icon: 'group' },
+  { id: 'archive', label: 'Архив', icon: 'inventory_2' },
+  { id: 'analytics', label: 'Статистика', icon: 'analytics' },
+  { id: 'settings', label: 'Настройки', icon: 'tune' },
+];
+
 export const NavigationPage: React.FC = () => {
   // Mobile tab counts demo state
   const [mobileTabCount, setMobileTabCount] = useState<3 | 4 | 5 | 7>(4);
@@ -21,19 +32,15 @@ export const NavigationPage: React.FC = () => {
   const [activeDesktopTab, setActiveDesktopTab] = useState('home');
   const [desktopTabMode, setDesktopTabMode] = useState<'standard' | 'many'>('standard');
 
-  // Pool of tabs for testing
-  const allTabs: NavItem[] = [
-    { id: 'home', label: 'Главная', icon: 'home' },
-    { id: 'media', label: 'Медиа', icon: 'newspaper', badge: 3 },
-    { id: 'summary', label: 'Свод', icon: 'description' },
-    { id: 'players', label: 'Игроки', icon: 'group' },
-    { id: 'archive', label: 'Архив', icon: 'inventory_2' },
-    { id: 'analytics', label: 'Статистика', icon: 'analytics' },
-    { id: 'settings', label: 'Настройки', icon: 'tune' },
-  ];
+  const currentMobileItems = React.useMemo(
+    () => ALL_TABS.slice(0, mobileTabCount),
+    [mobileTabCount]
+  );
 
-  const currentMobileItems = allTabs.slice(0, mobileTabCount);
-  const currentDesktopItems = desktopTabMode === 'standard' ? allTabs.slice(0, 4) : allTabs;
+  const currentDesktopItems = React.useMemo(
+    () => (desktopTabMode === 'standard' ? ALL_TABS.slice(0, 4) : ALL_TABS),
+    [desktopTabMode]
+  );
 
   return (
     <div className="space-y-12 pb-16">
@@ -170,7 +177,7 @@ export const NavigationPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-oneweb-text-secondary">Активная вкладка</span>
                 <Badge variant="lime" size="sm">
-                  {allTabs.find((t) => t.id === activeMobileTab)?.label || activeMobileTab}
+                  {ALL_TABS.find((t) => t.id === activeMobileTab)?.label || activeMobileTab}
                 </Badge>
               </div>
               <p className="text-xs text-oneweb-text-secondary leading-relaxed">

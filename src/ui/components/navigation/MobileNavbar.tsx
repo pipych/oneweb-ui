@@ -22,15 +22,17 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
   maxWidthClass = 'max-w-md',
   extraAction,
 }) => {
-  // Dev-mode check enforcing maximum 5 items rule
-  if (process.env.NODE_ENV !== 'production' && items.length > MAX_MOBILE_ITEMS) {
-    console.warn(
-      `[OneWebUI MobileNavbar]: MobileNavbar supports a maximum of 5 items for finger ergonomics and optimal spacing. Received ${items.length} items. Only the first 5 will be displayed on mobile.`
-    );
-  }
-
   // Safe slice to prevent breaking layout under any circumstances
   const displayItems = items.slice(0, MAX_MOBILE_ITEMS);
+
+  // Dev-mode check enforcing maximum 5 items rule
+  useEffect(() => {
+    if (items.length > MAX_MOBILE_ITEMS) {
+      console.warn(
+        `[OneWebUI MobileNavbar]: MobileNavbar supports a maximum of 5 items for finger ergonomics and optimal spacing. Received ${items.length} items. Only the first 5 will be displayed on mobile.`
+      );
+    }
+  }, [items.length]);
 
   const navRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
@@ -47,24 +49,34 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
     if (activeEl && navEl) {
       const navBox = navEl.getBoundingClientRect();
       const activeBox = activeEl.getBoundingClientRect();
-      setPillRect({
-        left: activeBox.left - navBox.left,
-        width: activeBox.width,
-        ready: true,
+      const left = activeBox.left - navBox.left;
+      const width = activeBox.width;
+      setPillRect((prev) => {
+        if (
+          prev.ready &&
+          Math.abs(prev.left - left) < 0.5 &&
+          Math.abs(prev.width - width) < 0.5
+        ) {
+          return prev;
+        }
+        return { left, width, ready: true };
       });
     } else {
-      setPillRect((prev) => ({ ...prev, ready: false }));
+      setPillRect((prev) => {
+        if (!prev.ready) return prev;
+        return { ...prev, ready: false };
+      });
     }
-  }, [activeId, displayItems]);
+  }, [activeId]);
 
   useLayoutEffect(() => {
     updatePill();
-  }, [updatePill]);
+  }, [activeId, displayItems.length, extraAction?.id]);
 
   useEffect(() => {
     updatePill();
     const navEl = navRef.current;
-    if (!navEl) return;
+    if (!navEl || typeof ResizeObserver === 'undefined') return;
     const ro = new ResizeObserver(() => {
       updatePill();
     });
@@ -74,7 +86,7 @@ export const MobileNavbar: React.FC<MobileNavbarProps> = ({
       ro.disconnect();
       window.removeEventListener('resize', updatePill);
     };
-  }, [updatePill]);
+  }, [activeId, displayItems.length, extraAction?.id]);
 
   return (
     <div

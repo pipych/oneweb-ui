@@ -35,24 +35,34 @@ export const DesktopNavbar: React.FC<DesktopNavbarProps> = ({
     if (activeEl && containerEl) {
       const containerBox = containerEl.getBoundingClientRect();
       const activeBox = activeEl.getBoundingClientRect();
-      setPillRect({
-        left: activeBox.left - containerBox.left + containerEl.scrollLeft,
-        width: activeBox.width,
-        ready: true,
+      const left = activeBox.left - containerBox.left + containerEl.scrollLeft;
+      const width = activeBox.width;
+      setPillRect((prev) => {
+        if (
+          prev.ready &&
+          Math.abs(prev.left - left) < 0.5 &&
+          Math.abs(prev.width - width) < 0.5
+        ) {
+          return prev;
+        }
+        return { left, width, ready: true };
       });
     } else {
-      setPillRect((prev) => ({ ...prev, ready: false }));
+      setPillRect((prev) => {
+        if (!prev.ready) return prev;
+        return { ...prev, ready: false };
+      });
     }
-  }, [activeId, items]);
+  }, [activeId]);
 
   useLayoutEffect(() => {
     updatePill();
-  }, [updatePill]);
+  }, [activeId, items.length]);
 
   useEffect(() => {
     updatePill();
     const containerEl = tabsContainerRef.current;
-    if (!containerEl) return;
+    if (!containerEl || typeof ResizeObserver === 'undefined') return;
 
     const ro = new ResizeObserver(() => {
       updatePill();
@@ -68,7 +78,7 @@ export const DesktopNavbar: React.FC<DesktopNavbarProps> = ({
       containerEl.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', updatePill);
     };
-  }, [updatePill]);
+  }, [activeId, items.length]);
 
   const navContent = (
     <div className="flex items-center justify-between w-full h-full gap-4">

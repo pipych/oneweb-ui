@@ -12,6 +12,8 @@ import { BadgesPage } from './pages/BadgesPage';
 import { NavigationPage } from './pages/NavigationPage';
 import { MobileActionBtn } from '@one/web-ui';
 
+import { ErrorBoundary } from './components/ErrorBoundary';
+
 export const App: React.FC = () => {
   const [activePage, setActivePage] = useState<PageId>('overview');
 
@@ -42,7 +44,9 @@ export const App: React.FC = () => {
 
   return (
     <ShowcaseLayout activePage={activePage} onSelectPage={setActivePage}>
-      {renderPage()}
+      <ErrorBoundary key={activePage}>
+        {renderPage()}
+      </ErrorBoundary>
 
       {/* Global mobile floating action button (FAB) for the showcase app */}
       {activePage !== 'fab' && activePage !== 'navigation' && (
