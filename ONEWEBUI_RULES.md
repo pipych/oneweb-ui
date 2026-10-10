@@ -10,16 +10,25 @@
    - Все цвета, отступы, скругления, тени и шрифты задаются **исключительно** через дизайн-токены OneWebUI.
    - Любое использование «магических» значений нарушает консистентность экосистемы One.
 
-2. **Строгий запрет на Arbitrary CSS и Hex-значения**:
-   - ❌ **ЗАПРЕЩЕНО**: писать в разметке произвольные hex-цвета, например: `bg-[#090b0e]`, `text-[#c0ff00]`, `border-[#14171c]`, `bg-[rgba(20,23,28,0.94)]`.
-   - ❌ **ЗАПРЕЩЕНО**: писать произвольные радиусы, например: `rounded-[16px]`, `rounded-[32px]`.
-   - ❌ **ЗАПРЕЩЕНО**: писать инлайн-стили с хардкодными цветами `style={{ backgroundColor: '#c0ff00' }}`.
+2. **Правило скруглений (Никаких острых углов)**:
+   - ❌ **ЗАПРЕЩЕНО**: использовать радиусы меньше 12px (`rounded-none`, `rounded-sm`, `rounded`, `rounded-md`).
+   - ✅ **Минимальный радиус** в дизайн-системе — **12px** (`rounded-xl` / `rounded-oneweb-min`).
+   - ✅ **Карточки, модалки и контейнеры**: строго `rounded-[28px]` или `rounded-[32px]`.
+   - ✅ **Табы, бейджи, кнопки, инпуты**: строго `rounded-full` (Pill).
+
+3. **Форма Pill (Капсула) без исключений**:
+   - Все кнопки (`Button`, `IconButton`).
+   - Все поля ввода и поиска (`Input`, `SearchInput`).
+   - Применяй строго класс `rounded-full`. Прямоугольных инпутов или кнопок с небольшим скруглением быть не должно.
+
+4. **Строгий запрет на Arbitrary CSS и Hex-значения**:
+   - ❌ **ЗАПРЕЩЕНО**: писать в разметке произвольные hex-цвета, например: `bg-[#090b0e]`, `text-[#c0ff00]`, `border-[#14171c]`.
    - ✅ **РАЗРЕШЕНО**: использовать утилитарные классы Tailwind с префиксом `oneweb-` либо переменные `var(--oneweb-*)`.
 
-3. **Обязательный импорт компонентов из `@one/web-ui`**:
-   - Базовые интерактивные элементы интерфейса (кнопки, инпуты, карточки, бейджи, модалки) **не создаются с нуля**, а импортируются из библиотеки:
+5. **Обязательный импорт компонентов из `@one/web-ui`**:
+   - Базовые элементы интерфейса импортируются из библиотеки:
    ```tsx
-   import { Button, Card, Input, Badge, Dialog } from '@one/web-ui';
+   import { Button, IconButton, Card, Input, SearchInput, Badge, Dialog, MobileActionBtn } from '@one/web-ui';
    ```
 
 ---
@@ -54,17 +63,14 @@
 
 ### Скругления углов (`borderRadius`)
 
-| Значение | CSS-переменная | Класс Tailwind |
-|---|---|---|
-| 0px | `--oneweb-radius-none` | `rounded-oneweb-none` |
-| 4px | `--oneweb-radius-sm` | `rounded-oneweb-sm` |
-| 8px | `--oneweb-radius-md` | `rounded-oneweb-md` |
-| 12px | `--oneweb-radius-lg` | `rounded-oneweb-lg` |
-| 16px (Инпуты / карточки) | `--oneweb-radius-xl` | `rounded-oneweb-xl` |
-| 20px | `--oneweb-radius-2xl` | `rounded-oneweb-2xl` |
-| 24px | `--oneweb-radius-3xl` | `rounded-oneweb-3xl` |
-| 32px (Bottom Sheets, Модалки) | `--oneweb-radius-sheet` | `rounded-oneweb-sheet` |
-| 9999px (Pills, Аватары) | `--oneweb-radius-full` | `rounded-oneweb-full` |
+| Значение | CSS-переменная | Класс Tailwind | Назначение |
+|---|---|---|---|
+| **12px (Минимум)** | `--oneweb-radius-min` | `rounded-xl` / `rounded-oneweb-min` | Тултипы, мелкие меню |
+| **16px** | `--oneweb-radius-xl` | `rounded-2xl` / `rounded-oneweb-xl` | Выпадающие панели |
+| **20px** | `--oneweb-radius-2xl` | `rounded-oneweb-2xl` | Модальные меню |
+| **28px** | `--oneweb-radius-3xl` | `rounded-[28px]` / `rounded-oneweb-card` | **Карточки и контейнеры** |
+| **32px** | `--oneweb-radius-sheet` | `rounded-[32px]` / `rounded-oneweb-sheet` | **Диалоги и нижние шторки** |
+| **9999px (Pill)** | `--oneweb-radius-full` | `rounded-full` | **Кнопки, Инпуты, Табы, Бейджи, FAB** |
 
 ---
 
@@ -75,102 +81,71 @@
 | Тонкая тень | `shadow-oneweb-sm` | Карточки в списке |
 | Средняя тень | `shadow-oneweb-md` | Стандартные панели |
 | Высокая тень | `shadow-oneweb-lg` | Выпадающие меню, поповеры |
-| Неоновый лайм | `shadow-oneweb-accent-glow` | Фирменное свечение `0 0 6px #c0ff00` |
+| Неоновый лайм | `shadow-oneweb-accent-glow` | Фирменное свечение `0 0 16px rgba(192, 255, 0, 0.35)` |
 | Модальное окно | `shadow-oneweb-modal` | Диалоги `0 12px 40px rgba(0,0,0,0.8)` |
 | Нижняя шторка | `shadow-oneweb-sheet` | Bottom sheets `0 -12px 48px rgba(0,0,0,0.85)` |
 
 ---
 
-### Типографика (`fontFamily`)
-
-- `font-oneweb-sans` — основной стек (`'Wix Madefor Display', -apple-system, sans-serif`)
-- `font-oneweb-mono` — моноширинный стек для логов, кода и хэшей
-- `font-oneweb-minecraft` — пиксельный стек для компонентов игрового профиля
-
----
-
 ## 3. Базовые примитивы библиотеки `@one/web-ui`
 
-### `Button`
+### `Button` & `IconButton`
 ```tsx
-import { Button } from '@one/web-ui';
+import { Button, IconButton, Icon } from '@one/web-ui';
 
+// Кнопки всегда имеют форму Pill (rounded-full)
 <Button variant="primary" size="md">Кнопка</Button>
 <Button variant="secondary" size="sm">Действие</Button>
 <Button variant="outline" size="md">Контур</Button>
-<Button variant="ghost" size="sm">Без фона</Button>
-<Button variant="danger" size="md">Удалить</Button>
+
+// Круглая иконочная кнопка (rounded-full aspect-square)
+<IconButton variant="primary" size="md">
+  <Icon name="add" size={20} />
+</IconButton>
 ```
-*Поддерживает:* `isLoading`, `leftIcon`, `rightIcon`, `disabled`.
+
+### `Input` & `SearchInput`
+```tsx
+import { Input, SearchInput } from '@one/web-ui';
+
+// Поля всегда имеют форму Pill (rounded-full)
+<Input label="Имя" placeholder="Введите..." />
+<Input type="password" label="Пароль" />
+
+// Поле поиска с иконкой
+<SearchInput placeholder="Быстрый поиск..." value={query} onChange={e => setQuery(e.target.value)} onClear={() => setQuery('')} />
+```
+
+### `MobileActionBtn` (FAB)
+```tsx
+import { MobileActionBtn } from '@one/web-ui';
+
+// Отображается ТОЛЬКО на мобильных устройствах (md:hidden)
+// Зафиксирован строго справа внизу НАД нижним баром (fixed right-4 bottom-24)
+<MobileActionBtn icon="add" variant="primary" onClick={() => handleCreate()} />
+<MobileActionBtn icon="tune" variant="surface" onClick={() => handleFilter()} />
+```
 
 ### `Card`
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@one/web-ui';
+import { Card, CardHeader, CardTitle, CardContent } from '@one/web-ui';
 
-<Card variant="default"> {/* 'default' | 'elevated' | 'glass' */}
+// Карточки всегда имеют скругление 28px (rounded-[28px])
+<Card variant="default">
   <CardHeader>
     <CardTitle>Заголовок</CardTitle>
-    <CardDescription>Пояснение к блоку</CardDescription>
   </CardHeader>
   <CardContent>
     Контент карточки
   </CardContent>
-  <CardFooter>
-    Футер с действиями
-  </CardFooter>
 </Card>
-```
-
-### `Input`
-```tsx
-import { Input } from '@one/web-ui';
-
-<Input
-  label="Имя пользователя"
-  placeholder="Введите..."
-  error="Обязательное поле" // Подсветка ошибки в стиле OneWebUI
-  helperText="Подсказка под инпутом"
-  disabled={false}
-/>
-
-<Input
-  type="password" // Имеет встроенную кнопку переключения видимости Show/Hide
-  label="Пароль"
-/>
-```
-
-### `Badge`
-```tsx
-import { Badge } from '@one/web-ui';
-
-<Badge variant="accent" dot>Акцент</Badge>
-<Badge variant="success" dot>В сети</Badge>
-<Badge variant="warning">В ожидании</Badge>
-<Badge variant="danger">Ошибка</Badge>
-<Badge variant="default" size="sm">v1.0.0</Badge>
-```
-
-### `Dialog`
-```tsx
-import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter, DialogClose } from '@one/web-ui';
-
-<Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-  <DialogHeader>
-    <DialogTitle>Название окна</DialogTitle>
-    <DialogClose onClose={() => setIsOpen(false)} />
-  </DialogHeader>
-  <DialogContent>
-    Тело диалога
-  </DialogContent>
-  <DialogFooter>
-    Кнопки действий
-  </DialogFooter>
-</Dialog>
 ```
 
 ---
 
 ## 4. Чеклист перед коммитом
-- [ ] Отсутствуют произвольные цвета `[#...]` в добавленном/измененном коде.
-- [ ] Компоненты UI импортируются из `@one/web-ui`.
-- [ ] Сборка `npm run build` проходит без ошибок TypeScript и Vite.
+- [ ] Отсутствуют радиусы меньше 12px (`rounded-none`, `rounded-sm`, `rounded-md`).
+- [ ] Все кнопки (`Button`, `IconButton`) и инпуты (`Input`, `SearchInput`) имеют класс `rounded-full`.
+- [ ] Карточки имеют скругление 28px (`rounded-[28px]`), диалоги — 32px (`rounded-[32px]`).
+- [ ] `MobileActionBtn` скрыт на десктопе (`md:hidden`) и зафиксирован внизу справа.
+- [ ] Сборка `npm run build` проходит без ошибок.

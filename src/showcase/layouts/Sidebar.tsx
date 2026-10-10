@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from '@one/web-ui';
 import { cn } from '@one/web-ui';
 
-export type PageId = 'overview' | 'tokens' | 'buttons' | 'inputs' | 'cards' | 'overlays' | 'badges';
+export type PageId = 'overview' | 'tokens' | 'buttons' | 'inputs' | 'fab' | 'cards' | 'overlays' | 'badges';
 
 interface SidebarProps {
   activePage: PageId;
@@ -23,16 +23,17 @@ const navSections: { title: string; items: NavItem[] }[] = [
     title: 'Начало работы',
     items: [
       { id: 'overview', label: 'Обзор & Гайд', icon: 'auto_stories' },
-      { id: 'tokens', label: 'Дизайн-токены', icon: 'palette' },
+      { id: 'tokens', label: 'Дизайн-токены (12px+)', icon: 'palette' },
     ],
   },
   {
-    title: 'Компоненты',
+    title: 'Компоненты (Strict Pill & 28px)',
     items: [
-      { id: 'buttons', label: 'Button', icon: 'smart_button' },
-      { id: 'inputs', label: 'Input', icon: 'edit_square' },
-      { id: 'cards', label: 'Card', icon: 'dashboard' },
-      { id: 'badges', label: 'Badge', icon: 'label' },
+      { id: 'buttons', label: 'Button & IconButton', icon: 'smart_button' },
+      { id: 'inputs', label: 'Input & SearchInput', icon: 'edit_square' },
+      { id: 'fab', label: 'MobileActionBtn (FAB)', icon: 'touch_app', badge: 'Mobile' },
+      { id: 'cards', label: 'Card (28px)', icon: 'dashboard' },
+      { id: 'badges', label: 'Badge (Pill)', icon: 'label' },
     ],
   },
   {
@@ -83,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           if (onCloseMobile) onCloseMobile();
                         }}
                         className={cn(
-                          'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-oneweb-lg transition-colors cursor-pointer text-left',
+                          'w-full flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-xl transition-colors cursor-pointer text-left',
                           isActive
                             ? 'bg-oneweb-accent/15 text-oneweb-accent font-semibold border border-oneweb-border-accent'
                             : 'text-oneweb-text-secondary hover:text-white hover:bg-oneweb-surface-subtle'
@@ -98,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           <span>{item.label}</span>
                         </div>
                         {item.badge && (
-                          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-oneweb-surface-elevated text-oneweb-text-secondary border border-oneweb-border-subtle">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-oneweb-surface-elevated text-oneweb-text-secondary border border-oneweb-border-subtle">
                             {item.badge}
                           </span>
                         )}

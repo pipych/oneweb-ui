@@ -17,7 +17,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-oneweb-xl transition-all duration-200 text-oneweb-text-primary overflow-hidden',
+          'rounded-[28px] transition-all duration-200 text-oneweb-text-primary overflow-hidden',
           variants[variant],
           className
         )}

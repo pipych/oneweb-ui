@@ -25,14 +25,14 @@
   --oneweb-status-warning: #fbbf24;
   --oneweb-status-danger: #ef4444;
 
-  --oneweb-radius-none: 0px;
-  --oneweb-radius-sm: 4px;
-  --oneweb-radius-md: 8px;
+  --oneweb-radius-min: 12px;
   --oneweb-radius-lg: 12px;
   --oneweb-radius-xl: 16px;
   --oneweb-radius-2xl: 20px;
-  --oneweb-radius-3xl: 24px;
+  --oneweb-radius-3xl: 28px;
+  --oneweb-radius-card: 28px;
   --oneweb-radius-sheet: 32px;
+  --oneweb-radius-modal: 32px;
   --oneweb-radius-full: 9999px;
 }
 

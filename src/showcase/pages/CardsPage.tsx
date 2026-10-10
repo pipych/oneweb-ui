@@ -9,7 +9,7 @@ export const CardsPage: React.FC = () => {
           Карточки (Card)
         </h1>
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
-          Контейнеры содержимого с фиксированными радиусами скругления 16px и разной степенью возвышения (elevation).
+          Контейнеры содержимого со строгим радиусом скругления 28px (<strong>rounded-[28px]</strong>) и разной степенью возвышения (elevation).
         </p>
       </div>
 

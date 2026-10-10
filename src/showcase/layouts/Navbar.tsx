@@ -13,14 +13,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleSidebar}
-            className="md:hidden p-2 text-oneweb-text-secondary hover:text-white rounded-oneweb-lg hover:bg-oneweb-surface-subtle"
+            className="md:hidden p-2 text-oneweb-text-secondary hover:text-white rounded-full hover:bg-oneweb-surface-subtle"
             aria-label="Toggle Navigation"
           >
             <Icon name="menu" size={24} />
           </button>
 
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-oneweb-lg bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent">
+            <div className="w-9 h-9 rounded-xl bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent">
               <Icon name="widgets" size={20} />
             </div>
             <div className="flex items-baseline gap-2">
@@ -39,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
             href="https://github.com/pipych/oneweb-ui"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-oneweb-text-secondary hover:text-white bg-oneweb-surface-subtle hover:bg-oneweb-surface-elevated border border-oneweb-border-subtle rounded-oneweb-lg transition-colors"
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-oneweb-text-secondary hover:text-white bg-oneweb-surface-subtle hover:bg-oneweb-surface-elevated border border-oneweb-border-subtle rounded-full transition-colors"
           >
             <Icon name="code" size={16} />
             <span>GitHub</span>

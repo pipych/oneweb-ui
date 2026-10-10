@@ -62,7 +62,7 @@ export const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4',
-        'bg-oneweb-surface border border-oneweb-border-strong p-6 shadow-oneweb-modal rounded-oneweb-2xl',
+        'bg-oneweb-surface border border-oneweb-border-strong p-6 sm:p-7 shadow-oneweb-modal rounded-[32px]',
         'duration-200 outline-none',
         className
       )}
@@ -131,7 +131,7 @@ export const DialogClose = React.forwardRef<
     ref={ref}
     onClick={onClose}
     className={cn(
-      'rounded-oneweb-md p-1.5 text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle transition-colors focus:outline-none cursor-pointer',
+      'rounded-full p-2 text-oneweb-text-secondary hover:text-oneweb-text-primary hover:bg-oneweb-surface-subtle transition-colors focus:outline-none cursor-pointer',
       className
     )}
     {...props}

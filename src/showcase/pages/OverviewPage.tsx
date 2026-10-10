@@ -10,7 +10,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-10 animate-fade-in">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-oneweb-2xl bg-gradient-to-br from-oneweb-surface to-oneweb-surface-elevated border border-oneweb-border-strong p-8 sm:p-12">
+      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-oneweb-surface to-oneweb-surface-elevated border border-oneweb-border-strong p-8 sm:p-12">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-oneweb-accent/10 blur-3xl pointer-events-none" />
         
         <div className="relative z-10 max-w-2xl space-y-4">
@@ -24,8 +24,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
           </h1>
 
           <p className="text-base sm:text-lg text-oneweb-text-secondary leading-relaxed">
-            Модульная дизайн-система и библиотека React-компонентов на основе Tailwind CSS и Radix UI,
-            спроектированная специально для интерфейсов экосистемы One.
+            Модульная дизайн-система и библиотека React-компонентов. Строгие правила: 
+            форма <strong className="text-white">Pill (rounded-full)</strong> для кнопок и инпутов, 
+            скругление <strong className="text-white">28px</strong> для карточек и мобильная кнопка <strong className="text-oneweb-accent">FAB</strong>.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -36,6 +37,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
               onClick={() => onNavigate('buttons')}
             >
               Смотреть компоненты
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              leftIcon={<Icon name="touch_app" size={20} />}
+              onClick={() => onNavigate('fab')}
+            >
+              Mobile FAB
             </Button>
             <Button
               variant="outline"
@@ -75,10 +84,10 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-3.5 rounded-oneweb-xl bg-oneweb-surface border border-oneweb-border-subtle flex flex-col justify-between h-28"
+              className="p-3.5 rounded-2xl bg-oneweb-surface border border-oneweb-border-subtle flex flex-col justify-between h-28"
             >
               <div
-                className="w-full h-8 rounded-oneweb-md border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold"
+                className="w-full h-8 rounded-xl border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold"
                 style={{
                   backgroundColor: item.value,
                   color: item.textColor || '#ffffff',
@@ -99,36 +108,36 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-oneweb-lg bg-oneweb-accent/10 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
-              <Icon name="verified" size={24} />
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+              <Icon name="straighten" size={24} />
             </div>
-            <CardTitle>Строгая токенизация</CardTitle>
+            <CardTitle>Strict Pill & 28px Radii</CardTitle>
             <CardDescription>
-              100% цветов, радиусов и теней типизированы и объявлены в Tailwind. Никаких случайных hex-значений.
+              Все кнопки и инпуты — строгие капсулы (rounded-full). Карточки — rounded-[28px]. Никаких углов меньше 12px.
             </CardDescription>
           </CardHeader>
         </Card>
 
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-oneweb-lg bg-oneweb-accent/10 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
-              <Icon name="accessible" size={24} />
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+              <Icon name="touch_app" size={24} />
             </div>
-            <CardTitle>Radix UI Примитивы</CardTitle>
+            <CardTitle>MobileActionBtn (FAB)</CardTitle>
             <CardDescription>
-              Доступные оверлеи: модальные окна, дропдауны, тултипы и вкладки с поддержкой WAI-ARIA и фокуса клавиатуры.
+              Мобильная плавающая круглая кнопка, зафиксированная строго над нижним баром (fixed right-4 bottom-24, md:hidden).
             </CardDescription>
           </CardHeader>
         </Card>
 
         <Card variant="default">
           <CardHeader>
-            <div className="w-10 h-10 rounded-oneweb-lg bg-oneweb-accent/10 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
+            <div className="w-10 h-10 rounded-full bg-oneweb-accent/15 border border-oneweb-border-accent flex items-center justify-center text-oneweb-accent mb-2">
               <Icon name="bolt" size={24} />
             </div>
-            <CardTitle>Cloudflare Pages Ready</CardTitle>
+            <CardTitle>Cloudflare Pages</CardTitle>
             <CardDescription>
-              Молниеносная сборка на Vite, поддержка статической раздачи и домена <code className="text-white font-mono text-xs">webui.onelaunch.pp.ua</code>.
+              Собрано для домена <code className="text-white font-mono text-xs">webui.onelaunch.pp.ua</code> с нулевым runtime overhead.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -143,13 +152,15 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigate }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-oneweb-lg bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-primary overflow-x-auto">
+          <div className="rounded-2xl bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-primary overflow-x-auto">
             <pre className="text-oneweb-text-secondary">
-              <span className="text-oneweb-accent">import</span> &#123; Button, Card, Input, Badge, Dialog &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
+              <span className="text-oneweb-accent">import</span> &#123; Button, Input, SearchInput, Card, MobileActionBtn &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
               <span className="text-oneweb-accent">export default function</span> <span className="text-blue-400">MyScreen</span>() &#123;{'\n'}
               {'  '}<span className="text-oneweb-accent">return</span> ({'\n'}
               {'    '}&lt;<span className="text-blue-400">Card</span> variant=<span className="text-emerald-400">"default"</span>&gt;{'\n'}
-              {'      '}&lt;<span className="text-blue-400">Button</span> variant=<span className="text-emerald-400">"primary"</span> size=<span className="text-emerald-400">"md"</span>&gt;Нажми меня&lt;/<span className="text-blue-400">Button</span>&gt;{'\n'}
+              {'      '}&lt;<span className="text-blue-400">Input</span> label=<span className="text-emerald-400">"Имя"</span> placeholder=<span className="text-emerald-400">"Введите никнейм..."</span> /&gt;{'\n'}
+              {'      '}&lt;<span className="text-blue-400">Button</span> variant=<span className="text-emerald-400">"primary"</span>&gt;Сохранить&lt;/<span className="text-blue-400">Button</span>&gt;{'\n'}
+              {'      '}&lt;<span className="text-blue-400">MobileActionBtn</span> icon=<span className="text-emerald-400">"add"</span> /&gt;{'\n'}
               {'    '}&lt;/<span className="text-blue-400">Card</span>&gt;{'\n'}
               {'  '});{'\n'}
               &#125;

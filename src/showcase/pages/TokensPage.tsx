@@ -28,15 +28,12 @@ export const TokensPage: React.FC = () => {
   ];
 
   const radiusTokens = [
-    { name: 'none', value: '0px', class: 'rounded-oneweb-none' },
-    { name: 'sm', value: '4px', class: 'rounded-oneweb-sm' },
-    { name: 'md', value: '8px', class: 'rounded-oneweb-md' },
-    { name: 'lg', value: '12px', class: 'rounded-oneweb-lg' },
-    { name: 'xl', value: '16px (Инпуты / Карточки)', class: 'rounded-oneweb-xl' },
-    { name: '2xl', value: '20px', class: 'rounded-oneweb-2xl' },
-    { name: '3xl', value: '24px', class: 'rounded-oneweb-3xl' },
-    { name: 'sheet', value: '32px (Модалки / Шторки)', class: 'rounded-oneweb-sheet' },
-    { name: 'full', value: '9999px (Pills)', class: 'rounded-oneweb-full' },
+    { name: 'min (12px)', value: '12px (Минимум в системе)', class: 'rounded-xl', usage: 'Тултипы, мелкие меню' },
+    { name: 'xl (16px)', value: '16px', class: 'rounded-2xl', usage: 'Выпадающие списки' },
+    { name: '2xl (20px)', value: '20px', class: 'rounded-[20px]', usage: 'Модальные меню' },
+    { name: 'card (28px)', value: '28px', class: 'rounded-[28px]', usage: 'Карточки, контейнеры, виджеты' },
+    { name: 'sheet (32px)', value: '32px', class: 'rounded-[32px]', usage: 'Модальные диалоги, шторки' },
+    { name: 'full (Pill)', value: '9999px', class: 'rounded-full', usage: 'Кнопки, Инпуты, Табы, Бейджи, FAB' },
   ];
 
   return (
@@ -48,6 +45,21 @@ export const TokensPage: React.FC = () => {
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
           Централизованная спецификация стилей OneHouse. Кликните по значению, чтобы скопировать в буфер.
         </p>
+      </div>
+
+      {/* Strict Radius Banner */}
+      <div className="p-5 rounded-[28px] bg-oneweb-accent/10 border border-oneweb-border-accent flex items-start gap-4">
+        <div className="w-10 h-10 rounded-full bg-oneweb-accent flex items-center justify-center text-oneweb-text-inverse shrink-0">
+          <Icon name="verified" size={24} />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-sm font-bold text-white">Жесткое правило: Никаких острых углов</h3>
+          <p className="text-xs text-oneweb-text-secondary leading-relaxed">
+            Минимальный радиус в системе составляет <strong>12px</strong> (запрещены <code className="text-oneweb-accent font-mono">rounded-none, rounded-sm, rounded-md</code>).
+            Все кнопки, поля ввода, табы и бейджи имеют строгую форму капсулы (<strong>rounded-full</strong>).
+            Карточки и контейнеры имеют скругление <strong>28px</strong>, диалоги — <strong>32px</strong>.
+          </p>
+        </div>
       </div>
 
       {/* Color Palette */}
@@ -64,10 +76,10 @@ export const TokensPage: React.FC = () => {
               <div
                 key={token.name}
                 onClick={() => copyToClipboard(token.hex, token.name)}
-                className="group p-3.5 rounded-oneweb-xl bg-oneweb-surface-subtle border border-oneweb-border-subtle hover:border-oneweb-accent/50 cursor-pointer transition-all flex items-center gap-3.5"
+                className="group p-3.5 rounded-2xl bg-oneweb-surface-subtle border border-oneweb-border-subtle hover:border-oneweb-accent/50 cursor-pointer transition-all flex items-center gap-3.5"
               >
                 <div
-                  className="w-12 h-12 rounded-oneweb-lg border border-white/10 shrink-0 shadow-inner flex items-center justify-center text-xs font-bold font-mono"
+                  className="w-12 h-12 rounded-xl border border-white/10 shrink-0 shadow-inner flex items-center justify-center text-xs font-bold font-mono"
                   style={{
                     backgroundColor: token.hex,
                     color: token.isLight ? '#090b0e' : '#ffffff',
@@ -94,6 +106,39 @@ export const TokensPage: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Radii Grid */}
+      <Card variant="default">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Радиусы скругления (Border Radius)</CardTitle>
+            <Badge variant="accent">Min 12px & Pill</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {radiusTokens.map((r) => (
+              <div
+                key={r.name}
+                className="p-5 bg-oneweb-surface-subtle border border-oneweb-border-subtle rounded-2xl space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-white">{r.name}</span>
+                  <span className="text-[11px] font-mono text-oneweb-accent">{r.class}</span>
+                </div>
+
+                <div
+                  className={`w-full h-14 bg-oneweb-accent/15 border-2 border-oneweb-accent flex items-center justify-center font-mono text-xs font-bold text-oneweb-accent ${r.class}`}
+                >
+                  {r.value}
+                </div>
+
+                <p className="text-xs text-oneweb-text-secondary">{r.usage}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Typography */}
       <Card variant="default">
         <CardHeader>
@@ -103,7 +148,7 @@ export const TokensPage: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="p-4 rounded-oneweb-xl bg-oneweb-surface-subtle border border-oneweb-border-subtle space-y-3">
+          <div className="p-5 rounded-2xl bg-oneweb-surface-subtle border border-oneweb-border-subtle space-y-3">
             <div className="flex items-baseline justify-between border-b border-oneweb-border-subtle pb-2">
               <span className="text-xs font-mono text-oneweb-text-secondary">font-bold (700)</span>
               <span className="text-2xl font-bold text-white">Шрифт Wix Madefor Display 700</span>
@@ -120,31 +165,6 @@ export const TokensPage: React.FC = () => {
               <span className="text-xs font-mono text-oneweb-text-secondary">font-normal (400)</span>
               <span className="text-sm text-oneweb-text-secondary">Основной текст описаний и параграфов 400</span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Radii Grid */}
-      <Card variant="default">
-        <CardHeader>
-          <CardTitle>Радиусы скругления (Border Radius)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {radiusTokens.map((r) => (
-              <div
-                key={r.name}
-                className="p-4 bg-oneweb-surface-subtle border border-oneweb-border-subtle rounded-oneweb-xl text-center space-y-2"
-              >
-                <div
-                  className={`w-16 h-16 mx-auto bg-oneweb-accent/20 border-2 border-oneweb-accent flex items-center justify-center font-mono text-xs font-bold text-oneweb-accent ${r.class}`}
-                >
-                  {r.name}
-                </div>
-                <p className="font-mono text-xs text-white">{r.class}</p>
-                <p className="text-[11px] text-oneweb-text-secondary">{r.value}</p>
-              </div>
-            ))}
           </div>
         </CardContent>
       </Card>

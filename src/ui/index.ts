@@ -10,10 +10,12 @@ export { cn } from './utils/cn';
 
 // UI Components (Atoms & Molecules)
 export * from './components/Button';
-export * from './components/Card';
+export * from './components/IconButton';
 export * from './components/Input';
+export * from './components/Card';
 export * from './components/Badge';
 export * from './components/Icon';
+export * from './components/MobileActionBtn';
 
 // Overlays & Radix Primitives
 export * from './overlays/Dialog';

@@ -1,74 +1,85 @@
 import React, { useState } from 'react';
-import { Input, Card, CardHeader, CardTitle, CardContent, Icon } from '@one/web-ui';
+import { Input, SearchInput, Card, CardHeader, CardTitle, CardContent, Icon, Badge } from '@one/web-ui';
 
 export const InputsPage: React.FC = () => {
-  const [value, setValue] = useState('');
-  const [password, setPassword] = useState('Secret123!');
-  const [errorInput, setErrorInput] = useState('');
+  const [username, setUsername] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [password, setPassword] = useState('SuperSecretPass!');
+  const [errorInput, setErrorInput] = useState('admin@invalid');
 
   return (
     <div className="space-y-10 animate-fade-in">
       <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="accent">Strict Pill (rounded-full)</Badge>
+          <Badge variant="default">No sharp corners</Badge>
+        </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-          Поля ввода (Input)
+          Поля ввода (Input & SearchInput)
         </h1>
         <p className="text-oneweb-text-secondary text-sm sm:text-base">
-          Компонент ввода с поддержкой меток, подсказок, валидации ошибок и скрытия пароля.
+          Все поля ввода и поиска строго имеют форму капсулы (<strong>rounded-full</strong>). Прямоугольные инпуты запрещены.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card variant="default">
           <CardHeader>
-            <CardTitle>Стандартный ввод</CardTitle>
+            <CardTitle>Стандартные поля (Input)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Input
               label="Имя пользователя"
               placeholder="Введите ваш никнейм..."
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              helperText="Используется для входа в панель One"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              helperText="Используется для входа в панель OneHouse"
               leftIcon={<Icon name="person" size={18} />}
             />
 
-            <Input
-              label="Поиск по серверу"
-              placeholder="Введите запрос..."
-              leftIcon={<Icon name="search" size={18} />}
-              rightIcon={<Icon name="keyboard_return" size={18} />}
-            />
-          </CardContent>
-        </Card>
-
-        <Card variant="default">
-          <CardHeader>
-            <CardTitle>Пароль и состояния</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <Input
               type="password"
               label="Пароль учетной записи"
               placeholder="Введите пароль..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              helperText="Кнопка справа автоматически скрывает/показывает символы"
+              helperText="Встроенная кнопка показать/скрыть пароль"
               leftIcon={<Icon name="lock" size={18} />}
             />
+          </CardContent>
+        </Card>
+
+        <Card variant="default">
+          <CardHeader>
+            <CardTitle>Поиск и валидация</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-oneweb-text-secondary select-none px-1">
+                Поле поиска (SearchInput)
+              </label>
+              <SearchInput
+                placeholder="Поиск серверов, миров, игроков..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onClear={() => setSearchQuery('')}
+              />
+            </div>
 
             <Input
-              label="Поле с ошибкой"
+              label="Поле с ошибкой валидации"
               placeholder="Электронная почта..."
               value={errorInput}
               onChange={(e) => setErrorInput(e.target.value)}
-              error="Некорректный формат адреса почты"
+              error="Некорректный адрес электронной почты"
               leftIcon={<Icon name="mail" size={18} />}
             />
 
             <Input
-              label="Отключенное поле"
-              placeholder="Недоступно для редактирования"
+              label="Отключенное поле (disabled)"
+              placeholder="Недоступно для ввода"
               disabled
+              value="Системный идентификатор"
               leftIcon={<Icon name="block" size={18} />}
             />
           </CardContent>
@@ -81,15 +92,12 @@ export const InputsPage: React.FC = () => {
           <CardTitle>Спецификация импорта</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-oneweb-lg bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
+          <div className="rounded-xl bg-black/60 border border-oneweb-border-strong p-4 font-mono text-xs text-oneweb-text-secondary overflow-x-auto">
             <pre>
-              &lt;<span className="text-blue-400">Input</span>{'\n'}
-              {'  '}label=<span className="text-emerald-400">"Пароль"</span>{'\n'}
-              {'  '}type=<span className="text-emerald-400">"password"</span>{'\n'}
-              {'  '}placeholder=<span className="text-emerald-400">"Введите пароль..."</span>{'\n'}
-              {'  '}helperText=<span className="text-emerald-400">"Минимум 8 символов"</span>{'\n'}
-              {'  '}leftIcon=&#123;&lt;<span className="text-blue-400">Icon</span> name=<span className="text-emerald-400">"lock"</span> /&gt;&#125;{'\n'}
-              /&gt;
+              <span className="text-oneweb-accent">import</span> &#123; Input, SearchInput &#125; <span className="text-oneweb-accent">from</span> <span className="text-emerald-400">'@one/web-ui'</span>;{'\n\n'}
+              <span className="text-gray-500">// Все поля автоматически rounded-full</span>{'\n'}
+              &lt;<span className="text-blue-400">Input</span> label=<span className="text-emerald-400">"Никнейм"</span> placeholder=<span className="text-emerald-400">"Steve"</span> /&gt;{'\n'}
+              &lt;<span className="text-blue-400">SearchInput</span> placeholder=<span className="text-emerald-400">"Быстрый поиск..."</span> onClear=&#123;clearFn&#125; /&gt;
             </pre>
           </div>
         </CardContent>
