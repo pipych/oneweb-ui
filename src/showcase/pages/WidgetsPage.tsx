@@ -11,27 +11,43 @@ import {
 } from '@one/web-ui';
 
 export const WidgetsPage: React.FC = () => {
-  const [serverRunning, setServerRunning] = useState(true);
-  const [copied, setCopied] = useState(false);
+  // Interactive state for showcase
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [cacheCleared, setCacheCleared] = useState(false);
   const [clickNotice, setClickNotice] = useState<string | null>(null);
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard?.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const triggerClickNotice = (name: string) => {
-    setClickNotice(`Нажат виджет: ${name}`);
+    setClickNotice(`Открыт сервис: ${name}`);
     setTimeout(() => setClickNotice(null), 2500);
   };
 
-  const players = [
-    { name: 'Steve_Miner', ping: '18ms', role: 'Админ' },
-    { name: 'Alex_Crafter', ping: '24ms', role: 'Игрок' },
-    { name: 'OneBuilder', ping: '32ms', role: 'Модератор' },
-    { name: 'NetherKnight', ping: '45ms', role: 'Игрок' },
-    { name: 'DiamondGuy', ping: '12ms', role: 'Игрок' },
+  const handleClearCache = () => {
+    setCacheCleared(true);
+    setTimeout(() => setCacheCleared(false), 2500);
+  };
+
+  const activeDevices = [
+    {
+      name: 'MacBook Pro 16″ (M3 Max)',
+      app: 'OneWeb Desktop • Chrome',
+      ip: '185.190.142.2 • Киев',
+      isCurrent: true,
+      icon: 'laptop_mac',
+    },
+    {
+      name: 'iPhone 16 Pro',
+      app: 'OneMobile App • iOS 18',
+      ip: '178.62.204.18 • Варшава',
+      isCurrent: false,
+      icon: 'smartphone',
+    },
+    {
+      name: 'Windows Workstation',
+      app: 'OneWeb Console • Edge',
+      ip: '91.240.85.11 • Прага',
+      isCurrent: false,
+      icon: 'desktop_windows',
+    },
   ];
 
   return (
@@ -41,20 +57,20 @@ export const WidgetsPage: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <Badge variant="lime">Bento Grid System</Badge>
           <Badge variant="neutral">3 Typo-sizes (Row / 1:1 / Large)</Badge>
-          <Badge variant="warning">3D Artwork Support</Badge>
+          <Badge variant="warning">Universal One Ecosystem</Badge>
           <Badge variant="success">Strict No Borders</Badge>
         </div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Система виджетов (Bento Widgets)
         </h1>
         <p className="mt-2 text-base text-oneweb-text-secondary max-w-3xl leading-relaxed">
-          Модульные информационные и интерактивные блоки экосистемы <span className="text-white font-medium">One</span>. 
-          Поддерживают три типоразмера, фоновые 3D-иллюстрации с подсветкой при ховере, 
-          внутренний скролл и компоновку в адаптивную сетку Bento.
+          Модульные информационные и интерактивные блоки для дашбордов и панелей сервисов экосистемы{' '}
+          <span className="text-white font-medium">One</span>. Включают три стандартизированных типоразмера, 
+          компактные квадратные ярлыки с фиксацией текста в левом нижнем углу и большие виджеты с инлайн-заголовками без шейпов.
         </p>
       </div>
 
-      {/* Floating feedback alert */}
+      {/* Floating toast alert */}
       {clickNotice && (
         <div className="fixed top-6 right-6 z-50 px-4 py-2.5 rounded-full bg-[#181c23] border border-white/10 text-[#c0ff00] text-xs font-bold shadow-2xl flex items-center gap-2 animate-slide-up">
           <Icon name="check_circle" size={16} />
@@ -86,7 +102,7 @@ export const WidgetsPage: React.FC = () => {
               <span>Small / Row (Горизонтальный)</span>
             </div>
             <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-              <strong className="text-white">Шейп слева:</strong> Квадрат <code className="text-white">w-12 h-12 rounded-[16px]</code> с контрастным фоном <code className="text-oneweb-accent">#181c23</code> и иконкой #c0ff00.
+              <strong className="text-white">Шейп слева:</strong> Квадрат <code className="text-white">w-12 h-12 rounded-[16px]</code> с фоном <code className="text-oneweb-accent">#181c23</code> и иконкой #c0ff00.
             </p>
             <p className="text-xs text-oneweb-text-secondary leading-relaxed">
               <strong className="text-white">Текстовый стек:</strong> Белый жирный заголовок и серый текст описания. Микроанимация клика <code className="text-white">active:scale-[0.98]</code>.
@@ -96,14 +112,14 @@ export const WidgetsPage: React.FC = () => {
           {/* Typo 2: Square / 1:1 */}
           <div className="bg-[#14171c] p-5 rounded-[22px] space-y-3">
             <div className="flex items-center gap-2 text-white font-semibold text-sm">
-              <Icon name="square" size={20} className="text-amber-400" />
-              <span>Square / 1:1 (Квадратный ярлык)</span>
+              <Icon name="crop_square" size={20} className="text-amber-400" />
+              <span>Square / 1:1 (Компактный ярлык)</span>
             </div>
             <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-              <strong className="text-white">Верх:</strong> Шейп с иконкой <code className="text-white">w-12 h-12</code> слева и неброская стрелка <code className="text-amber-400">north_east</code> справа вверху.
+              <strong className="text-white">Шейп иконки:</strong> Компактный <code className="text-white">w-9 h-9</code> / <code className="text-white">w-10 h-10 rounded-[14px]</code> с фоном <code className="text-amber-400">#181c23</code>, стрелка перехода <code className="text-white">text-white/30</code>.
             </p>
             <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-              <strong className="text-white">Низ:</strong> Прижат вниз <code className="text-white">mt-auto</code>: крупный заголовок и подзаголовок КАПСОМ. Поддержка фонового 3D-арта.
+              <strong className="text-white">Левый нижний угол:</strong> Текст строго привязан к левому краю (<code className="text-white">mt-auto text-left</code>): плотный заголовок и капс-подзаголовок.
             </p>
           </div>
 
@@ -117,265 +133,352 @@ export const WidgetsPage: React.FC = () => {
               <strong className="text-emerald-400">СТРОГО БЕЗ ШЕЙПА В ШАПКЕ:</strong> Иконка размещается строго в строке с текстом заголовка, без какого-либо контейнера.
             </p>
             <p className="text-xs text-oneweb-text-secondary leading-relaxed">
-              <strong className="text-white">Контентная зона:</strong> Слот под интерактивный UI (круговые шкалы, списки, кнопки, индикаторы) со скрытым скроллом.
+              <strong className="text-white">Контентная зона:</strong> Слот под интерактивный UI (плееры, индикаторы хранилища, списки сессий, кнопки) со скрытым скроллом.
             </p>
           </div>
         </div>
       </Card>
 
-      {/* 3. Live Production Bento Grid (OneHouse 1:1) */}
+      {/* 3. Section: Large Interactive Widgets */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Интерактивная Bento-панель (OneHouse 1:1)
+              1. Большие интерактивные виджеты (Large / Bento Card)
             </h2>
             <p className="text-xs text-oneweb-text-secondary mt-0.5">
-              Живая демонстрация компоновки виджетов трех типоразмеров в единой сетке
+              Иконка в шапке идет строго в тексте без шейпа; интерактивные элементы управления в форме pill
             </p>
           </div>
           <Badge variant="lime" size="sm">
-            Live Preview
+            Interactive
           </Badge>
         </div>
 
         <BentoGrid cols={3}>
-          {/* Row 1, Item 1: Large Widget (Hero Server, 2 cols) */}
+          {/* Widget 1: OneTrack Media Player (2 cols) */}
           <LargeWidget
             colSpan={2}
-            title="Сервер OneHouse"
-            icon="dns"
+            title="СЕЙЧАС ИГРАЕТ"
+            icon="graphic_eq"
             badge={
-              <Badge variant={serverRunning ? 'lime' : 'neutral'} size="sm">
-                {serverRunning ? 'Онлайн' : 'Оффлайн'}
+              <Badge variant="lime" size="sm">
+                LIVE
               </Badge>
             }
+            actions={
+              <div className="flex items-center gap-1.5 text-xs text-[#8e8e93]">
+                <span className="w-2 h-2 rounded-full bg-[#c0ff00] animate-pulse" />
+                <span className="font-mono text-[11px] text-white">OneTrack FM</span>
+              </div>
+            }
+            className="min-h-[220px]"
+          >
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  {/* Album / Track Art Cover */}
+                  <div className="w-14 h-14 rounded-2xl bg-[#181c23] flex items-center justify-center shrink-0 shadow-inner text-[#c0ff00]">
+                    <Icon name="music_note" size={28} />
+                  </div>
+
+                  <div className="truncate min-w-0">
+                    <h4 className="text-base sm:text-lg font-bold text-white truncate leading-tight">
+                      Midnight Neon Pulse
+                    </h4>
+                    <p className="text-xs text-[#8e8e93] mt-0.5 truncate font-medium">
+                      One Sound Lab • Cyber Ambient Wave
+                    </p>
+                  </div>
+                </div>
+
+                {/* Player Controls (strict pill shapes) */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="h-10 px-4 rounded-full bg-[#c0ff00] hover:bg-[#b0f000] text-[#090b0e] font-black text-xs flex items-center gap-1.5 active:scale-95 sf-tap transition-all shadow-md"
+                  >
+                    <Icon name={isPlaying ? 'pause' : 'play_arrow'} size={18} fill={true} />
+                    <span>{isPlaying ? 'Пауза' : 'Слушать'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => triggerClickNotice('Следующий трек')}
+                    className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 active:scale-90 text-white flex items-center justify-center sf-tap transition-all"
+                    title="Следующий трек"
+                  >
+                    <Icon name="skip_next" size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Track Progress Bar */}
+              <div className="space-y-1.5 pt-1">
+                <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden relative">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#c0ff00]/60 to-[#c0ff00] rounded-full transition-all duration-300"
+                    style={{ width: isPlaying ? '62%' : '45%' }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-mono text-[#8e8e93]">
+                  <span>02:18</span>
+                  <span className="text-[#c0ff00]">FLAC 24-bit • 48 kHz</span>
+                  <span>03:42</span>
+                </div>
+              </div>
+            </div>
+          </LargeWidget>
+
+          {/* Widget 2: Data Storage / Disk Space (1 col) */}
+          <LargeWidget
+            colSpan={1}
+            title="ДИСКОВОЕ ПРОСТРАНСТВО"
+            icon="pie_chart"
             actions={
               <button
                 type="button"
-                onClick={() => handleCopy('mc.onehouse.ru')}
-                className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-xs font-mono text-[#c0ff00] flex items-center gap-1.5 cursor-pointer"
-                title="Копировать адрес"
+                onClick={handleClearCache}
+                className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all active:scale-95 sf-tap ${
+                  cacheCleared
+                    ? 'bg-[#c0ff00]/20 text-[#c0ff00]'
+                    : 'bg-white/5 hover:bg-white/10 text-[#8e8e93] hover:text-white'
+                }`}
               >
-                <span>{copied ? 'Скопировано!' : 'mc.onehouse.ru'}</span>
-                <Icon name={copied ? 'check' : 'content_copy'} size={14} />
+                {cacheCleared ? 'Очищено!' : 'Очистить кэш'}
               </button>
             }
-            artworkUrl="/minecraft-shape-bg.webp"
-            artworkClassName="w-48 h-48 opacity-25 group-hover:opacity-60"
             className="min-h-[220px]"
           >
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+            <div className="space-y-3 pt-2">
+              <div className="flex items-baseline justify-between">
                 <div>
-                  <div className="text-2xl font-black text-white tracking-tight font-mono">
-                    130.61.237.232:25565
-                  </div>
-                  <div className="text-xs text-[#8e8e93] mt-1 flex items-center gap-2">
-                    <span>Версия: 1.20.1 NeoForge</span>
-                    <span>•</span>
-                    <span className="text-[#c0ff00]">Пинг: 16ms</span>
-                  </div>
+                  <span className="text-2xl font-black text-white font-mono tracking-tight">
+                    64.2
+                  </span>
+                  <span className="text-xs text-[#8e8e93] ml-1">/ 100 GB</span>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={serverRunning ? 'secondary' : 'primary'}
-                    size="sm"
-                    onClick={() => setServerRunning(!serverRunning)}
-                  >
-                    <Icon name={serverRunning ? 'restart_alt' : 'play_arrow'} size={16} />
-                    <span>{serverRunning ? 'Перезапуск' : 'Запустить'}</span>
-                  </Button>
-                  {serverRunning && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setServerRunning(false)}
-                      className="text-red-400 hover:text-red-300"
-                    >
-                      <Icon name="power_settings_new" size={16} />
-                      <span>Стоп</span>
-                    </Button>
-                  )}
-                </div>
+                <span className="text-xs font-bold text-[#c0ff00]">64% Занято</span>
               </div>
 
-              <div className="p-3 rounded-2xl bg-black/40 flex items-center justify-between text-xs">
-                <span className="text-[#8e8e93]">Синхронизация мира и модов:</span>
-                <span className="font-mono text-[#c0ff00] font-bold">100% Завершено</span>
+              {/* Segmented Progress Bar */}
+              <div className="w-full h-2.5 rounded-full bg-black/40 overflow-hidden flex gap-0.5 p-0.5">
+                <div className="h-full bg-[#c0ff00] rounded-l-full" style={{ width: '42%' }} title="Медиа (42 GB)" />
+                <div className="h-full bg-blue-400" style={{ width: '14%' }} title="Документы (14 GB)" />
+                <div className="h-full bg-purple-400 rounded-r-full" style={{ width: '8%' }} title="Бэкапы (8 GB)" />
+              </div>
+
+              {/* Legend */}
+              <div className="grid grid-cols-3 gap-2 pt-1 text-[11px] text-[#8e8e93]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#c0ff00]" />
+                  <span className="truncate">Медиа</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-400" />
+                  <span className="truncate">Документы</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-purple-400" />
+                  <span className="truncate">Бэкапы</span>
+                </div>
               </div>
             </div>
           </LargeWidget>
 
-          {/* Row 1, Item 2: Large Widget (Resources / Gauges, 1 col) */}
+          {/* Widget 3: Active Sessions List (3 cols or 1 col on Bento) */}
           <LargeWidget
-            colSpan={1}
-            title="Ресурсы"
-            icon="bolt"
-            actions={
-              <span className="text-[11px] font-mono text-[#8e8e93]">Uptime 98.9%</span>
-            }
-            className="min-h-[220px]"
-          >
-            <div className="grid grid-cols-3 gap-2 pt-2 items-center text-center">
-              {/* Gauge 1: TPS */}
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full border-4 border-[#c0ff00] flex flex-col items-center justify-center bg-white/5">
-                  <span className="text-sm font-black text-white font-mono leading-none">
-                    20.0
-                  </span>
-                  <span className="text-[9px] font-bold text-[#8e8e93] uppercase mt-0.5">
-                    TPS
-                  </span>
-                </div>
-                <span className="text-[11px] text-white/70 font-medium mt-2">Стабильно</span>
-              </div>
-
-              {/* Gauge 2: RAM */}
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full border-4 border-[#c0ff00] flex flex-col items-center justify-center bg-white/5">
-                  <span className="text-sm font-black text-white font-mono leading-none">
-                    42%
-                  </span>
-                  <span className="text-[9px] font-bold text-[#8e8e93] uppercase mt-0.5">
-                    RAM
-                  </span>
-                </div>
-                <span className="text-[11px] text-white/70 font-medium mt-2">6.8 / 16 GB</span>
-              </div>
-
-              {/* Gauge 3: CPU */}
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full border-4 border-amber-400 flex flex-col items-center justify-center bg-white/5">
-                  <span className="text-sm font-black text-white font-mono leading-none">
-                    18%
-                  </span>
-                  <span className="text-[9px] font-bold text-[#8e8e93] uppercase mt-0.5">
-                    CPU
-                  </span>
-                </div>
-                <span className="text-[11px] text-white/70 font-medium mt-2">4 Cores</span>
-              </div>
-            </div>
-          </LargeWidget>
-
-          {/* Row 2, Item 1: Square Widget (1:1 Aspect Ratio) */}
-          <SquareWidget
-            icon="deployed_code"
-            title="Модпак One"
-            subtitle="УПРАВЛЕНИЕ СБОРКОЙ"
-            artworkUrl="/minecraft-shape-bg.webp"
-            onClick={() => triggerClickNotice('Модпак One')}
-            showArrow={true}
-          />
-
-          {/* Row 2, Item 2: Square Widget (1:1 Aspect Ratio) */}
-          <SquareWidget
-            icon="terminal"
-            title="Live Консоль"
-            subtitle="РЕАЛТАЙМ ЛОГИ И RCON"
-            onClick={() => triggerClickNotice('Live Консоль')}
-            showArrow={true}
-          />
-
-          {/* Row 2, Item 3: Large Widget with Scrollable List (Players) */}
-          <LargeWidget
-            colSpan={1}
-            title="Игроки онлайн"
-            icon="group"
+            colSpan={3}
+            title="АКТИВНЫЕ УСТРОЙСТВА"
+            icon="devices"
             badge={
               <Badge variant="lime" size="sm">
-                {players.length}
+                3 сессии
               </Badge>
             }
-            scrollable={true}
-            maxScrollHeight="180px"
+            actions={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => triggerClickNotice('Сессии завершены')}
+                className="text-xs"
+              >
+                Завершить другие
+              </Button>
+            }
           >
-            <div className="space-y-1.5">
-              {players.map((p) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+              {activeDevices.map((d) => (
                 <div
-                  key={p.name}
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                  key={d.name}
+                  className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between gap-3"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-black/40 flex items-center justify-center text-xs font-bold text-[#c0ff00]">
-                      {p.name[0]}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-[#181c23] flex items-center justify-center text-[#c0ff00] shrink-0">
+                      <Icon name={d.icon} size={22} />
                     </div>
-                    <div className="truncate">
-                      <div className="text-xs font-bold text-white truncate">{p.name}</div>
-                      <div className="text-[10px] text-[#8e8e93]">{p.role}</div>
+                    <div className="truncate min-w-0">
+                      <div className="text-xs font-bold text-white truncate flex items-center gap-1.5">
+                        <span>{d.name}</span>
+                        {d.isCurrent && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#c0ff00]" title="Текущее устройство" />
+                        )}
+                      </div>
+                      <div className="text-[11px] text-[#8e8e93] truncate mt-0.5">{d.app}</div>
+                      <div className="text-[10px] text-[#8e8e93] font-mono truncate">{d.ip}</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono text-[#8e8e93] shrink-0">{p.ping}</span>
+
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-[#8e8e93] shrink-0">
+                    {d.isCurrent ? 'Текущее' : 'Активно'}
+                  </span>
                 </div>
               ))}
             </div>
           </LargeWidget>
+        </BentoGrid>
+      </div>
 
-          {/* Row 3: Small / Row Horizontal Widgets */}
+      {/* 4. Section: Compact Square Shortcut Widgets (1:1) */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">
+            2. Квадратные виджеты-ярлыки (Square / 1:1)
+          </h2>
+          <p className="text-xs text-oneweb-text-secondary mt-0.5">
+            Компактные квадратные плитки с шейпом иконки слева сверху, стрелкой перехода справа и текстом, строго привязанным к левому нижнему углу
+          </p>
+        </div>
+
+        {/* 4-column compact grid for shortcut widgets */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {/* Tile 1: OneCloud */}
+          <SquareWidget
+            icon="cloud"
+            title="Хранилище"
+            subtitle="ОБЛАЧНЫЙ ДИСК"
+            onClick={() => triggerClickNotice('Хранилище / OneCloud')}
+            showArrow={true}
+          />
+
+          {/* Tile 2: OneMetrics */}
+          <SquareWidget
+            icon="insights"
+            title="Аналитика"
+            subtitle="СТАТИСТИКА"
+            onClick={() => triggerClickNotice('Аналитика / OneMetrics')}
+            showArrow={true}
+          />
+
+          {/* Tile 3: OneID */}
+          <SquareWidget
+            icon="shield_lock"
+            title="Безопасность"
+            subtitle="КЛЮЧИ ДОСТУПА"
+            onClick={() => triggerClickNotice('Безопасность / OneID')}
+            showArrow={true}
+          />
+
+          {/* Tile 4: OnePay */}
+          <SquareWidget
+            icon="account_balance_wallet"
+            title="Биллинг"
+            subtitle="ТРАНЗАКЦИИ"
+            onClick={() => triggerClickNotice('Биллинг / OnePay')}
+            showArrow={true}
+          />
+        </div>
+      </div>
+
+      {/* 5. Section: Small / Row Horizontal Widgets */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">
+            3. Маленькие горизонтальные виджеты (Small / Row)
+          </h2>
+          <p className="text-xs text-oneweb-text-secondary mt-0.5">
+            Компактные строчные виджеты: скругленный квадрат слева, вертикальный текстовый стек и микроанимация клика
+          </p>
+        </div>
+
+        <BentoGrid cols={3}>
           <SmallWidget
-            icon="folder"
-            title="Файловый менеджер"
-            description="Просмотр и редактирование конфигураций"
-            onClick={() => triggerClickNotice('Файловый менеджер')}
+            icon="person"
+            title="Аккаунт"
+            description="Управление профилем и сессиями"
+            onClick={() => triggerClickNotice('Аккаунт')}
           />
 
           <SmallWidget
-            icon="cloud_sync"
-            title="Резервные копии"
-            description="Автоматический снапшот мира и БД"
-            onClick={() => triggerClickNotice('Резервные копии')}
+            icon="notifications"
+            title="Уведомления"
+            description="Центр событий и оповещений"
+            trailing={
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#c0ff00] text-[#090b0e]">
+                +3
+              </span>
+            }
+            onClick={() => triggerClickNotice('Уведомления')}
           />
 
           <SmallWidget
-            icon="tune"
-            title="Настройки доступа"
-            description="White-list, порты и RCON безопасность"
-            onClick={() => triggerClickNotice('Настройки доступа')}
+            icon="extension"
+            title="Интеграции"
+            description="Подключенные вебхуки и API"
+            trailing={
+              <span className="text-[11px] font-bold text-[#c0ff00] flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c0ff00]" />
+                <span>Активно</span>
+              </span>
+            }
+            onClick={() => triggerClickNotice('Интеграции')}
           />
         </BentoGrid>
       </div>
 
-      {/* 4. Code Example Card */}
+      {/* 6. Code Example Card */}
       <Card variant="default" className="p-6 space-y-4">
         <h3 className="text-base font-bold text-white flex items-center gap-2">
           <Icon name="code" size={20} className="text-oneweb-accent" />
           <span>Пример использования в React</span>
         </h3>
         <pre className="bg-[#090b0e] p-4 rounded-2xl text-xs font-mono text-[#8e8e93] overflow-x-auto leading-relaxed border-none">
-{`import { BentoGrid, SmallWidget, SquareWidget, LargeWidget } from '@one/web-ui';
+{`import { BentoGrid, LargeWidget, SquareWidget, SmallWidget } from '@one/web-ui';
 
 export function Dashboard() {
   return (
-    <BentoGrid cols={3}>
-      {/* 1. Большой виджет (2 колонки, иконка в строке БЕЗ шейпа) */}
-      <LargeWidget
-        colSpan={2}
-        title="Сервер Minecraft"
-        icon="dns"
-        actions={<StatusDot />}
-        artworkUrl="/artwork.webp"
-      >
-        <ServerControls />
-      </LargeWidget>
+    <div className="space-y-6">
+      {/* 1. Большие виджеты: шапка без шейпа, открытый контент */}
+      <BentoGrid cols={3}>
+        <LargeWidget
+          colSpan={2}
+          title="СЕЙЧАС ИГРАЕТ"
+          icon="graphic_eq"
+          badge={<Badge variant="lime">LIVE</Badge>}
+        >
+          <AudioPlayerControls />
+        </LargeWidget>
 
-      {/* 2. Квадратный ярлык 1:1 (шейп с иконкой слева, стрелка справа) */}
-      <SquareWidget
-        icon="deployed_code"
-        title="Модпак"
-        subtitle="СБОРКА И МОДЫ"
-        href="/modpack"
-      />
+        <LargeWidget colSpan={1} title="ДИСКОВОЕ ПРОСТРАНСТВО" icon="pie_chart">
+          <StorageUsageBar />
+        </LargeWidget>
+      </BentoGrid>
 
-      {/* 3. Горизонтальный компактный ряд (шейп слева, текст по центру) */}
-      <SmallWidget
-        icon="folder"
-        title="Файловый менеджер"
-        description="Конфигурации и логи сервера"
-        onClick={() => openFileManager()}
-      />
-    </BentoGrid>
+      {/* 2. Компактные квадратные ярлыки (текст строго в левом нижнем углу) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <SquareWidget icon="cloud" title="Хранилище" subtitle="ОБЛАЧНЫЙ ДИСК" href="/cloud" />
+        <SquareWidget icon="insights" title="Аналитика" subtitle="СТАТИСТИКА" href="/metrics" />
+        <SquareWidget icon="shield_lock" title="Безопасность" subtitle="КЛЮЧИ ДОСТУПА" href="/id" />
+        <SquareWidget icon="account_balance_wallet" title="Биллинг" subtitle="ТРАНЗАКЦИИ" href="/pay" />
+      </div>
+
+      {/* 3. Маленькие горизонтальные строки */}
+      <BentoGrid cols={3}>
+        <SmallWidget icon="person" title="Аккаунт" description="Управление профилем" href="/account" />
+        <SmallWidget icon="notifications" title="Уведомления" description="Центр событий" href="/notifications" />
+        <SmallWidget icon="extension" title="Интеграции" description="Подключенные вебхуки" href="/integrations" />
+      </BentoGrid>
+    </div>
   );
 }`}
         </pre>

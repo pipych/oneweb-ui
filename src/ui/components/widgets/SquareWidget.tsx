@@ -5,12 +5,12 @@ import { SquareWidgetProps } from './types';
 import { WidgetArtwork } from './WidgetArtwork';
 
 /**
- * SquareWidget (Square / Medium / Reference 1)
- * - 1:1 Aspect ratio square tile
- * - Top-left: rounded square shape with #c0ff00 icon
- * - Top-right: discreet shortcut arrow (north_east)
- * - Bottom: bold white title + uppercase muted subtitle
- * - Pinned 3D illustration support with smooth hover illumination
+ * SquareWidget (Square / Shortcut Widget / Reference 1)
+ * - Compact 1:1 Aspect ratio square tile
+ * - Top-left: compact rounded square shape (w-9 h-9 or w-10 h-10 rounded-[14px]) with #c0ff00 icon
+ * - Top-right: subtle arrow (size-4 / size-5, text-white/30)
+ * - Bottom-left: strictly anchored text group (mt-auto text-left flex flex-col items-start)
+ * - Dense bold title + uppercase tracking-wider subtitle
  */
 export const SquareWidget = React.forwardRef<HTMLDivElement, SquareWidgetProps>(
   (
@@ -56,12 +56,12 @@ export const SquareWidget = React.forwardRef<HTMLDivElement, SquareWidgetProps>(
         ref={ref}
         onClick={onClick}
         className={cn(
-          // Container & 1:1 Shape
-          'relative aspect-square w-full p-5 md:p-6 rounded-[28px] md:rounded-[32px] overflow-hidden select-none',
+          // Container & Compact 1:1 Shape
+          'relative aspect-square w-full p-3.5 sm:p-4 rounded-[22px] sm:rounded-[26px] md:rounded-[28px] overflow-hidden select-none',
           bgClassName,
           'border-none ring-0 outline-none',
-          // Flex layout (top elements + mt-auto bottom stack)
-          'flex flex-col justify-between',
+          // Flex layout with strictly anchored bottom-left content
+          'flex flex-col justify-between items-start',
           // Interactive states
           'group transition-all duration-200',
           isInteractive && 'cursor-pointer sf-tap active:scale-[0.98] hover:bg-[#181c22]',
@@ -75,43 +75,43 @@ export const SquareWidget = React.forwardRef<HTMLDivElement, SquareWidgetProps>(
         <WidgetArtwork
           artworkUrl={artworkUrl}
           artworkNode={artworkNode}
-          artworkClassName={cn('w-3/4 h-3/4 max-w-[180px] max-h-[180px]', artworkClassName)}
+          artworkClassName={cn('w-2/3 h-2/3 max-w-[120px] max-h-[120px]', artworkClassName)}
         />
 
-        {/* Top bar: Icon shape on left, Arrow / action on right */}
+        {/* Top bar: Icon shape on left, Arrow on right */}
         <div className="flex items-start justify-between relative z-10 w-full">
-          {/* Icon in rounded shape */}
+          {/* Compact square shape with icon */}
           <div
             className={cn(
-              'w-12 h-12 rounded-[18px] aspect-square flex items-center justify-center shrink-0 border-none transition-transform duration-200 group-hover:scale-105',
+              'w-9 h-9 sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[14px] aspect-square flex items-center justify-center shrink-0 border-none transition-transform duration-200 group-hover:scale-105',
               shapeBg
             )}
             style={{ color: iconColor }}
           >
-            <Icon name={icon} size={24} fill={true} />
+            <Icon name={icon} size={20} fill={true} />
           </div>
 
-          {/* Top-right action / shortcut indicator */}
+          {/* Top-right action / shortcut arrow */}
           {topAction ? (
             <div className="shrink-0">{topAction}</div>
           ) : shouldShowArrow ? (
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-[#8e8e93] group-hover:text-white transition-colors shrink-0">
+            <div className="w-6 h-6 flex items-center justify-center text-white/30 group-hover:text-white transition-colors shrink-0">
               <Icon
                 name="north_east"
-                size={18}
+                size={16}
                 className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
               />
             </div>
           ) : null}
         </div>
 
-        {/* Bottom stack: Title & Subtitle (strictly pinned to bottom) */}
-        <div className="mt-auto relative z-10 pt-4 flex flex-col justify-end">
-          <h3 className="text-white font-bold text-lg md:text-xl leading-tight tracking-tight group-hover:text-white transition-colors">
+        {/* Bottom text group: STRICTLY anchored to bottom-left corner */}
+        <div className="mt-auto relative z-10 pt-3 flex flex-col items-start text-left w-full">
+          <h3 className="text-white font-bold text-sm md:text-base leading-snug tracking-tight group-hover:text-white transition-colors truncate w-full text-left">
             {title}
           </h3>
           {subtitle && (
-            <p className="text-[#8e8e93] text-xs tracking-wider uppercase font-semibold mt-1 truncate">
+            <p className="text-[#8e8e93] text-[10px] md:text-xs tracking-wider uppercase font-semibold mt-0.5 truncate w-full text-left">
               {subtitle}
             </p>
           )}
