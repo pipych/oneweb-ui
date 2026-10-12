@@ -7,6 +7,8 @@ import {
   CardDescription,
   CardContent,
   Modal,
+  Drawer,
+  DrawerItem,
   ActionMenu,
   Select,
   Input,
@@ -31,40 +33,66 @@ export const OverlaysPage: React.FC = () => {
   // Modal without cancel action (cross shown on desktop, drawer on mobile)
   const [modalWithoutCancel, setModalWithoutCancel] = useState(false);
 
+  // Dedicated Drawer Demo
+  const [drawerDemoOpen, setDrawerDemoOpen] = useState(false);
+
   // Dialog & Tabs states
   const [switchState, setSwitchState] = useState(true);
   const [activeTab, setActiveTab] = useState('server');
   const [modalInputVal, setModalInputVal] = useState('');
 
-  // Adaptive Season Selector state
+  // Adaptive Season Selector state (Small Bento Widget items)
   const [selectedSeason, setSelectedSeason] = useState('season-4');
   const seasonOptions = [
-    { value: 'season-4', label: 'Сезон 4: Genesis (Текущий)', icon: 'auto_awesome', badge: 'Active' },
-    { value: 'season-3', label: 'Сезон 3: Quantum Leap', icon: 'history' },
-    { value: 'season-2', label: 'Сезон 2: Cyber City', icon: 'history' },
-    { value: 'season-1', label: 'Сезон 1: Origins', icon: 'history' },
+    {
+      value: 'season-4',
+      label: 'Сезон 4: Genesis',
+      description: '01.10.2026 — 31.12.2026 • Текущий сезон',
+      icon: 'auto_awesome',
+      badge: 'Active',
+    },
+    {
+      value: 'season-3',
+      label: 'Сезон 3: Quantum Leap',
+      description: '01.07.2026 — 30.09.2026 • 1.2M очков',
+      icon: 'folder',
+    },
+    {
+      value: 'season-2',
+      label: 'Сезон 2: Cyber City',
+      description: '01.04.2026 — 30.06.2026 • 980K очков',
+      icon: 'calendar_month',
+    },
+    {
+      value: 'season-1',
+      label: 'Сезон 1: Origins',
+      description: '01.01.2026 — 31.03.2026 • 450K очков',
+      icon: 'history',
+    },
   ];
 
-  // Dropdown action items
+  // Dropdown & Drawer action items (Small Bento Widget items)
   const menuItems = [
     {
-      id: 'profile',
-      label: 'Профиль пользователя',
-      icon: 'person',
-      onClick: () => alert('Выбран Профиль'),
+      id: 'edit',
+      label: 'Редактировать',
+      description: 'Изменить параметры и метаданные сервиса',
+      icon: 'edit',
+      onClick: () => alert('Режим редактирования'),
+    },
+    {
+      id: 'share',
+      label: 'Поделиться',
+      description: 'Скопировать публичную ссылку на инстанс',
+      icon: 'share',
+      onClick: () => alert('Ссылка скопирована'),
     },
     {
       id: 'settings',
-      label: 'Настройки инстанса',
+      label: 'Настройки доступа',
+      description: 'Управление ключами API и приватностью',
       icon: 'settings',
       onClick: () => alert('Выбраны Настройки'),
-    },
-    {
-      id: 'logs',
-      label: 'Журнал событий',
-      icon: 'receipt_long',
-      badge: 'Live',
-      onClick: () => alert('Выбран Журнал'),
     },
     {
       separator: true,
@@ -72,10 +100,11 @@ export const OverlaysPage: React.FC = () => {
     },
     {
       id: 'delete',
-      label: 'Остановить ноду',
-      icon: 'power_settings_new',
+      label: 'Удалить сервис',
+      description: 'Безвозвратная остановка и удаление данных',
+      icon: 'delete',
       danger: true,
-      onClick: () => alert('Остановка ноды...'),
+      onClick: () => alert('Удаление сервиса...'),
     },
   ];
 
@@ -86,25 +115,25 @@ export const OverlaysPage: React.FC = () => {
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="lime">Adaptive Desktop / Mobile</Badge>
             <Badge variant="neutral">Bottom Sheet / Drawer</Badge>
-            <Badge variant="neutral">ActionMenu</Badge>
+            <Badge variant="neutral">Small Bento Widget Items</Badge>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-            Оверлеи (Modal & ActionMenu)
+            Оверлеи (Modal, Drawer & ActionMenu)
           </h1>
           <p className="text-oneweb-text-secondary text-sm sm:text-base">
             Адаптивная оверлей-система на базе Radix UI и Framer Motion со строгим разделением для Desktop и Mobile.
-            На десктопе — центрированные модальные окна и контекстные меню; на мобильных устройствах — плавные шторки (Bottom Sheet) с жестовым свайпом вниз и безопасным клиренсом над плавающим навбаром.
+            Все элементы списков и селекторов в мобильных шторках выполнены по паттерну <strong className="text-white">Small Bento Widget</strong>: скругленный контрастный шейп с иконкой 24px, стек заголовка с поясняющим описанием и индикатор активности.
           </p>
         </div>
 
         {/* 1. Modal & Drawer Showcases */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Modal с кнопкой отмены (без крестика на десктопе) */}
           <Card variant="default">
             <CardHeader>
-              <CardTitle>1. Модалка с кнопкой отмены</CardTitle>
+              <CardTitle>1. Модалка с отменой</CardTitle>
               <CardDescription>
-                Desktop: крестик строго скрыт (есть кнопка отмены в футере). Mobile: шторка со свайпом вниз.
+                Desktop: крестик скрыт (кнопка в футере). Mobile: шторка со свайпом вниз.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -116,7 +145,7 @@ export const OverlaysPage: React.FC = () => {
                 Открыть с кнопкой отмены
               </Button>
               <p className="text-xs text-[#8e8e93]">
-                Правило дизайн-системы: если в футере есть действия закрытия/отмены, крестик в правом верхнем углу не дублируется.
+                Правило: если в футере есть действия закрытия/отмены, крестик в углу не дублируется.
               </p>
             </CardContent>
           </Card>
@@ -124,9 +153,9 @@ export const OverlaysPage: React.FC = () => {
           {/* Modal без кнопок отмены (с крестиком на десктопе) */}
           <Card variant="default">
             <CardHeader>
-              <CardTitle>2. Модалка без кнопок отмены</CardTitle>
+              <CardTitle>2. Модалка без отмены</CardTitle>
               <CardDescription>
-                Desktop: крестик отображается в углу (top-6 right-6). Mobile: шторка без крестика со свайпом вниз.
+                Desktop: крестик отображается в углу. Mobile: шторка без крестика.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -138,7 +167,29 @@ export const OverlaysPage: React.FC = () => {
                 Открыть без кнопок отмены
               </Button>
               <p className="text-xs text-[#8e8e93]">
-                На десктопе появляется круглая кнопка закрытия с иконкой <code className="text-white">close</code>. На мобилке крестика нет никогда.
+                На десктопе круглая кнопка с иконкой <code className="text-white">close</code>. На мобилке крестика нет.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Drawer с пунктами Small Bento Widget */}
+          <Card variant="default">
+            <CardHeader>
+              <CardTitle>3. Шторка (DrawerItem)</CardTitle>
+              <CardDescription>
+                Шторка со списком DrawerItem по анатомии Small Bento Widget.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                variant="outline"
+                leftIcon={<OneIcon name="layers" size={18} />}
+                onClick={() => setDrawerDemoOpen(true)}
+              >
+                Открыть шторку
+              </Button>
+              <p className="text-xs text-[#8e8e93]">
+                Каждый пункт имеет скругленный шейп с иконкой 24px, заголовок, описание и галочку/экшен.
               </p>
             </CardContent>
           </Card>
@@ -149,9 +200,9 @@ export const OverlaysPage: React.FC = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>3. Меню «три точки» (ActionMenu)</CardTitle>
+                <CardTitle>4. Меню «три точки» (ActionMenu)</CardTitle>
                 <CardDescription>
-                  Desktop: классический выпадающий список у триггера. Mobile: мобильная шторка под палец.
+                  Desktop: классический выпадающий список у триггера. Mobile: мобильная шторка с пунктами в стиле Small Widget.
                 </CardDescription>
               </div>
               <ActionMenu items={menuItems} title="Параметры инстанса" />
@@ -162,7 +213,7 @@ export const OverlaysPage: React.FC = () => {
               <div>
                 <h4 className="text-sm font-bold text-white">Кастомный триггер для ActionMenu</h4>
                 <p className="text-xs text-[#8e8e93] mt-0.5">
-                  Нажмите на кнопку справа, чтобы открыть меню опций
+                  Нажмите на кнопку справа, чтобы открыть меню опций (Редактировать, Поделиться, Удалить)
                 </p>
               </div>
               <ActionMenu
@@ -176,7 +227,7 @@ export const OverlaysPage: React.FC = () => {
               />
             </div>
             <p className="text-xs text-[#8e8e93]">
-              На экранах смартфонов дропдаунов не существует в принципе: меню автоматически трансформируется в крупный Bottom Sheet со свайпом вниз.
+              На экранах смартфонов меню трансформируется в Bottom Sheet с пунктами Small Bento Widget (иконка на шейпе, стек заголовка с описанием, шеврон или удаление).
             </p>
           </CardContent>
         </Card>
@@ -186,7 +237,7 @@ export const OverlaysPage: React.FC = () => {
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <CardTitle>4. Адаптивный селект (Выбор сезона)</CardTitle>
+                <CardTitle>5. Адаптивный селект (Выбор сезона)</CardTitle>
                 <CardDescription>
                   Desktop: выпадающее меню у капсулы. Mobile: крупная шторка (Bottom Sheet) с строками min-h-[52px], иконками 24px, галочками и подсветкой #c0ff00.
                 </CardDescription>
@@ -223,12 +274,12 @@ export const OverlaysPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* 5. Interactive Tabs Section */}
+        {/* 6. Interactive Tabs Section */}
         <Card variant="default">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <CardTitle>5. Переключатель вкладок (Tabs по референсу)</CardTitle>
+                <CardTitle>6. Переключатель вкладок (Tabs по референсу)</CardTitle>
                 <CardDescription>
                   Капсульный контейнер #14171c, скользящая активная плашка #1c222b, счетчики и слот действия
                 </CardDescription>
@@ -277,10 +328,10 @@ export const OverlaysPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* 6. Switch & Tooltips */}
+        {/* 7. Switch & Tooltips */}
         <Card variant="default">
           <CardHeader>
-            <CardTitle>6. Переключатель & Тултип</CardTitle>
+            <CardTitle>7. Переключатель & Тултип</CardTitle>
             <CardDescription>Микро-контролы взаимодействия</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -317,6 +368,55 @@ export const OverlaysPage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* DRAWER DEMO: Со списком DrawerItem в стиле Small Bento Widget */}
+        <Drawer
+          open={drawerDemoOpen}
+          onClose={() => setDrawerDemoOpen(false)}
+          title="Управление объектом"
+          description="Пункты шторки по анатомии Small Bento Widget"
+          hasCancelAction={true}
+        >
+          <div className="flex flex-col gap-2.5">
+            <DrawerItem
+              icon="edit"
+              label="Редактировать"
+              description="Изменить параметры и метаданные сервиса"
+              onClick={() => {
+                setDrawerDemoOpen(false);
+                alert('Режим редактирования');
+              }}
+            />
+            <DrawerItem
+              icon="share"
+              label="Поделиться"
+              description="Скопировать публичную ссылку на инстанс"
+              onClick={() => {
+                setDrawerDemoOpen(false);
+                alert('Ссылка скопирована');
+              }}
+            />
+            <DrawerItem
+              icon="auto_awesome"
+              label="Сезон 4: Genesis"
+              description="01.10.2026 — 31.12.2026 • Текущий сезон"
+              isActive={true}
+              onClick={() => {
+                setDrawerDemoOpen(false);
+              }}
+            />
+            <DrawerItem
+              icon="delete"
+              label="Удалить сервис"
+              description="Безвозвратная остановка и удаление данных"
+              danger={true}
+              onClick={() => {
+                setDrawerDemoOpen(false);
+                alert('Удаление сервиса...');
+              }}
+            />
+          </div>
+        </Drawer>
 
         {/* MODAL 1: С кнопкой отмены (hasCancelAction = true) */}
         <Modal

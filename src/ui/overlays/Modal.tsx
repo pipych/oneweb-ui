@@ -209,3 +209,5 @@ export const Modal: React.FC<ModalProps> = ({
  */
 export const Drawer = Modal;
 export type DrawerProps = ModalProps;
+
+export { DrawerItem, type DrawerItemProps } from './ActionMenu';

@@ -6,9 +6,104 @@ import { cn } from '../utils/cn';
 import { OneIcon } from '../components/Icon';
 import { useIsMobile } from '../utils/useIsMobile';
 
+export interface DrawerItemProps {
+  label: string;
+  description?: string;
+  icon?: string;
+  isActive?: boolean;
+  danger?: boolean;
+  disabled?: boolean;
+  badge?: string | number;
+  rightAction?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}
+
+/**
+ * DrawerItem - Individual row in a mobile Drawer / Bottom Sheet
+ * Strictly formatted according to Small Bento Widget anatomy (Reference 3):
+ * - Container: horizontal plate `w-full flex items-center p-3.5 md:p-4 rounded-[20px] md:rounded-[24px]`
+ * - Left: rounded square shape `w-11 h-11 md:w-12 h-12 rounded-[16px]` with 22-24px icon
+ * - Center: vertical text stack (bold title + explanatory description)
+ * - Right: checkmark if active, chevron if submenu/link, or badge
+ * - Tactile feedback: `active:bg-white/[0.08] active:scale-[0.99] transition-all`
+ */
+export const DrawerItem: React.FC<DrawerItemProps> = ({
+  label,
+  description,
+  icon,
+  isActive = false,
+  danger = false,
+  disabled = false,
+  badge,
+  rightAction,
+  onClick,
+  className,
+}) => {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        'w-full flex items-center p-3.5 md:p-4 rounded-[20px] md:rounded-[24px] bg-[#181c23] hover:bg-white/[0.06] active:bg-white/[0.08] active:scale-[0.99] transition-all text-left cursor-pointer border-none outline-none select-none',
+        disabled && 'opacity-40 pointer-events-none',
+        className
+      )}
+    >
+      {/* 1. Left: Rounded square shape with icon */}
+      {icon && (
+        <div
+          className={cn(
+            'w-11 h-11 md:w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 border-none transition-colors',
+            danger
+              ? 'bg-red-500/15 text-red-400'
+              : isActive
+              ? 'bg-[#14171c] text-[#c0ff00]'
+              : 'bg-[#14171c] text-[#8e8e93]'
+          )}
+        >
+          <OneIcon name={icon} size={24} />
+        </div>
+      )}
+
+      {/* 2. Center: Vertical text stack */}
+      <div className={cn('flex flex-col items-start flex-1 min-w-0', icon && 'ml-3.5')}>
+        <span
+          className={cn(
+            'text-white font-bold text-sm md:text-base leading-snug truncate',
+            danger && 'text-red-400'
+          )}
+        >
+          {label}
+        </span>
+        {description && (
+          <span className="text-[#8e8e93] text-xs leading-tight mt-0.5 truncate">
+            {description}
+          </span>
+        )}
+      </div>
+
+      {/* 3. Right: Indicator or action */}
+      {rightAction !== undefined ? (
+        <div className="shrink-0 ml-2">{rightAction}</div>
+      ) : isActive ? (
+        <OneIcon name="check" size={20} className="text-[#c0ff00] shrink-0 ml-2" />
+      ) : badge !== undefined ? (
+        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93] shrink-0 ml-2">
+          {badge}
+        </span>
+      ) : (
+        <OneIcon name="chevron_right" size={20} className="text-[#8e8e93] shrink-0 ml-2" />
+      )}
+    </button>
+  );
+};
+
 export interface ActionMenuItem {
   id?: string;
   label: string;
+  description?: string;
   icon?: string;
   onClick?: () => void;
   danger?: boolean;
@@ -35,7 +130,7 @@ export interface ActionMenuProps {
  * ActionMenu - Adaptive dropdown / action sheet component
  * - Desktop: Classic floating dropdown anchored to trigger with rounded-[20px] bg-[#181c23]
  * - Mobile: Dropdowns do NOT exist. Automatically transforms into a native-feeling Bottom Sheet
- *   with large touch-friendly rows (min-h-[52px], py-3.5 px-4), swipe-down gesture, and clearance above MobileNavbar.
+ *   with items styled as Small Bento Widgets (rounded square icon shape, title + description, status indicator).
  */
 export const ActionMenu: React.FC<ActionMenuProps> = ({
   items,
@@ -136,21 +231,26 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                       </div>
                     )}
 
-                    {/* Mobile Touch Rows with clearance above MobileNavbar */}
-                    <div className="p-4 pt-1 space-y-2 pb-28 overflow-y-auto no-scrollbar">
+                    {/* Mobile Touch Rows formatted as Small Bento Widgets */}
+                    <div className="p-4 pt-1 flex flex-col gap-2.5 pb-28 overflow-y-auto no-scrollbar">
                       {items.map((item, idx) => {
                         if (item.separator) {
-                          return <div key={`sep-${idx}`} className="my-2 h-px bg-white/5" />;
+                          return <div key={`sep-${idx}`} className="my-1.5 h-px bg-white/5" />;
                         }
 
                         const isItemActive =
                           item.isActive || (selectedId !== undefined && item.id === selectedId);
 
                         return (
-                          <button
+                          <DrawerItem
                             key={item.id || `item-${idx}`}
-                            type="button"
+                            label={item.label}
+                            description={item.description}
+                            icon={item.icon}
+                            isActive={isItemActive}
+                            danger={item.danger}
                             disabled={item.disabled}
+                            badge={item.badge}
                             onClick={() => {
                               setMobileOpen(false);
                               if (item.id && onSelect) {
@@ -158,58 +258,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                               }
                               item.onClick?.();
                             }}
-                            className={cn(
-                              'w-full min-h-[52px] py-3.5 px-4 rounded-2xl bg-[#181c23] active:bg-white/5 active:scale-[0.98] transition-colors flex items-center justify-between text-left cursor-pointer border-none outline-none',
-                              item.disabled && 'opacity-40 pointer-events-none'
-                            )}
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              {item.icon && (
-                                <div
-                                  className={cn(
-                                    'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors',
-                                    item.danger
-                                      ? 'bg-red-500/15 text-red-400'
-                                      : isItemActive
-                                      ? 'bg-[#c0ff00]/15 text-[#c0ff00]'
-                                      : 'bg-[#1c222b] text-[#8e8e93]'
-                                  )}
-                                >
-                                  <OneIcon name={item.icon} size={24} />
-                                </div>
-                              )}
-                              <span
-                                className={cn(
-                                  'text-base font-semibold truncate',
-                                  item.danger
-                                    ? 'text-red-400'
-                                    : isItemActive
-                                    ? 'text-[#c0ff00]'
-                                    : 'text-white'
-                                )}
-                              >
-                                {item.label}
-                              </span>
-                            </div>
-
-                            {isItemActive ? (
-                              <OneIcon
-                                name="check"
-                                size={24}
-                                className="text-[#c0ff00] shrink-0"
-                              />
-                            ) : item.badge !== undefined ? (
-                              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93]">
-                                {item.badge}
-                              </span>
-                            ) : (
-                              <OneIcon
-                                name="chevron_right"
-                                size={20}
-                                className="text-white/20 shrink-0"
-                              />
-                            )}
-                          </button>
+                          />
                         );
                       })}
                     </div>
@@ -233,7 +282,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
           align={align}
           sideOffset={sideOffset}
           className={cn(
-            'z-50 min-w-[200px] overflow-hidden rounded-[20px]',
+            'z-50 min-w-[220px] overflow-hidden rounded-[20px]',
             'bg-[#181c23] p-1.5 text-white shadow-[0_16px_48px_rgba(0,0,0,0.85)] border-none select-none',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
             className
@@ -263,7 +312,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
                   item.onClick?.();
                 }}
                 className={cn(
-                  'relative flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium outline-none transition-colors cursor-pointer select-none',
+                  'relative flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-sm font-medium outline-none transition-colors cursor-pointer select-none',
                   item.danger
                     ? 'text-red-400 hover:bg-red-500/10 focus:bg-red-500/10'
                     : isItemActive
@@ -274,27 +323,44 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   {item.icon && (
-                    <OneIcon
-                      name={item.icon}
-                      size={18}
-                      className={
+                    <div
+                      className={cn(
+                        'w-7 h-7 rounded-lg flex items-center justify-center shrink-0',
                         item.danger
-                          ? 'text-red-400'
+                          ? 'bg-red-500/15 text-red-400'
                           : isItemActive
-                          ? 'text-[#c0ff00]'
-                          : 'text-[#8e8e93]'
-                      }
-                    />
+                          ? 'bg-[#14171c] text-[#c0ff00]'
+                          : 'bg-[#14171c] text-[#8e8e93]'
+                      )}
+                    >
+                      <OneIcon name={item.icon} size={16} />
+                    </div>
                   )}
-                  <span className={cn('truncate', isItemActive && 'font-semibold text-white')}>
-                    {item.label}
-                  </span>
+                  <div className="flex flex-col items-start min-w-0">
+                    <span
+                      className={cn(
+                        'truncate text-sm font-semibold',
+                        isItemActive
+                          ? 'text-white'
+                          : item.danger
+                          ? 'text-red-400'
+                          : 'text-white'
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                    {item.description && (
+                      <span className="text-[11px] text-[#8e8e93] leading-tight truncate">
+                        {item.description}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {isItemActive ? (
-                  <OneIcon name="check" size={18} className="text-[#c0ff00] shrink-0" />
+                  <OneIcon name="check" size={18} className="text-[#c0ff00] shrink-0 ml-2" />
                 ) : item.badge !== undefined ? (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93]">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/5 text-[#8e8e93] ml-2">
                     {item.badge}
                   </span>
                 ) : null}
@@ -310,6 +376,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
 export interface SelectOption {
   value: string;
   label: string;
+  description?: string;
   icon?: string;
   badge?: string | number;
 }
@@ -327,7 +394,7 @@ export interface SelectProps {
 
 /**
  * Select - Adaptive selector component
- * - Mobile: opens Bottom Sheet with touch-friendly 52px rows and #c0ff00 checkmarks
+ * - Mobile: opens Bottom Sheet with touch-friendly Small Bento Widget rows and #c0ff00 checkmarks
  * - Desktop: opens compact Radix dropdown menu anchored to pill trigger
  */
 export const Select: React.FC<SelectProps> = ({
@@ -352,6 +419,7 @@ export const Select: React.FC<SelectProps> = ({
       items={options.map((opt) => ({
         id: opt.value,
         label: opt.label,
+        description: opt.description,
         icon: opt.icon,
         badge: opt.badge,
         isActive: opt.value === value,
@@ -368,8 +436,8 @@ export const Select: React.FC<SelectProps> = ({
           {currentOption?.icon && (
             <OneIcon name={currentOption.icon} size={18} className="text-[#8e8e93]" />
           )}
-          <span>{currentOption ? currentOption.label : placeholder}</span>
-          <OneIcon name="expand_more" size={18} className="text-[#8e8e93] ml-1" />
+          <span className="truncate">{currentOption ? currentOption.label : placeholder}</span>
+          <OneIcon name="expand_more" size={18} className="text-[#8e8e93] ml-1 shrink-0" />
         </button>
       }
     />
